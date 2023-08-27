@@ -29,7 +29,8 @@ public class LoadTest {
 
     @Test
     public void testIndex() throws IOException {
-        HttpGet request = new HttpGet("http://10.2.10.163:8081");
+        String myEnvVariable = System.getProperty("machine_dns", "http://10.2.10.163:8081");
+        HttpGet request = new HttpGet(myEnvVariable);
         HttpResponse response = httpClient.execute(request);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
