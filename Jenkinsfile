@@ -24,9 +24,9 @@ pipeline {
 
   parameters {
     string(name: 'APP_NAME', defaultValue: 'Wahbi-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'BRANCH', defaultValue: 'stable', description: 'Branch to clone (ahmad-branch)')
     string(name: 'JOB_NAME', defaultValue: '', description: 'tests job name ')
-    string(name: 'BUILD_BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'stable', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: '', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
@@ -91,7 +91,7 @@ pipeline {
           )
 
           build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"), 
-          string(name:'IDENTIFIER' , value:"${env.IDENTIFIER}") ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
+          string(name:'IDENTIFIER' , value:"${env.IDENTIFIER}") ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.medium"),
           string(name:'GIT_BRANCH' , value:"${params.BRANCH}"),string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
           string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
           string(name:'JAVA_AGENT_URL' , value: "${params.JAVA_AGENT_URL}"),string(name:'DOTNET_AGENT_URL' , value: "${params.DOTNET_AGENT_URL}")])
