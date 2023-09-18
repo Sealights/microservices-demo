@@ -23,7 +23,7 @@ pipeline {
 
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'Wahbi-BTQ', description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: 'BTQ-stable', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'stable', description: 'Branch to clone (ahmad-branch)')
     string(name: 'JOB_NAME', defaultValue: '', description: 'tests job name ')
     string(name: 'BUILD_BRANCH', defaultValue: 'stable', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
