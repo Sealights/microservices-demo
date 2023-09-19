@@ -39,7 +39,7 @@ pipeline {
 
   environment {
     DEV_INTEGRATION_SL_TOKEN = secrets.get_secret("mgmt/btq_token", "us-west-2")
-    // DEV_INTEGRATION_LABID = "integ_master_BTQ"
+    // DEV_INTEGRATION_LABID = "integ_master_BTQ" 
   }
 
   stages {
