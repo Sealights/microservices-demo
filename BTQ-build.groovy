@@ -22,7 +22,7 @@ pipeline{
   parameters {
     string(name: 'TAG', defaultValue: '1.2.2', description: 'latest tag')
     string(name: 'BRANCH', defaultValue: 'main', description: 'defult branch')
-    //string(name: 'ecr_uri1', defaultValue: '534369319675.dkr.ecr.us-west-2.amazonaws.com/btq', description: 'ecr btq')
+    //string(name: 'ecr_uri1', defaultValue: '534369319675.dkr.ecr.us-west-2.amazonaws.com/btq', description: 'ecr btq') 
     string(name: 'SERVICE', defaultValue: '', description: 'SErvice name to build')
     string(name: 'machine_dns', defaultValue: 'http://DEV-${env.IDENTIFIER}.dev.sealights.co', description: 'machine DNS')
     string(name: 'BUILD_NAME', defaultValue: 'none', description: 'build name')
