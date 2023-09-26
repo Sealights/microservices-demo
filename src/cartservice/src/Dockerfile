@@ -19,6 +19,7 @@ COPY cartservice.csproj .
 RUN dotnet restore cartservice.csproj \
     -r linux-musl-x64
 COPY . .
+#PublishSingleFile should be false
 RUN dotnet publish cartservice.csproj \
     -p:PublishSingleFile=false \
     -r linux-musl-x64 \
