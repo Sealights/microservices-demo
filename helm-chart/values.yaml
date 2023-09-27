@@ -103,7 +103,7 @@ emailService:
       memory: 64Mi
     limits:
       cpu: 200m
-      memory: 128Mi
+      memory: 256Mi
 
 frontend:
   create: true
@@ -162,7 +162,7 @@ recommendationService:
       cpu: 100m
       memory: 220Mi
     limits:
-      cpu: 200m
+      cpu: 300m
       memory: 450Mi
 
 shippingService:
