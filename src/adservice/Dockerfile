@@ -39,7 +39,7 @@ WORKDIR /app
 COPY --from=builder /app .
 RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
 RUN unzip -oq sealights-java-latest.zip
-RUN java -jar sl-build-scanner.jar -config -tokenfile ./sltoken.txt -appname "myApp" -branchname "master" -buildname "1" -pi "*hipstershop*" 
+RUN java -jar sl-build-scanner.jar -config -tokenfile ./sltoken.txt -appname "adservice" -branchname "Wahbi-branch" -buildname "2" -pi "*hipstershop*" 
 RUN java -jar sl-build-scanner.jar -scan -tokenfile ./sltoken.txt -buildsessionidfile buildSessionId.txt -workspacepath "." -fi "*" -r
 ENV JAVA_TOOL_OPTIONS -javaagent:sl-test-listener.jar -Dsl.tokenFile=./sltoken.txt -Dsl.buildsessionidfile=buildSessionId.txt
 
