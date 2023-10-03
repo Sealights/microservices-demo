@@ -1,7 +1,6 @@
 // cypress/plugins/index.js
 
-const { registerSealightsTasks } = require('SL.Cypress.Plugin/dist/code-coverage/config');
-
+const { registerSealightsTasks } = require('sealights-cypress-plugin');
 module.exports = (on, config) => {
   // Set environment variables for your tests here
   config.env.machine_dns = process.env.MACHINE_DNS || 'blabla'; // Use the environment variable if it's set, otherwise use the default value
