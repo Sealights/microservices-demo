@@ -24,9 +24,9 @@ pipeline {
 
   parameters {
     string(name: 'APP_NAME', defaultValue: 'Wahbi-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'changed', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'JOB_NAME', defaultValue: '', description: 'tests job name ')
-    string(name: 'BUILD_BRANCH', defaultValue: 'changed', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: '', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
@@ -85,7 +85,7 @@ pipeline {
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
             app: "${params.APP_NAME}",
-            branch: "Wahbi-branch",
+            branch: "${params.BUILD_BRANCH}",
             test_env: "${env.IDENTIFIER}",
             lab_alias: "${env.IDENTIFIER}",
             cdOnly: true,
