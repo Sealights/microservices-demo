@@ -59,6 +59,7 @@ class HipsterShopServer {
   }
 
   static CheckHandler(call, callback) {
+    logger.info(`Changed`);
     callback(null, { status: 'SERVING' });
   }
 
@@ -66,6 +67,7 @@ class HipsterShopServer {
   listen() {
     const server = this.server 
     const port = this.port
+    logger.info(`Changed`);
     server.bindAsync(
       `[::]:${port}`,
       grpc.ServerCredentials.createInsecure(),
