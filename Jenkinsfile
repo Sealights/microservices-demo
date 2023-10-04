@@ -23,11 +23,10 @@ pipeline {
 
 
   parameters {
-    choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image','Tests parallel','Tests sequential' ], description: 'Choose test type')
-    string(name: 'LATEST', defaultValue: '', description: 'latest tag')
+    string(name: 'APP_NAME', defaultValue: 'Wahbi-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'JOB_NAME', defaultValue: '', description: 'tests job name ')
-    string(name: 'BUILD_BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: '', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
@@ -36,6 +35,7 @@ pipeline {
     string(name: 'GO_AGENT_URL', defaultValue: 'https://agents.sealights.co/slgoagent/latest/slgoagent-linux-amd64.tar.gz', description: 'use different go agent')
     string(name: 'GO_SLCI_AGENT_URL', defaultValue: 'https://agents.sealights.co/slcli/latest/slcli-linux-amd64.tar.gz', description: 'use different slci go agent')
     string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
+    choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image','Tests parallel','Tests sequential' ], description: 'Choose test type')
   }
 
   environment {
@@ -58,22 +58,17 @@ pipeline {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
           def parallelLabs = [:]
-          //List of all the images name
+          //List of all the images name 
           env.TOKEN= "${params.SL_TOKEN}" == "" ? "${env.DEV_INTEGRATION_SL_TOKEN}"  : "${params.SL_TOKEN}"
           def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
           //def special_services = ["cartservice"].
           env.BUILD_NAME= "${params.BUILD_NAME}" == "" ? "${params.BRANCH}-${env.CURRENT_VERSION}" : "${params.BUILD_NAME}"
-          env.BUILD_NAME= "${params.BUILD_NAME}" == "" ? "${params.BRANCH}-${env.CURRENT_VERSION}" : "${params.BUILD_NAME}"
           services_list.each { service ->
             parallelLabs["${service}"] = {
               def AGENT_URL = getParamForService(service)
-              build(job: 'BTQ-BUILD', parameters: [string(name: 'SERVICE', value: "${service}"),
-                                                   string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
-                                                   string(name:'BRANCH' , value:"${params.BRANCH}"),
-                                                   string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
-                                                   string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
-                                                   string(name:'AGENT_URL' , value:AGENT_URL[0]),
-                                                   string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
+              build(job: 'BTQ-BUILD', parameters: [string(name: 'SERVICE', value: "${service}"), string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
+                                                   string(name:'BRANCH' , value:"${params.BRANCH}"),string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
+                                                   string(name:'SL_TOKEN' , value:"${env.TOKEN}"), string(name:'AGENT_URL' , value:AGENT_URL[0]), string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
             }
           }
           parallel parallelLabs
@@ -89,118 +84,86 @@ pipeline {
           env.LAB_ID = sealights.create_lab_id(
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
-            app: "BTQ",
+            app: "${APP_NAME}",
             branch: "${params.BUILD_BRANCH}",
             test_env: "${env.IDENTIFIER}",
             lab_alias: "${env.IDENTIFIER}",
             cdOnly: true,
           )
 
-          build(job: 'SpinUpBoutiqeEnvironment', parameters: [
-            string(name: 'ENV_TYPE', value: "DEV"),
-            string(name:'IDENTIFIER' , value:"${env.IDENTIFIER}") ,
-            string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
-            string(name:'GIT_BRANCH' , value:"${params.BRANCH}"),
-            string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),
-            string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
-            string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
-            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
-            string(name:'JAVA_AGENT_URL' , value: "${params.JAVA_AGENT_URL}"),
-            string(name:'DOTNET_AGENT_URL' , value: "${params.DOTNET_AGENT_URL}")])
+          build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"), 
+          string(name:'IDENTIFIER' , value:"${env.IDENTIFIER}") ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
+          string(name:'GIT_BRANCH' , value:"${params.BRANCH}"),string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
+          string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
+          string(name:'JAVA_AGENT_URL' , value: "${params.JAVA_AGENT_URL}"),string(name:'DOTNET_AGENT_URL' , value: "${params.DOTNET_AGENT_URL}"),
+          string(name:'SL_BRANCH' , value:"${params.BRANCH}")])
         }
       }
     }
 
-    stage ('Run Tests parallel') {
-      when {
-        expression { params.TEST_TYPE == 'Tests parallel' }
-      }
+    stage ('Run Tests') {
       steps {
         script {
-          sleep time: 150, unit: 'SECONDS'
-          //env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
-          def parallelLabs = [:]
-          //List of all the jobs:
-          def jobs_list = [
-            "BTQ-java-tests(Junit without testNG)",
-            "BTQ-python-tests(Pytest framework)",
-            "BTQ-nodejs-tests(Mocha framework)",
-            "BTQ-dotnet-tests(MS-test framework)",
-            "BTQ-nodejs-tests(Jest framework)",
-            "BTQ-python-tests(Robot framework)",
-            "BTQ-dotnet-tests(NUnit-test framework)",
-            "BTQ-java-tests(Junit support-testNG)",
-            "BTQ-nodejs-tests-Cypress-framework",
-            "BTQ-java-tests-SoapUi-framework",
-            "BTQ-java-tests(Junit without testNG)-gradle",
-            "BTQ-postman-tests",
-            "BTQ-java-tests(Cucumber-framework-java)"
-          ]
+          if (params.TEST_TYPE == 'Tests parallel'){
+            sleep time: 150, unit: 'SECONDS'
+            //env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
+            def parallelLabs = [:]
+            //List of all the jobs
+            def jobs_list = ["BTQ-java-tests(Junit without testNG)" ,"BTQ-java-tests(Junit without testNG)-gradle" , 
+            "BTQ-python-tests(Pytest framework)" , "BTQ-nodejs-tests(Mocha framework)" , "BTQ-dotnet-tests(MS-test framework)" , 
+            "BTQ-nodejs-tests(Jest framework)" , "BTQ-python-tests(Robot framework)" , "BTQ-dotnet-tests(NUnit-test framework)" , 
+            "BTQ-java-tests(Junit support-testNG)", "BTQ-postman-tests","BTQ-java-tests(Cucumber-framework-java)" ,"BTQ-java-tests-SoapUi-framework" ,
+            "BTQ-nodejs-tests-Cypress-framework"]
 
-          jobs_list.each { job ->
-            parallelLabs["${job}"] = {
-              build(job:"${job}", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),string(name: 'SL_LABID', value: "${env.LAB_ID}") , string(name:'SL_TOKEN' , value:"${env.TOKEN}") ,string(name:'MACHINE_DNS1' , value:"${env.MACHINE_DNS}")])
+            jobs_list.each { job ->
+              parallelLabs["${job}"] = {
+                build(job:"${job}", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),string(name: 'SL_LABID', value: "${env.LAB_ID}") , string(name:'SL_TOKEN' , value:"${env.TOKEN}") ,string(name:'MACHINE_DNS1' , value:"${env.MACHINE_DNS}")])
+              }
+            }
+            parallel parallelLabs
+          }
+          else{
+            if (params.TEST_TYPE == 'Tests sequential'){
+              sleep time: 150, unit: 'SECONDS'
+              // env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
+              def jobs_list = [
+                "BTQ-java-tests(Junit without testNG)",
+                "BTQ-python-tests(Pytest framework)",
+                "BTQ-nodejs-tests(Mocha framework)",
+                "BTQ-dotnet-tests(MS-test framework)",
+                "BTQ-nodejs-tests(Jest framework)",
+                "BTQ-python-tests(Robot framework)",
+                "BTQ-dotnet-tests(NUnit-test framework)",
+                "BTQ-java-tests(Junit support-testNG)",
+                "BTQ-nodejs-tests-Cypress-framework",
+                "BTQ-java-tests-SoapUi-framework",
+                "BTQ-java-tests(Junit without testNG)-gradle",
+                "BTQ-postman-tests"
+              ]
+
+              jobs_list.each { job ->
+                build(job: "${job}", parameters: [
+                  string(name: 'BRANCH', value: "${params.BRANCH}"),
+                  string(name: 'SL_LABID', value: "${env.LAB_ID}"),
+                  string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
+                  string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")
+                ])
+                sleep time: 60, unit: 'SECONDS'
+              }
+             }
+            else{
+              sleep time: 150, unit: 'SECONDS'
+              build(job: "All-In-Image", parameters: [
+                string(name: 'BRANCH', value: "${params.BRANCH}"),
+                string(name: 'SL_LABID', value: "${env.LAB_ID}"),
+                string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
+                string(name: 'machine_dns', value: "${env.MACHINE_DNS}")
+              ])
             }
           }
-          parallel parallelLabs
         }
       }
     }
-
-
-    stage('Run Tests sequential') {
-      when {
-        expression { params.TEST_TYPE == 'Tests sequential' }
-      }
-      steps {
-        script {
-          sleep time: 150, unit: 'SECONDS'
-          // env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
-          def jobs_list = [
-            "BTQ-java-tests(Junit without testNG)",
-            "BTQ-python-tests(Pytest framework)",
-            "BTQ-nodejs-tests(Mocha framework)",
-            "BTQ-dotnet-tests(MS-test framework)",
-            "BTQ-nodejs-tests(Jest framework)",
-            "BTQ-python-tests(Robot framework)",
-            "BTQ-dotnet-tests(NUnit-test framework)",
-            "BTQ-java-tests(Junit support-testNG)",
-            "BTQ-nodejs-tests-Cypress-framework",
-            "BTQ-java-tests-SoapUi-framework",
-            "BTQ-java-tests(Junit without testNG)-gradle",
-            "BTQ-postman-tests"
-          ]
-
-          jobs_list.each { job ->
-            build(job: "${job}", parameters: [
-              string(name: 'BRANCH', value: "${params.BRANCH}"),
-              string(name: 'SL_LABID', value: "${env.LAB_ID}"),
-              string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-              string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")
-            ])
-            sleep time: 60, unit: 'SECONDS'
-          }
-        }
-      }
-    }
-
-  stage('All Tests IN One Image'){
-    when {
-      expression { params.TEST_TYPE == 'All Tests IN One Image' }
-    }
-    steps{
-      script{
-        sleep time: 150, unit: 'SECONDS'
-        build(job: "All-In-Image", parameters: [
-          string(name: 'BRANCH', value: "${params.BRANCH}"),
-          string(name: 'SL_LABID', value: "${env.LAB_ID}"),
-          string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-          string(name: 'machine_dns', value: "${env.MACHINE_DNS}")
-        ])
-
-      }
-    }
-  }
   }
 
   post {
@@ -212,11 +175,6 @@ pipeline {
     }
     failure {
       script {
-        sts.set_assume_role([
-          env: "dev",
-          account_id: "159616352881",
-          role_name: "CD-TF-Role"
-        ])
         def env_instance_id = sh(returnStdout: true, script: "aws ec2 --region eu-west-1 describe-instances --filters 'Name=tag:Name,Values=EUW-ALLINONE-DEV-${env.IDENTIFIER}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations[].Instances[].InstanceId'")
         sh "aws ec2 --region eu-west-1 stop-instances --instance-ids ${env_instance_id}"
         slackSend channel: "#btq-ci", tokenCredentialId: "slack_sldevops", color: "danger", message: "BTQ-CI build ${env.CURRENT_VERSION} for branch ${BRANCH_NAME} finished with status ${currentBuild.currentResult} (<${env.BUILD_URL}|Open>) and TearDownBoutiqeEnvironment"
