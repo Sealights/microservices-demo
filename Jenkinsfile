@@ -183,7 +183,6 @@ pipeline {
         }
       }
     }
-  }
 
   stage('All Tests IN One Image'){
     when {
@@ -201,6 +200,7 @@ pipeline {
 
       }
     }
+  }
   }
 
   post {
