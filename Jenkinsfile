@@ -7,7 +7,7 @@ pipeline {
         base_image_uri: "534369319675.dkr.ecr.us-west-2.amazonaws.com/sl-jenkins-base-ci:latest",
         ecr_uri: "534369319675.dkr.ecr.us-west-2.amazonaws.com",
         shell_memory_request: "300Mi",
-        shell_cpu_request: "0.5",
+        shell_cpu_request: "0.5", 
         shell_memory_limit: "700Mi",
         shell_cpu_limit: "1",
         kaniko_memory_request: "1000Mi",
