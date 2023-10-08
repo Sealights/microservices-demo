@@ -80,7 +80,7 @@ pipeline {
       steps {
         script{
           env.IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
-          env.MACHINE_DNS = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
+          env.MACHINE_DNS = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081" 
           env.LAB_ID = sealights.create_lab_id(
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
