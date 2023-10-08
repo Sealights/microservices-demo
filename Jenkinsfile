@@ -104,7 +104,6 @@ pipeline {
     stage ('Run Tests') {
       steps {
         script {
-          if (params.TEST_TYPE == 'Tests parallel'){
             sleep time: 150, unit: 'SECONDS'
             //env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
             def parallelLabs = [:]
@@ -121,46 +120,6 @@ pipeline {
               }
             }
             parallel parallelLabs
-          }
-          else{
-            if (params.TEST_TYPE == 'Tests sequential'){
-              sleep time: 150, unit: 'SECONDS'
-              // env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
-              def jobs_list = [
-                "BTQ-java-tests(Junit without testNG)",
-                "BTQ-python-tests(Pytest framework)",
-                "BTQ-nodejs-tests(Mocha framework)",
-                "BTQ-dotnet-tests(MS-test framework)",
-                "BTQ-nodejs-tests(Jest framework)",
-                "BTQ-python-tests(Robot framework)",
-                "BTQ-dotnet-tests(NUnit-test framework)",
-                "BTQ-java-tests(Junit support-testNG)",
-                "BTQ-nodejs-tests-Cypress-framework",
-                "BTQ-java-tests-SoapUi-framework",
-                "BTQ-java-tests(Junit without testNG)-gradle",
-                "BTQ-postman-tests"
-              ]
-
-              jobs_list.each { job ->
-                build(job: "${job}", parameters: [
-                  string(name: 'BRANCH', value: "${params.BRANCH}"),
-                  string(name: 'SL_LABID', value: "${env.LAB_ID}"),
-                  string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-                  string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")
-                ])
-                sleep time: 60, unit: 'SECONDS'
-              }
-             }
-            else{
-              sleep time: 150, unit: 'SECONDS'
-              build(job: "All-In-Image", parameters: [
-                string(name: 'BRANCH', value: "${params.BRANCH}"),
-                string(name: 'SL_LABID', value: "${env.LAB_ID}"),
-                string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-                string(name: 'machine_dns', value: "${env.MACHINE_DNS}")
-              ])
-            }
-          }
         }
       }
     }

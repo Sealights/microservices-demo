@@ -33,7 +33,7 @@ namespace cartservice.services
         public override Task<HealthCheckResponse> Check(HealthCheckRequest request, ServerCallContext context)
         {
             Console.WriteLine ("Checking CartService Health");
-            Console.WriteLine ("Changedcode");
+            Console.WriteLine ("Changedcode again");
             return Task.FromResult(new HealthCheckResponse {
                 Status = _cartStore.Ping() ? HealthCheckResponse.Types.ServingStatus.Serving : HealthCheckResponse.Types.ServingStatus.NotServing
             });
