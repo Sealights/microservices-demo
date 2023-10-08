@@ -157,7 +157,7 @@ pipeline {
                 string(name: 'BRANCH', value: "${params.BRANCH}"),
                 string(name: 'SL_LABID', value: "${env.LAB_ID}"),
                 string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-                string(name: 'machine_dns', value: "${env.MACHINE_DNS}")
+                string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
               ])
             }
           }
