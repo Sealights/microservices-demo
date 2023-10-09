@@ -68,6 +68,7 @@ class HipsterShopServer {
     const server = this.server 
     const port = this.port
     logger.info(`Changed`);
+    logger.info(`\n`);
     server.bindAsync(
       `[::]:${port}`,
       grpc.ServerCredentials.createInsecure(),

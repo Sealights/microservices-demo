@@ -18,13 +18,16 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+	"github.com/sirupsen/logrus"
 )
 
 // seeded determines if the random number generator is ready.
 var seeded bool = false
+var log *logrus.Logger
 
 // CreateTrackingId generates a tracking ID.
 func CreateTrackingId(salt string) string {
+	log.Info("create tracking id")
 	if !seeded {
 		rand.Seed(time.Now().UnixNano())
 		seeded = true

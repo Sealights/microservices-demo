@@ -63,6 +63,7 @@ public final class AdService {
                 .build()
                 .start();
         logger.info("Ad Service started, listening on " + port);
+        logger.info("\n");
         Runtime.getRuntime()
             .addShutdownHook(
                 new Thread(

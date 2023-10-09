@@ -126,7 +126,7 @@ def start(dummy_mode):
   health_pb2_grpc.add_HealthServicer_to_server(service, server)
 
   port = os.environ.get('PORT', "8080")
-  logger.info("listening on port: "+port)
+  logger.info("Listening on port: "+port)
   server.add_insecure_port('[::]:'+port)
   server.start()
   try:
