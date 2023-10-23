@@ -35,7 +35,7 @@ pipeline {
     string(name: 'GO_AGENT_URL', defaultValue: 'https://agents.sealights.co/slgoagent/latest/slgoagent-linux-amd64.tar.gz', description: 'use different go agent')
     string(name: 'GO_SLCI_AGENT_URL', defaultValue: 'https://agents.sealights.co/slcli/latest/slcli-linux-amd64.tar.gz', description: 'use different slci go agent')
     string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
-    choice(name: 'TEST_TYPE', choices: ['Tests parallel','All Tests IN One Image','Tests sequential' ], description: 'Choose test type')
+    choice(name: 'TEST_TYPE', choices: ['Tests sequential','Tests parallel','All Tests IN One Image'], description: 'Choose test type')
   }
 
   environment {
