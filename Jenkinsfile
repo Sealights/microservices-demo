@@ -123,7 +123,6 @@ pipeline {
           else{
             if (params.TEST_TYPE == 'Tests sequential'){
               sleep time: 150, unit: 'SECONDS'
-              // env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
               def jobs_list = [
                 "BTQ-java-tests(Junit without testNG)",
                 "BTQ-python-tests(Pytest framework)",
