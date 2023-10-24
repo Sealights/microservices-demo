@@ -194,6 +194,5 @@ def getParamForService(service) {
       return [params.PYTHON_AGENT_URL,""]
     case ["currencyservice","paymentservice"]:
       return [params.NODE_AGENT_URL,""]
-
   }
 }
