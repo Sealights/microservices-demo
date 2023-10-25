@@ -1,6 +1,5 @@
 @Library('main-shared-library') _
 pipeline {
-
   agent {
     kubernetes {
       yaml kubernetes.base_pod([
