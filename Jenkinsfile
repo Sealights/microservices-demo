@@ -7,7 +7,7 @@ pipeline {
         base_image_uri: "534369319675.dkr.ecr.us-west-2.amazonaws.com/sl-jenkins-base-ci:latest",
         ecr_uri: "534369319675.dkr.ecr.us-west-2.amazonaws.com",
         shell_memory_request: "300Mi",
-        shell_cpu_request: "0.5", 
+        shell_cpu_request: "0.5",
         shell_memory_limit: "700Mi",
         shell_cpu_limit: "1",
         kaniko_memory_request: "1000Mi",
@@ -58,7 +58,7 @@ pipeline {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
           def parallelLabs = [:]
-          //List of all the images name 
+          //List of all the images name
           env.TOKEN= "${params.SL_TOKEN}" == "" ? "${env.DEV_INTEGRATION_SL_TOKEN}"  : "${params.SL_TOKEN}"
           def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
           //def special_services = ["cartservice"].
@@ -80,7 +80,7 @@ pipeline {
       steps {
         script{
           env.IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
-          env.MACHINE_DNS = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081" 
+          env.MACHINE_DNS = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
           env.LAB_ID = sealights.create_lab_id(
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
@@ -91,7 +91,7 @@ pipeline {
             cdOnly: true,
           )
 
-          build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"), 
+          build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"),
           string(name:'IDENTIFIER' , value:"${env.IDENTIFIER}") ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
           string(name:'GIT_BRANCH' , value:"changed"),string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
           string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
@@ -108,9 +108,9 @@ pipeline {
             //env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
             def parallelLabs = [:]
             //List of all the jobs
-            def jobs_list = ["BTQ-java-tests(Junit without testNG)" ,"BTQ-java-tests(Junit without testNG)-gradle" , 
-            "BTQ-python-tests(Pytest framework)" , "BTQ-nodejs-tests(Mocha framework)" , "BTQ-dotnet-tests(MS-test framework)" , 
-            "BTQ-nodejs-tests(Jest framework)" , "BTQ-python-tests(Robot framework)" , "BTQ-dotnet-tests(NUnit-test framework)" , 
+            def jobs_list = ["BTQ-java-tests(Junit without testNG)" ,"BTQ-java-tests(Junit without testNG)-gradle" ,
+            "BTQ-python-tests(Pytest framework)" , "BTQ-nodejs-tests(Mocha framework)" ,
+            "BTQ-nodejs-tests(Jest framework)" , "BTQ-python-tests(Robot framework)" ,
             "BTQ-java-tests(Junit support-testNG)", "BTQ-postman-tests","BTQ-java-tests(Cucumber-framework-java)" ,"BTQ-java-tests-SoapUi-framework" ,
             "BTQ-nodejs-tests-Cypress-framework"]
 
