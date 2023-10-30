@@ -7,11 +7,11 @@ pipeline {
         ecr_uri: "534369319675.dkr.ecr.us-west-2.amazonaws.com",
         shell_memory_request: "300Mi",
         shell_cpu_request: "0.5",
-        shell_memory_limit: "700Mi",
+        shell_memory_limit: "900Mi",
         shell_cpu_limit: "1",
-        kaniko_memory_request: "1000Mi",
+        kaniko_memory_request: "1200Mi",
         kaniko_cpu_request: "2",
-        kaniko_memory_limit: "1500Mi",
+        kaniko_memory_limit: "1800Mi",
         kaniko_cpu_limit: "3",
         node_selector: "jenkins"
       ])
