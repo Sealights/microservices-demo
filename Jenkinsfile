@@ -19,6 +19,7 @@ pipeline {
     }
   }
 
+
   parameters {
     string(name: 'APP_NAME', defaultValue: 'Wahbi-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'Wahbi-branch', description: 'Branch to clone (ahmad-branch)')
