@@ -104,22 +104,13 @@ pipeline {
     stage ('Run Tests') {
       steps {
         script {
-            sleep time: 150, unit: 'SECONDS'
-            //env.machine_dns = "http://dev-${env.IDENTIFIER}.dev.sealights.co:8081"
-            def parallelLabs = [:]
-            //List of all the jobs
-            def jobs_list = ["BTQ-java-tests(Junit without testNG)" ,"BTQ-java-tests(Junit without testNG)-gradle" ,
-            "BTQ-python-tests(Pytest framework)" , "BTQ-nodejs-tests(Mocha framework)" ,
-            "BTQ-nodejs-tests(Jest framework)" , "BTQ-python-tests(Robot framework)" ,
-            "BTQ-java-tests(Junit support-testNG)", "BTQ-postman-tests","BTQ-java-tests(Cucumber-framework-java)" ,"BTQ-java-tests-SoapUi-framework" ,
-            "BTQ-nodejs-tests-Cypress-framework"]
-
-            jobs_list.each { job ->
-              parallelLabs["${job}"] = {
-                build(job:"${job}", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),string(name: 'SL_LABID', value: "${env.LAB_ID}") , string(name:'SL_TOKEN' , value:"${env.TOKEN}") ,string(name:'MACHINE_DNS1' , value:"${env.MACHINE_DNS}")])
-              }
-            }
-            parallel parallelLabs
+          sleep time: 150, unit: 'SECONDS'
+          build(job: "All-In-Image", parameters: [
+            string(name: 'BRANCH', value: "${params.BRANCH}"),
+            string(name: 'SL_LABID', value: "${env.LAB_ID}"),
+            string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
+            string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+          ])
         }
       }
     }
