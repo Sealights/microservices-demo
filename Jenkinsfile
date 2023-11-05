@@ -47,7 +47,7 @@ pipeline {
         }
       }
     }
-    //Build parallel images 
+    //Build parallel images
     stage ('Build BTQ') {
       steps {
         script {
