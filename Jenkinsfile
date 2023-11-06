@@ -21,6 +21,7 @@ pipeline {
   }
 
 
+
   parameters {
     string(name: 'APP_NAME', defaultValue: 'Stable-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'stable', description: 'Branch to clone (ahmad-branch)')
