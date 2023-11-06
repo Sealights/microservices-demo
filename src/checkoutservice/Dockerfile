@@ -11,7 +11,6 @@ ARG AGENT_URL_SLCI
 ENV OS_ARCH linux-amd64
 
 
-
 WORKDIR /src
 
 # restore dependencies
