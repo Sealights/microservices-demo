@@ -39,7 +39,7 @@ RUN wget -U "slcli" -q -O slcli.tar.gz \
     && tar -xvf slcli.tar.gz \
     && rm slcli.tar.gz
 
-ENV SEALIGHTS_FORCE_MODE 2
+
 RUN ./slcli config init --lang go --token ${SEALIGHTS_TOKEN}
 RUN ./slcli config create-bsid --app ${SERVICE_NAME} --branch ${BRANCH} --build ${BUILD_NAME}
 RUN ./slcli scan --bsid buildSessionId.txt --path-to-scanner ./slgoagent --workspacepath ./ --scm none --packages-excluded "github.com/GoogleCloudPlatform/microservices-demo/src/shippingservice/genproto"
@@ -54,11 +54,11 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /src
 COPY --from=builder /go/bin/shippingservice /src/shippingservice
 ENV APP_PORT=50051
-ENV SEALIGHTS_FORCE_MODE 2
+
 # Definition of this variable is used by 'skaffold debug' to identify a golang binary.
 # Default behavior - a failure prints a stack trace for the current goroutine.
 # See https://golang.org/pkg/runtime/
 ENV GOTRACEBACK=single
 
 EXPOSE 50051
-CMD export SEALIGHTS_TOKEN="${SL_TOKEN}" && export SEALIGHTS_LAB_ID="${SL_LAB_ID}" && /src/shippingservice
+CMD export SEALIGHTS_FORCE_MODE=2 && export SEALIGHTS_TOKEN="${SL_TOKEN}" && export SEALIGHTS_LAB_ID="${SL_LAB_ID}" && /src/shippingservice
