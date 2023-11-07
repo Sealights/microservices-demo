@@ -61,4 +61,4 @@ ENV APP_PORT=50051
 ENV GOTRACEBACK=single
 
 EXPOSE 50051
-CMD export SEALIGHTS_FORCE_MODE=2 && export SEALIGHTS_TOKEN="${SL_TOKEN}" && export SEALIGHTS_LAB_ID="${SL_LAB_ID}" && /src/shippingservice
+CMD export SEALIGHTS_FORCE_MODE="2" && export SEALIGHTS_TOKEN="${SL_TOKEN}" && export SEALIGHTS_LAB_ID="${SL_LAB_ID}" && /src/shippingservice
