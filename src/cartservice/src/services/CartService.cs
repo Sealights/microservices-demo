@@ -28,22 +28,29 @@ namespace cartservice.services
 
         public CartService(ICartStore cartStore)
         {
+            Console.WriteLine("New change");
             _cartStore = cartStore;
         }
 
         public async override Task<Empty> AddItem(AddItemRequest request, ServerCallContext context)
         {
+            Console.WriteLine("New change");
+            int x=10;
             await _cartStore.AddItemAsync(request.UserId, request.Item.ProductId, request.Item.Quantity);
             return Empty;
         }
 
         public override Task<Cart> GetCart(GetCartRequest request, ServerCallContext context)
         {
+            Console.WriteLine("New change");
+            int x=10;
             return _cartStore.GetCartAsync(request.UserId);
         }
 
         public async override Task<Empty> EmptyCart(EmptyCartRequest request, ServerCallContext context)
         {
+            Console.WriteLine("New change");
+            int x=10;
             await _cartStore.EmptyCartAsync(request.UserId);
             return Empty;
         }

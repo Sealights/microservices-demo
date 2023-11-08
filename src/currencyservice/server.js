@@ -43,7 +43,7 @@ if(process.env.ENABLE_TRACING == "1") {
   const { OTLPTraceExporter } = require("@opentelemetry/exporter-otlp-grpc");
 
   const provider = new NodeTracerProvider();
-  
+
   const collectorUrl = process.env.COLLECTOR_SERVICE_ADDR
 
   provider.addSpanProcessor(new SimpleSpanProcessor(new OTLPTraceExporter({url: collectorUrl})));
@@ -98,6 +98,9 @@ function _loadProto (path) {
  * Uses public data from European Central Bank
  */
 function _getCurrencyData (callback) {
+    const x = 10;
+    console.log("New Change");
+
   const data = require('./data/currency_conversion.json');
   callback(data);
 }
@@ -106,6 +109,9 @@ function _getCurrencyData (callback) {
  * Helper function that handles decimal/fractional carrying
  */
 function _carry (amount) {
+  const x = 10;
+  console.log("New Change (_carry)");
+
   const fractionSize = Math.pow(10, 9);
   amount.nanos += (amount.units % 1) * fractionSize;
   amount.units = Math.floor(amount.units) + Math.floor(amount.nanos / fractionSize);
@@ -117,6 +123,8 @@ function _carry (amount) {
  * Lists the supported currencies
  */
 function getSupportedCurrencies (call, callback) {
+  const x = 10;
+  console.log("New Change (getSupportedCurrencies)");
   logger.info('Getting supported currencies...');
   _getCurrencyData((data) => {
     callback(null, {currency_codes: Object.keys(data)});
@@ -127,6 +135,9 @@ function getSupportedCurrencies (call, callback) {
  * Converts between currencies
  */
 function convert (call, callback) {
+  const x = 10;
+  console.log("New Change (convert)");
+
   try {
     _getCurrencyData((data) => {
       const request = call.request;
@@ -163,6 +174,9 @@ function convert (call, callback) {
  * Endpoint for health checks
  */
 function check (call, callback) {
+  const x = 10;
+  console.log("New Change");
+
   callback(null, { status: 'SERVING' });
 }
 

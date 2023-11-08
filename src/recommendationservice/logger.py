@@ -22,6 +22,7 @@ from pythonjsonlogger import jsonlogger
 # not sharing the modules for logging.
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
   def add_fields(self, log_record, record, message_dict):
+
     super(CustomJsonFormatter, self).add_fields(log_record, record, message_dict)
     if not log_record.get('timestamp'):
       log_record['timestamp'] = record.created
@@ -29,6 +30,10 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
       log_record['severity'] = log_record['severity'].upper()
     else:
       log_record['severity'] = record.levelname
+    print("New Change")
+    x = 10
+
+
 
 def getJSONLogger(name):
   logger = logging.getLogger(name)
