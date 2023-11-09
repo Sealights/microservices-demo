@@ -94,8 +94,6 @@ public final class AdService {
          */
         @Override
         public void getAds(AdRequest req, StreamObserver<AdResponse> responseObserver) {
-            System.out.println("New Change!");
-            int x=10;
             AdService service = AdService.getInstance();
             try {
                 List<Ad> allAds = new ArrayList<>();
@@ -119,8 +117,6 @@ public final class AdService {
                 logger.log(Level.WARN, "GetAds Failed with status {}", e.getStatus());
                 responseObserver.onError(e);
             }
-            System.out.println("New Change!");
-            int y=15;
         }
     }
 

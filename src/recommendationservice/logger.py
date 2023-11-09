@@ -30,8 +30,7 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
       log_record['severity'] = log_record['severity'].upper()
     else:
       log_record['severity'] = record.levelname
-    print("New Change")
-    x = 10
+
 
 
 

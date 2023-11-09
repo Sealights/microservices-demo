@@ -50,8 +50,6 @@ template = env.get_template('confirmation.html')
 
 class BaseEmailService(demo_pb2_grpc.EmailServiceServicer):
   def Check(self, request, context):
-      x = 10
-      print("Hello, World!")
       return health_pb2.HealthCheckResponse(
       status=health_pb2.HealthCheckResponse.SERVING)
 

@@ -98,9 +98,6 @@ function _loadProto (path) {
  * Uses public data from European Central Bank
  */
 function _getCurrencyData (callback) {
-    const x = 10;
-    console.log("New Change");
-
   const data = require('./data/currency_conversion.json');
   callback(data);
 }
@@ -123,8 +120,7 @@ function _carry (amount) {
  * Lists the supported currencies
  */
 function getSupportedCurrencies (call, callback) {
-  const x = 10;
-  console.log("New Change (getSupportedCurrencies)");
+
   logger.info('Getting supported currencies...');
   _getCurrencyData((data) => {
     callback(null, {currency_codes: Object.keys(data)});
@@ -135,8 +131,7 @@ function getSupportedCurrencies (call, callback) {
  * Converts between currencies
  */
 function convert (call, callback) {
-  const x = 10;
-  console.log("New Change (convert)");
+
 
   try {
     _getCurrencyData((data) => {
@@ -174,8 +169,7 @@ function convert (call, callback) {
  * Endpoint for health checks
  */
 function check (call, callback) {
-  const x = 10;
-  console.log("New Change");
+
 
   callback(null, { status: 'SERVING' });
 }

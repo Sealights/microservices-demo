@@ -65,7 +65,7 @@ def initStackdriverProfiling():
 
 class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
     def ListRecommendations(self, request, context):
-        print("New Change!")
+
         max_responses = 5
         # fetch list of products from product catalog stub
         cat_response = product_catalog_stub.ListProducts(demo_pb2.Empty())
@@ -84,8 +84,7 @@ class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
         return response
 
     def Check(self, request, context):
-        print("New Change!")
-        x = 10
+
         return health_pb2.HealthCheckResponse(
             status=health_pb2.HealthCheckResponse.SERVING)
 
