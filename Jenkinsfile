@@ -232,10 +232,9 @@ def get_secret (SecretID, Region, Profile="") {
 
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
-
+  env.TOKEN= "${params.sl_token}"
   def parallelLabs = [:]
   //List of all the images name
-  env.TOKEN= "${params.sl_token}"
 
   def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
   //def special_services = ["cartservice"].
