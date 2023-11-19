@@ -1,7 +1,9 @@
 pkg/
 .DS_Store
+.idea/
 *.pyc
 *.swp
+.lib/
 *.tfstate
 *.tfstate*
 .vscode/
