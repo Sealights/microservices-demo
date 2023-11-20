@@ -127,7 +127,7 @@ pipeline {
 
           build_btq(
             sl_token: params.SL_TOKEN,
-            sl_report_branch: params.CHANGED_BRANCH,
+            sl_report_branch: params.BRANCH,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}-v2",
             branch: params.BRANCH,
@@ -146,7 +146,7 @@ pipeline {
 
           SpinUpBoutiqeEnvironment(
             IDENTIFIER : IDENTIFIER,
-            branch: params.CHANGED_BRANCH,
+            branch: params.BRANCH,
             git_branch : params.CHANGED_BRANCH,
             app_name: params.APP_NAME,
             build_branch: params.BRANCH,
