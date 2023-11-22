@@ -79,7 +79,7 @@ pipeline {
               branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
               test_stage: "${TEST_STAGE}",
               token: "${params.SL_TOKEN}",
-              machine: "https://dev-integration.dev.sealights.co"
+              machine: "dev-integration.dev.sealights.co"
             )
           }
         }
