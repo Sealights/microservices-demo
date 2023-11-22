@@ -57,6 +57,31 @@ pipeline {
             branch: params.BRANCH,
             mapurl: MapUrl
           )
+
+          def testStages_list =
+            ["Cucumber framework java",
+             "Jest tests",
+             "Junit support testNG",
+             "Cypress-Test-Stage",
+             "Junit without testNG",
+             "Mocha tests",
+             "MS-Tests",
+             "NUnit-Tests",
+             "Postman tests",
+             "Pytest tests",
+             "Robot Tests",
+             "Soapui-Tests",
+             "Junit without testNG-gradle"]
+
+            testStages_list.forEach { TEST_STAGE ->
+              schedule_full_run(
+              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
+              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+              test_stage: "${TEST_STAGE}",
+              token: "${params.SL_TOKEN}",
+              machine: "https://dev-integration.dev.sealights.co"
+            )
+          }
         }
       }
     }
@@ -441,9 +466,21 @@ def convert_to_map(mapAsString) {
         def pair = entry.split(':')
         [(pair.first()): "${pair.last()}"]
       }
-
   return map
 }
+
+def schedule_full_run(Map params) {
+  try {
+    def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -s -o /dev/null -w \"%{http_code}\" https://${params.machine}/sl-api/v1/tia/apps/${params.app_name}/branches/${params.branch_name}/testStages/${params.test_stage}/full-run -H \"Authorization: Bearer ${params.token}\" -H \"Content-Type: application/json\" -d \'{\"enable\": true}\'")).trim()
+    if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
+      return false
+    }
+    return true
+  } catch(err) {
+    error "Failed to schedule full run"
+  }
+}
+
 
 
 
