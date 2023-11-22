@@ -9,7 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-
+import java.lang.Thread;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
@@ -42,6 +42,14 @@ public class StepDefinitions {
     }
     @When("All users start their sessions")
     public void allUsersStartTheirSessions() {
+        try {
+            // Adding a 15-second sleep before the condition check
+            Thread.sleep(15000); // 15000 milliseconds = 15 seconds
+        } catch (InterruptedException e) {
+            // Handle the InterruptedException
+            e.printStackTrace();
+        }
+
         // Since we are not using threads, this step can be removed.
     }
     @Then("All sessions should complete successfully")
@@ -58,6 +66,14 @@ public class StepDefinitions {
         for (String product : products) {
             CloseableHttpResponse response = httpClient.execute(new HttpGet(BASE_URL + "/product/" + product));
             response.close();
+            try {
+                // Adding a 15-second sleep before the condition check
+                Thread.sleep(15000); // 15000 milliseconds = 15 seconds
+            } catch (InterruptedException e) {
+                // Handle the InterruptedException
+                e.printStackTrace();
+            }
+
             if (response.getStatusLine().getStatusCode() != 200) {
                 throw new Exception("Failed to load the product: " + product);
             }
@@ -80,6 +96,14 @@ public class StepDefinitions {
     public void aUserViewsTheirCart() throws Exception {
         CloseableHttpResponse response = httpClient.execute(new HttpGet(BASE_URL + "/cart"));
         response.close();
+        try {
+            // Adding a 15-second sleep before the condition check
+            Thread.sleep(15000); // 15000 milliseconds = 15 seconds
+        } catch (InterruptedException e) {
+            // Handle the InterruptedException
+            e.printStackTrace();
+        }
+
         if (response.getStatusLine().getStatusCode() != 200) {
             throw new Exception("Failed to view the cart");
         }
@@ -99,6 +123,14 @@ public class StepDefinitions {
             CloseableHttpResponse response = httpClient.execute(httpPost);
             response.close();
             System.out.println(response.getStatusLine());
+
+            try {
+                // Adding a 15-second sleep before the condition check
+                Thread.sleep(15000); // 15000 milliseconds = 15 seconds
+            } catch (InterruptedException e) {
+                // Handle the InterruptedException
+                e.printStackTrace();
+            }
             if (response.getStatusLine().getStatusCode() != 302) {
                 throw new Exception("Failed to add the product to the cart: " + product);
             }
@@ -116,6 +148,15 @@ public class StepDefinitions {
         responseIcon.close();
         CloseableHttpResponse responseImg = httpClient.execute(new HttpGet(BASE_URL + "/static/img/products/hairdryer.jpg"));
         responseImg.close();
+
+        try {
+            // Adding a 15-second sleep before the condition check
+            Thread.sleep(15000); // 15000 milliseconds = 15 seconds
+        } catch (InterruptedException e) {
+            // Handle the InterruptedException
+            e.printStackTrace();
+        }
+
         if (responseIcon.getStatusLine().getStatusCode() != 200 || responseImg.getStatusLine().getStatusCode() != 200) {
             throw new Exception("Failed to load site assets");
         }
@@ -138,6 +179,15 @@ public class StepDefinitions {
         response.getEntity().writeTo(baos);
         System.out.println(baos);
         response.close();
+        //add 15 sec
+        try {
+            // Adding a 15-second sleep before the condition check
+            Thread.sleep(15000); // 15000 milliseconds = 15 seconds
+        } catch (InterruptedException e) {
+            // Handle the InterruptedException
+            e.printStackTrace();
+        }
+
         if (response.getStatusLine().getStatusCode() != 200) {
             throw new Exception("Failed to checkout cart");
         }

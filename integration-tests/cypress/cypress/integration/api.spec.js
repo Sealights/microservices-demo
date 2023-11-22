@@ -1,11 +1,13 @@
 describe('Api Tests', () => {
   it('should return 200 for index page', () => {
+    sleep(15000);
     cy.apiRequest('GET', '/').then(response => {
       cy.wrap(response.status).should('equal', 200);
     });
   });
 
   it('should be able to set different currencies', () => {
+    sleep(15000);
     const currencies = ['EUR', 'USD', 'JPY', 'CAD'];
     for (const currency of currencies) {
       cy.apiRequest('POST', '/setCurrency', { currency_code: currency }).then(response => {
@@ -15,6 +17,7 @@ describe('Api Tests', () => {
   });
 
   it('should return 200 for browsing products', () => {
+    sleep(15000);
     const products = [
       '0PUK6V6EV0',
       '1YMWWN1N4O',
@@ -29,18 +32,18 @@ describe('Api Tests', () => {
   });
 
   it('should return 404 for a non-existent route', () => {
+    sleep(15000);
     cy.apiRequest('GET', '/nonexistent-route', null, { failOnStatusCode: false }).then(response => {
       cy.wrap(response.status).should('equal', 404);
     });
   });
 
  it('should return 200 for invalid request data', () => {
+    sleep(15000);
    cy.apiRequest('POST', '/setCurrency', { invalid_key: 'invalid_value' }, { failOnStatusCode: false }).then(response => {
      cy.wrap(response.status).should('equal', 200);
    });
  });
-
-
 });
 
 // Run the tests automatically in Cypress:

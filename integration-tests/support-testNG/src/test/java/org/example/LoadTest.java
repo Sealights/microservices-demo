@@ -9,7 +9,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
+import java.lang.Thread;
 import java.io.IOException;
 import java.util.Random;
 
@@ -32,6 +32,7 @@ public class LoadTest {
 
     @Test
     public void testBrowseProduct() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://10.2.10.191:8081"; // Set a default URL when machine_dns is not set
@@ -55,6 +56,7 @@ public class LoadTest {
 
     @Test
     public void testAddToCart() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://10.2.10.191:8081"; // Set a default URL when machine_dns is not set
@@ -82,6 +84,7 @@ public class LoadTest {
 
     @Test
     public void testCheckout() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://10.2.10.191:8081"; // Set a default URL when machine_dns is not set
@@ -91,6 +94,7 @@ public class LoadTest {
 
     @Test
     public void testNonExistentRoute() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://10.2.10.191:8081"; // Set a default URL when machine_dns is not set

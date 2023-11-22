@@ -3,6 +3,7 @@ import requests
 import pytest
 import os
 import threading
+import time
 
 products = [
     '0PUK6V6EV0',
@@ -40,6 +41,7 @@ def test_session():
 
 
 def test_bad_requests(r=requests):
+    time.sleep(15)
     response = r.get(BASE_URL + "/product/89")
     assert response.status_code == 500
     r.post(BASE_URL + "/setCurrency", data={'currency_code': 'not a currency'})
@@ -47,11 +49,13 @@ def test_bad_requests(r=requests):
 
 
 def test_index(r=requests):
+    time.sleep(15)
     response = r.get(BASE_URL + "/")
     assert response.status_code == 200
 
 
 def test_set_currency(r=requests):
+    time.sleep(15)
     for currency in ['EUR', 'USD', 'JPY', 'CAD']:
         data = {'currency_code': currency}
         response = r.post(BASE_URL + "/setCurrency", data=data)
@@ -60,12 +64,14 @@ def test_set_currency(r=requests):
 
 
 def test_browse_product(r=requests):
+    time.sleep(15)
     for product_id in products:
         response = r.get(BASE_URL + "/product/" + product_id)
         assert response.status_code == 200
 
 
 def test_view_cart(r=requests):
+    time.sleep(15)
     response = r.get(BASE_URL + "/cart")
     assert response.status_code == 200
     response = r.post(BASE_URL + "/cart/empty")
@@ -73,6 +79,7 @@ def test_view_cart(r=requests):
 
 
 def test_add_to_cart(r=requests):
+    time.sleep(15)
     for product_id in products:
         response = r.get(BASE_URL + "/product/" + product_id)
         assert response.status_code == 200
@@ -86,6 +93,7 @@ def test_add_to_cart(r=requests):
 
 
 def test_icon(r=requests):
+    time.sleep(15)
     response = r.get(BASE_URL + "/static/favicon.ico")
     assert response.status_code == 200
     response = r.get(BASE_URL + "/static/img/products/hairdryer.jpg")
@@ -93,6 +101,7 @@ def test_icon(r=requests):
 
 
 def test_checkout(r=requests):
+    time.sleep(15)
     assert len(products) == 9
     for product_id in products:
         data = {

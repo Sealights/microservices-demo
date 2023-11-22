@@ -7,6 +7,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import java.lang.Thread;
 
 import java.io.IOException;
 import java.util.Random;
@@ -29,14 +30,17 @@ public class LoadTest {
 
     @Test
     public void testIndex() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         HttpGet request = new HttpGet(myEnvVariable);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(15000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
     @Test
     public void testSetCurrency() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns"); // Declare and initialize myEnvVariable
         String[] currencies = {"EUR", "USD", "JPY", "CAD"};
         String currency = currencies[new Random().nextInt(currencies.length)];
@@ -48,6 +52,7 @@ public class LoadTest {
 
     @Test
     public void testBrowseProduct() throws IOException {
+        Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns"); // Declare and initialize myEnvVariable
         String[] products = {
             "0PUK6V6EV0",
@@ -65,6 +70,7 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable + "/product/" + product);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(15000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 }

@@ -75,7 +75,7 @@ pipeline {
                         "executionType": "testsonly",
                         "tokenFile": "./sltoken.txt",
                         "createBuildSessionId": false,
-                        "testStage": "Junit without testNG-gradle",
+                        "testStage": "Junit-without-testNG-gradle",
                         "runFunctionalTests": true,
                         "labId": "${SL_LABID}",
                         "proxy": null,
@@ -103,7 +103,7 @@ pipeline {
                     export machine_dns="${params.MACHINE_DNS}"
                     echo 'robot framework starting ..... '
                     cd ./integration-tests/robot-tests
-                    sl-python start --labid ${SL_LABID} --token ${SL_TOKEN} --teststage "Robot Tests"
+                    sl-python start --labid ${SL_LABID} --token ${SL_TOKEN} --teststage "Robot-Tests"
                     robot -xunit api_tests.robot
                     sl-python uploadreports --reportfile "unit.xml" --labid ${SL_LABID} --token ${SL_TOKEN}
                     sl-python end --labid ${SL_LABID} --token ${SL_TOKEN}
@@ -127,7 +127,7 @@ pipeline {
                             "executionType": "testsonly",
                             "tokenFile": "./sltoken.txt",
                             "createBuildSessionId": false,
-                            "testStage": "Cucmber framework java ",
+                            "testStage": "Cucmber-framework-java ",
                             "runFunctionalTests": true,
                             "labId": "${params.SL_LABID}",
                             "proxy": null,
@@ -166,7 +166,7 @@ pipeline {
                             "executionType": "testsonly",
                             "tokenFile": "./sltoken.txt",
                             "createBuildSessionId": false,
-                            "testStage": "Junit support testNG",
+                            "testStage": "Junit-support-testNG",
                             "runFunctionalTests": true,
                             "labId": "${params.SL_LABID}",
                             "proxy": null,
@@ -201,7 +201,7 @@ pipeline {
                             "executionType": "testsonly",
                             "tokenFile": "./sltoken.txt",
                             "createBuildSessionId": false,
-                            "testStage": "Junit without testNG",
+                            "testStage": "Junit-without-testNG",
                             "runFunctionalTests": true,
                             "labId": "${params.SL_LABID}",
                             "proxy": null,
@@ -231,7 +231,7 @@ pipeline {
                     npm i slnodejs
                     npm install newman
                     npm install newman-reporter-xunit
-                    ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman tests"
+                    ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
                     npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
                     ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
                     ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
@@ -256,7 +256,7 @@ pipeline {
                 export SL_TOKEN="${params.SL_TOKEN}"
                 export SL_LABID="${params.SL_LABID}"
                 npm install
-                npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}"
+                npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest-tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}"
                 cd ../..
                 """
         }
@@ -275,7 +275,7 @@ pipeline {
                     cp -r /nodeModules/node_modules .
                     npm install
                     npm install slnodejs
-                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha tests'  --useslnode2 -- ./test/test.js --recursive --no-timeouts
+                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --no-timeouts
                     cd ../..
                     """
         }
@@ -303,7 +303,7 @@ pipeline {
               "executionType": "testsonly",
               "tokenFile": "./sltoken.txt",
               "createBuildSessionId": false,
-              "testStage": "Soap-UI framework",
+              "testStage": "Soap-UI-framework",
               "runFunctionalTests": true,
               "labId": "${params.SL_LABID}",
               "proxy": null,
@@ -336,7 +336,7 @@ pipeline {
                 cd ./integration-tests/python-tests
                 pip install pytest
                 pip install requests
-                sl-python pytest --teststage "Pytest tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
+                sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
                 cd ../..
                 """
         }

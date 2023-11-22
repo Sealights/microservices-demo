@@ -1,5 +1,5 @@
 package org.example;
-
+import java.lang.Thread;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -32,6 +32,7 @@ public class LoadTest {
         String myEnvVariable = System.getenv("machine_dns");
         HttpGet request = new HttpGet(myEnvVariable);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(20000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
@@ -43,6 +44,7 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable + "/setCurrency?currency_code=" + currency);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(20000);
         assertEquals(405, response.getStatusLine().getStatusCode());
     }
 
@@ -65,6 +67,7 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable + "/product/" + product);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(20000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 }
