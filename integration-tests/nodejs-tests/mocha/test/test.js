@@ -14,13 +14,13 @@ describe('Api Tests', function () {
   this.timeout(10000);  // Increase the timeout for slow tests
 
   it('should return 200 for index page', async function () {
-    sleep(15000);
+    await new Promise(resolve => setTimeout(resolve, 10000));
     const response = await session.get('/');
     expect(response.status).to.equal(200);
   });
 
   it('should be able to set different currencies', async function () {
-    sleep(15000);
+    await new Promise(resolve => setTimeout(resolve, 10000));
     const currencies = ['EUR', 'USD', 'JPY', 'CAD'];
     for (const currency of currencies) {
       const response = await session.post('/setCurrency', { currency_code: currency });
@@ -29,7 +29,7 @@ describe('Api Tests', function () {
   });
 
   it('should return 200 for browsing products', async function () {
-    sleep(15000);
+    await new Promise(resolve => setTimeout(resolve, 10000));
     const products = [
       '0PUK6V6EV0',
       '1YMWWN1N4O',
@@ -49,7 +49,7 @@ describe('Api Tests', function () {
   });
 
   it('should return 404 for a non-existent route', async function () {
-    sleep(15000);
+    await new Promise(resolve => setTimeout(resolve, 10000));
     try {
       await session.get('/nonexistent-route');
     } catch (error) {
@@ -58,7 +58,7 @@ describe('Api Tests', function () {
   });
 
   it('should return 400 for invalid request data', async function () {
-    sleep(15000);
+    await new Promise(resolve => setTimeout(resolve, 10000));
     try {
       await session.post('/setCurrency', { invalid_key: 'invalid_value' });
     } catch (error) {

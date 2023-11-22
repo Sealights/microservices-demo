@@ -29,7 +29,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testIndex() throws IOException {
+    public void testIndex() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         HttpGet request = new HttpGet(myEnvVariable);
@@ -39,7 +39,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testSetCurrency() throws IOException {
+    public void testSetCurrency() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns"); // Declare and initialize myEnvVariable
         String[] currencies = {"EUR", "USD", "JPY", "CAD"};
@@ -51,7 +51,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testBrowseProduct() throws IOException {
+    public void testBrowseProduct() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns"); // Declare and initialize myEnvVariable
         String[] products = {

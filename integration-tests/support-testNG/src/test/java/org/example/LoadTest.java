@@ -31,7 +31,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testBrowseProduct() throws IOException {
+    public void testBrowseProduct() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
@@ -55,7 +55,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testAddToCart() throws IOException {
+    public void testAddToCart() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
@@ -83,7 +83,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testCheckout() throws IOException {
+    public void testCheckout() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
@@ -93,7 +93,7 @@ public class LoadTest {
     }
 
     @Test
-    public void testNonExistentRoute() throws IOException {
+    public void testNonExistentRoute() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
