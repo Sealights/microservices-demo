@@ -73,7 +73,7 @@ pipeline {
              "Soapui-Tests",
              "Junit without testNG-gradle"]
 
-            testStages_list.forEach { TEST_STAGE ->
+            testStages_list.each { TEST_STAGE ->
               schedule_full_run(
               app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
               branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
