@@ -5,11 +5,12 @@ const BASE_URL = process.env.machine_dns || 'http://10.2.10.163:8081';
 describe('Api Tests', () => {
   let session;
 
-  beforeAll(() => {
-
-    session = axios.create({ baseURL: BASE_URL });
-    jest.setTimeout(60000);
-  });
+    beforeAll(() => {
+      session = axios.create({ baseURL: BASE_URL });
+    });
+    beforeEach(()=> {
+      jest.setTimeout(60000);
+    });
 
   it('should return 200 for index page', async () => {
     await new Promise(resolve => setTimeout(resolve, 10000));
