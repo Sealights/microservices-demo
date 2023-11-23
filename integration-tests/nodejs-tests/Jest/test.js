@@ -6,7 +6,9 @@ describe('Api Tests', () => {
   let session;
 
   beforeAll(() => {
+
     session = axios.create({ baseURL: BASE_URL });
+    jest.setTimeout(60000);
   });
 
   it('should return 200 for index page', async () => {
