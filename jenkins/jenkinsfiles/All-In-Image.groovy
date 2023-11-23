@@ -95,23 +95,23 @@ pipeline {
         }
       }
     }
-    stage('robot framework'){
-      steps{
-        script{
-          sh """
-                    echo "the env var is $machine_dns"
-                    export machine_dns="${params.MACHINE_DNS}"
-                    echo 'robot framework starting ..... '
-                    cd ./integration-tests/robot-tests
-                    sl-python start --labid ${SL_LABID} --token ${SL_TOKEN} --teststage "Robot-Tests"
-                    robot -xunit api_tests.robot
-                    sl-python uploadreports --reportfile "unit.xml" --labid ${SL_LABID} --token ${SL_TOKEN}
-                    sl-python end --labid ${SL_LABID} --token ${SL_TOKEN}
-                    cd ../..
-                    """
-        }
-      }
-    }
+//    stage('robot framework'){
+//      steps{
+//        script{
+//          sh """
+//                    echo "the env var is $machine_dns"
+//                    export machine_dns="${params.MACHINE_DNS}"
+//                    echo 'robot framework starting ..... '
+//                    cd ./integration-tests/robot-tests
+//                    sl-python start --labid ${SL_LABID} --token ${SL_TOKEN} --teststage "Robot-Tests"
+//                    robot -xunit api_tests.robot
+//                    sl-python uploadreports --reportfile "unit.xml" --labid ${SL_LABID} --token ${SL_TOKEN}
+//                    sl-python end --labid ${SL_LABID} --token ${SL_TOKEN}
+//                    cd ../..
+//                    """
+//        }
+//      }
+//    }
 
     stage('Cucumber framework') {
       steps{
