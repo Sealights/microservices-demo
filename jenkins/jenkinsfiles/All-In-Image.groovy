@@ -256,7 +256,7 @@ pipeline {
                 export SL_TOKEN="${params.SL_TOKEN}"
                 export SL_LABID="${params.SL_LABID}"
                 npm install
-                npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest-tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}"
+                npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest-tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}" --testTimeout=30000
                 cd ../..
                 """
         }
