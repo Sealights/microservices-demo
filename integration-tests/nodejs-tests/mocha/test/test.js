@@ -11,7 +11,7 @@ describe('Api Tests', function () {
     session = axios.create({ baseURL: BASE_URL });
   });
 
-  this.timeout(10000);  // Increase the timeout for slow tests
+  this.timeout(30000);  // Increase the timeout for slow tests
 
   it('should return 200 for index page', async function () {
     await new Promise(resolve => setTimeout(resolve, 20000));
