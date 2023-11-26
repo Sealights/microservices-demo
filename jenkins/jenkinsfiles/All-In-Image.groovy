@@ -275,7 +275,7 @@ pipeline {
                     cp -r /nodeModules/node_modules .
                     npm install
                     npm install slnodejs
-                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --no-timeouts
+                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
                     cd ../..
                     """
         }
