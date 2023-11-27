@@ -29,23 +29,6 @@ pipeline {
         }
       }
     }
-
-    stage('Mocha framework'){
-      steps{
-        script{
-          sh """
-                    echo 'Mocha framework starting ..... '
-                    export machine_dns="${params.MACHINE_DNS}"
-                    cd ./integration-tests/nodejs-tests/mocha
-                    cp -r /nodeModules/node_modules .
-                    npm install
-                    npm install slnodejs
-                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
-                    cd ../..
-                    """
-        }
-      }
-    }
     stage('Cypress framework starting'){
       steps{
         script{
@@ -282,7 +265,22 @@ pipeline {
 
 
 
-
+    stage('Mocha framework'){
+      steps{
+        script{
+          sh """
+                    echo 'Mocha framework starting ..... '
+                    export machine_dns="${params.MACHINE_DNS}"
+                    cd ./integration-tests/nodejs-tests/mocha
+                    cp -r /nodeModules/node_modules .
+                    npm install
+                    npm install slnodejs
+                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
+                    cd ../..
+                    """
+        }
+      }
+    }
 
 
 
