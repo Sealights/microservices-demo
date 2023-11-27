@@ -58,30 +58,30 @@ pipeline {
             mapurl: MapUrl
           )
 
-          def testStages_list =
-            ["Cucumber-framework-java",
-             "Jest-tests",
-             "Junit-support-testNG",
-             "Cypress-Test-Stage",
-             "Junit-without-testNG",
-             "Mocha-tests",
-             "MS-Tests",
-             "NUnit-Tests",
-             "Postman-tests",
-             "Pytest-tests",
-             "Robot-Tests",
-             "Soapui-Tests",
-             "Junit-without-testNG-gradle"]
-
-            testStages_list.each { TEST_STAGE ->
-              schedule_full_run(
-              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
-              test_stage: "${TEST_STAGE}",
-              token: "${params.SL_TOKEN}",
-              machine: "dev-integration.dev.sealights.co"
-            )
-          }
+//          def testStages_list =
+//            ["Cucumber-framework-java",
+//             "Jest-tests",
+//             "Junit-support-testNG",
+//             "Cypress-Test-Stage",
+//             "Junit-without-testNG",
+//             "Mocha-tests",
+//             "MS-Tests",
+//             "NUnit-Tests",
+//             "Postman-tests",
+//             "Pytest-tests",
+//             "Robot-Tests",
+//             "Soapui-Tests",
+//             "Junit-without-testNG-gradle"]
+//
+//            testStages_list.each { TEST_STAGE ->
+//              schedule_full_run(
+//              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
+//              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+//              test_stage: "${TEST_STAGE}",
+//              token: "${params.SL_TOKEN}",
+//              machine: "dev-integration.dev.sealights.co"
+//            )
+//          }
         }
       }
     }
