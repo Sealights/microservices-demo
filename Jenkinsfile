@@ -57,7 +57,6 @@ pipeline {
             branch: params.BRANCH,
             mapurl: MapUrl
           )
-
         }
       }
     }
@@ -89,9 +88,8 @@ pipeline {
             branch: params.BRANCH,
             test_type: params.TEST_TYPE
           )
-        }
-      }
-      def testStages_list =
+
+          def testStages_list =
             ["Cucumber-framework-java",
              "Jest-tests",
              "Junit-support-testNG",
@@ -115,7 +113,8 @@ pipeline {
               machine: "dev-integration.dev.sealights.co"
             )
           }
-
+        }
+      }
     }
 
     stage('Run Api-Tests Before Changes') {
