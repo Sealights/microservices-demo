@@ -471,7 +471,7 @@ def convert_to_map(mapAsString) {
 
 def schedule_full_run(Map params) {
   try {
-    def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -o /dev/null -w \"%{http_code}\" https://${params.machine}/sl-api/v1/tia/apps/${params.app_name}/branches/${params.branch_name}/testStages/${params.test_stage}/full-run -H \"Authorization: Bearer ${params.token}\" -H \"Content-Type: application/json\" -d \'{\"enable\": true}\'")).trim()
+    def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -w \"%{http_code}\" https://${params.machine}/sl-api/v1/tia/apps/${params.app_name}/branches/${params.branch_name}/testStages/${params.test_stage}/full-run -H \"Authorization: Bearer ${params.token}\" -H \"Content-Type: application/json\" -d \'{\"enable\": true}\'")).trim()
     if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
       return false
     }
