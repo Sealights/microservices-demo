@@ -90,7 +90,7 @@ pipeline {
           )
 
           def testStages_list =
-            ["Cucumber-framework-java",
+            ["Cucmber-framework-java",
              "Jest-tests",
              "Junit-support-testNG",
              "Cypress-Test-Stage",
