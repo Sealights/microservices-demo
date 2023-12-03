@@ -249,6 +249,7 @@ public class StepDefinitions {
 
         String log = "failed";
         System.out.println(scenario.getName() + ": " + log);
+        System.out.println(lab_id);
         // Perform actions specific to a failed scenario
         db.insert_row(conn, "cucumber", lab_id, scenario.getName(), log);
     }
@@ -261,7 +262,9 @@ public class StepDefinitions {
 
         String log = "passed";
         System.out.println(scenario.getName() + ": " + log);
+        System.out.println(lab_id);
         // Perform actions specific to a passed scenario
         db.insert_row(conn, "cucumber", lab_id, scenario.getName(), log);
+
     }
 }

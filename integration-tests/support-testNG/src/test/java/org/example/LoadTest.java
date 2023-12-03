@@ -143,6 +143,7 @@ public class LoadTest {
             super.succeeded(description);
             String log = "passed";
             System.out.println(description.getMethodName() + ": " + log);
+            System.out.println(lab_id);
             db.insert_row(conn, "supporttestng", lab_id, description.getMethodName(), log);
         }
 
@@ -155,6 +156,7 @@ public class LoadTest {
             super.failed(e, description);
             String log = "failed";
             System.out.println(description.getMethodName() + ": " + log);
+            System.out.println(lab_id);
             db.insert_row(conn, "supporttestng", lab_id, description.getMethodName(), log);
         }
     };
