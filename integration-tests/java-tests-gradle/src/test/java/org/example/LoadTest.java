@@ -52,6 +52,7 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(20000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
@@ -67,6 +68,7 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable + "/setCurrency?currency_code=" + currency);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(20000);
         assertEquals(405, response.getStatusLine().getStatusCode());
     }
 
@@ -84,6 +86,7 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable + "/product/" + product);
         HttpResponse response = httpClient.execute(request);
+        Thread.sleep(20000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
