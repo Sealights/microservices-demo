@@ -1,4 +1,5 @@
 package com.example;
+import io.cucumber.java.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -9,30 +10,72 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import java.lang.Thread;
+import org.junit.BeforeClass;
+import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class StepDefinitions {
+    private static Connection conn;
+    private static DbFunctions db = new DbFunctions();
 
     private static final int HTTP_TIMEOUT_MS = 10_000; // Increased the timeout to 10 seconds
     private static final int MAX_TOTAL_CONNECTIONS = 100;
     private static final int MAX_CONNECTIONS_PER_ROUTE = 50;
-   // private static final int HTTP_TIMEOUT_MS = 10_000;
-    CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(
-            RequestConfig.custom()
-                    .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
-                    .setSocketTimeout(HTTP_TIMEOUT_MS)
-                    .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
-                    .build()
+    // private static final int HTTP_TIMEOUT_MS = 10_000;
+    static CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(
+        RequestConfig.custom()
+            .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
+            .setSocketTimeout(HTTP_TIMEOUT_MS)
+            .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
+            .build()
     ).build();
-    private static final String BASE_URL_DEFAULT = "http://10.2.11.19:8081";
+    @BeforeStep
+    public static void setup() {
+        httpClient = HttpClients.createDefault();
+        conn = db.connect_to_db("btq", "postgres", "sealights");
+        db.createTable(conn, "cucumber");
+    }
+
+    @After
+    public static void cleanup(Scenario scenario) throws SQLException {
+        if (conn != null) {
+            conn.close();
+        }
+        try {
+            httpClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Before
+    public void setUp() {
+        httpClient = HttpClients.createDefault();
+    }
+
+    @After
+    public void afterScenario(Scenario scenario) throws SQLException {
+        tearDown(scenario);
+        cleanup(scenario);
+    }
+
+    private void tearDown(Scenario scenario) {
+        if (scenario != null && scenario.isFailed()) {
+            handleFailedScenario(scenario);
+        } else {
+            handlePassedScenario(scenario);
+        }
+    }
+
+    private static final String BASE_URL_DEFAULT = "http://34.245.65.231:8081";
     private static final String BASE_URL = Optional.ofNullable(System.getenv("machine_dns")).orElse(BASE_URL_DEFAULT);
 
     private String[] products = {
-            "0PUK6V6EV0", "1YMWWN1N4O", "2ZYFJ3GM2N",
-            "66VCHSJNUP", "6E92ZMYYFZ", "9SIQT8TOJO",
-            "L9ECAV7KIM", "LS4PSXUNUM", "OLJCESPC7Z"
+        "0PUK6V6EV0", "1YMWWN1N4O", "2ZYFJ3GM2N",
+        "66VCHSJNUP", "6E92ZMYYFZ", "9SIQT8TOJO",
+        "L9ECAV7KIM", "LS4PSXUNUM", "OLJCESPC7Z"
     };
     @Given("There are {int} users")
     public void thereAreUsers(int numUsers) throws Exception {
@@ -196,5 +239,29 @@ public class StepDefinitions {
     @Then("The checkout should be successful")
     public void theCheckoutShouldBeSuccessful() {
         // Assuming if the previous step passes, checkout was successful.
+    }
+
+    private void handleFailedScenario(Scenario scenario) {
+        String lab_id = System.getenv("lab_id");
+        if (lab_id == null) {
+            lab_id = "integ_ahmadbranch_3a1b_ahmadBTQ"; // Set a default URL when machine_dns is not set
+        }
+
+        String log = "failed";
+        System.out.println(scenario.getName() + ": " + log);
+        // Perform actions specific to a failed scenario
+        db.insert_row(conn, "cucumber", lab_id, scenario.getName(), log);
+    }
+
+    private void handlePassedScenario(Scenario scenario) {
+        String lab_id = System.getenv("lab_id");
+        if (lab_id == null) {
+            lab_id = "integ_ahmadbranch_3a1b_ahmadBTQ"; // Set a default URL when machine_dns is not set
+        }
+
+        String log = "passed";
+        System.out.println(scenario.getName() + ": " + log);
+        // Perform actions specific to a passed scenario
+        db.insert_row(conn, "cucumber", lab_id, scenario.getName(), log);
     }
 }
