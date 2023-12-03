@@ -3,6 +3,8 @@ const axios = require('axios');
 const { expect } = chai;
 const Sequelize = require("sequelize")
 
+const BASE_URL = process.env.machine_dns || 'http://34.245.65.231:8081';
+const Lab_id = process.env.lab_id || 'integ_ahmadbranch_3a1b_ahmadBTQ';
 
 const client = new Sequelize.Sequelize({
     host: 'btq-automation.colnnovkdyzx.us-west-2.rds.amazonaws.com',
@@ -18,7 +20,7 @@ const client = new Sequelize.Sequelize({
         }
     },
 });
-//npm i sequelize 
+//npm i sequelize
 
 const run = async (lab_id,test_name,result) => {
   try {
@@ -43,11 +45,9 @@ const run = async (lab_id,test_name,result) => {
          } catch (err) {
            console.log("ERROR", err)
         }
-        
+
 }
 
-const BASE_URL = process.env.machine_dns || 'http://34.245.65.231:8081';
-const Lab_id = process.env.lab_id || 'integ_ahmadbranch_3a1b_ahmadBTQ';
 
 describe('Api Tests', function () {
   let session;

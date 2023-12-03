@@ -135,7 +135,7 @@ public class LoadTest {
     @Rule
     public TestWatcher testWatcher = new TestWatcher() {
         @Override
-        protected void succeeded(Description description) {
+        public void succeeded(Description description) {
             String lab_id = System.getenv("lab_id");
             if (lab_id == null) {
                 lab_id = "integ_ahmadbranch_3a1b_ahmadBTQ"; // Set a default URL when machine_dns is not set
@@ -147,7 +147,7 @@ public class LoadTest {
         }
 
         @Override
-        protected void failed(Throwable e, Description description) {
+        public void failed(Throwable e, Description description) {
             String lab_id = System.getenv("lab_id");
             if (lab_id == null) {
                 lab_id = "integ_ahmadbranch_3a1b_ahmadBTQ"; // Set a default URL when machine_dns is not set
