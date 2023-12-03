@@ -291,7 +291,7 @@ def getParamForService(service, mapurl) {
 
 def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
-  env.LAB_ID_SPIN = create_lab_id(
+  env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
     machine: "https://dev-integration.dev.sealights.co",
     app: "${params.app_name}",
@@ -305,7 +305,7 @@ def SpinUpBoutiqeEnvironment(Map params){
                                                       string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
                                                       ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
                                                       string(name:'GIT_BRANCH' , value:"${params.git_branch}"),
-                                                      string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID_SPIN}"),
+                                                      string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),
                                                       string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
                                                       string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
                                                       string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
@@ -327,7 +327,7 @@ def run_tests(Map params){
 
     jobs_list.each { job ->
       parallelLabs["${job}"] = {
-        build(job: "${job}", parameters: [string(name: 'BRANCH', value: "${params.branch}"), string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"), string(name: 'SL_TOKEN', value: "${env.TOKEN}"), string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")])
+        build(job: "${job}", parameters: [string(name: 'BRANCH', value: "${params.branch}"), string(name: 'SL_LABID', value: "${env.LAB_ID}"), string(name: 'SL_TOKEN', value: "${env.TOKEN}"), string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")])
       }
     }
     parallel parallelLabs
@@ -353,7 +353,7 @@ def run_tests(Map params){
       jobs_list.each { job ->
         build(job: "${job}", parameters: [
           string(name: 'BRANCH', value: "${params.branch}"),
-          string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"),
+          string(name: 'SL_LABID', value: "${env.LAB_ID}"),
           string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
           string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")
         ])
@@ -363,7 +363,7 @@ def run_tests(Map params){
       sleep time: 150, unit: 'SECONDS'
       build(job: "All-In-Image", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
-        string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"),
+        string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
         string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
       ])
@@ -434,21 +434,22 @@ def create_lab_id(Map params) {
     if (params.cdOnly){
       cdOnlyString = ', "cdOnly": true'
     }
+    def lab_id
     if (params.isPR){
-      env.LAB_ID = (sh(returnStdout: true, script:"""
+      lab_id = (sh(returnStdout: true, script:"""
             #!/bin/sh -e +x
             curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids/pull-request" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.branch}", "testEnv": "${params.test_env}", "targetBranch": "${params.target_branch}", "isHidden": true }' | jq -r '.data.labId'
            """)).trim()
     } else {
-      env.LAB_ID = (sh(returnStdout: true, script:"""
+      lab_id = (sh(returnStdout: true, script:"""
             #!/bin/sh -e +x
             curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.branch}", "testEnv": "${params.test_env}", "labAlias": "${params.lab_alias}", "isHidden": true ${cdOnlyString}}' | jq -r '.data.labId'
            """)).trim()
     }
-    echo "LAB ID: ${env.LAB_ID}"
-    return env.LAB_ID
+    echo "LAB ID: ${lab_id}"
+    return lab_id
   } catch (err) {
-    echo env.LAB_ID
+    echo "${lab_id}"
     error "Failed to create lab id"
   }
 }
