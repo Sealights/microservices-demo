@@ -86,7 +86,9 @@ pipeline {
       steps{
         script{
           sh """
+
                     #!/bin/bash
+                     export lab_id="${params.SL_LABID}"
                     export machine_dns="${params.MACHINE_DNS}"
                     cd ./integration-tests/java-tests-gradle
                     echo $SL_TOKEN>sltoken.txt
@@ -104,7 +106,7 @@ pipeline {
                         "sealightsJvmParams": {}
                     }' > slgradletests.json
 
-
+                    export lab_id="${params.SL_LABID}"
                     echo "Adding Sealights to Tests Project gradle file..."
                     java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
                     gradle test
@@ -136,7 +138,9 @@ pipeline {
       steps{
         script{
           sh """
+
                     #!/bin/bash
+                    export lab_id="${params.SL_LABID}"
                     export machine_dns="${params.MACHINE_DNS}"
                     echo 'Cucumber framework starting ..... '
                     cd ./integration-tests/cucumber-framework/
@@ -172,7 +176,9 @@ pipeline {
       steps{
         script{
           sh """
+
                     #!/bin/bash
+                    export lab_id="${params.SL_LABID}"
                     echo 'Junit support testNG framework starting ..... '
                     pwd
                     ls
@@ -207,7 +213,9 @@ pipeline {
       steps{
         script{
           sh """
+
                     #!/bin/bash
+                    export lab_id="${params.SL_LABID}"
                     echo 'Junit without testNG framework starting ..... '
                     pwd
                     ls
