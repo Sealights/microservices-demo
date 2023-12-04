@@ -293,7 +293,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-integ-tia-dashboard-cross-branch-gw.dev.sealights.co",
+    machine: "https://dev-integration.dev.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
