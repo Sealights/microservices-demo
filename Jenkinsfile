@@ -193,6 +193,18 @@ pipeline {
         }
       }
     }
+    stage('run TIA tests') {
+      steps {
+        script {
+          run_TIA_testresult(
+            branch : params.BRANCH,
+            lab_id : env.LAB_ID,
+            app_name : params.APP_NAME
+          )
+        }
+      }
+    }
+
 
 
     stage('Run API-Tests After Changes') {
@@ -394,6 +406,18 @@ def run_api_tests_before_changes(Map params){
     ])
   }
 }
+
+def run_TIA_testresult(Map params){
+  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    build(job: "TIA-Test-result", parameters: [
+      string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
+      string(name: 'LAB_ID', value: "${params.lab_id}"),
+      string(name: 'APP_NAME', value: "${params.app_name}")
+    ])
+  }
+}
+
 
 def run_api_tests_after_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
