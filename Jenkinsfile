@@ -81,6 +81,38 @@ pipeline {
       }
     }
 
+    stage('Full Run') {
+      steps {
+        script {
+          def testStages_list =
+            ["Cucmber-framework-java",
+             "Jest-tests",
+             "Junit-support-testNG",
+             "Cypress-Test-Stage",
+             "Junit-without-testNG",
+             "Mocha-tests",
+             "MS-Tests",
+             "NUnit-Tests",
+             "Postman-tests",
+             "Pytest-tests",
+             "Robot-Tests",
+             "Soapui-Tests",
+             "Junit-without-testNG-gradle"]
+
+          testStages_list.each { TEST_STAGE ->
+            schedule_full_run(
+              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
+              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+              test_stage: "${TEST_STAGE}",
+              token: "${params.SL_TOKEN}",
+              machine: "dev-integration.dev.sealights.co"
+            )
+          }
+
+        }
+      }
+    }
+
     stage('Run Tests') {
       steps {
         script {
@@ -89,30 +121,6 @@ pipeline {
             test_type: params.TEST_TYPE
           )
 
-//          def testStages_list =
-//            ["Cucmber-framework-java",
-//             "Jest-tests",
-//             "Junit-support-testNG",
-//             "Cypress-Test-Stage",
-//             "Junit-without-testNG",
-//             "Mocha-tests",
-//             "MS-Tests",
-//             "NUnit-Tests",
-//             "Postman-tests",
-//             "Pytest-tests",
-//             "Robot-Tests",
-//             "Soapui-Tests",
-//             "Junit-without-testNG-gradle"]
-//
-//            testStages_list.each { TEST_STAGE ->
-//              schedule_full_run(
-//              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-//              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
-//              test_stage: "${TEST_STAGE}",
-//              token: "${params.SL_TOKEN}",
-//              machine: "dev-integration.dev.sealights.co"
-//            )
-//          }
         }
       }
     }
@@ -164,6 +172,7 @@ pipeline {
 
 
 
+
     stage('Changed Spin-Up BTQ') {
       steps {
         script {
@@ -193,10 +202,10 @@ pipeline {
         }
       }
     }
-    stage('run TIA tests') {
+    stage('Run TIA tests when TIA ON') {
       steps {
         script {
-          run_TIA_testresult(
+          run_TIA_ON_testresult(
             branch : params.BRANCH,
             lab_id : env.LAB_ID,
             app_name : params.APP_NAME
@@ -204,7 +213,6 @@ pipeline {
         }
       }
     }
-
 
 
     stage('Run API-Tests After Changes') {
@@ -407,7 +415,7 @@ def run_api_tests_before_changes(Map params){
   }
 }
 
-def run_TIA_testresult(Map params){
+def run_TIA_ON_testresult(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "TIA-Test-result", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
@@ -417,6 +425,17 @@ def run_TIA_testresult(Map params){
     ])
   }
 }
+def run_TIA_OFF_testresult(Map params){
+  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    build(job: "TIA-Test-result", parameters: [
+      string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
+      string(name: 'LAB_ID', value: "${params.lab_id}"),
+      string(name: 'APP_NAME', value: "${params.app_name}")
+    ])
+  }
+}
+
 
 
 def run_api_tests_after_changes(Map params){
