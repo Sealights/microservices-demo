@@ -125,6 +125,20 @@ pipeline {
       }
     }
 
+    stage('Run API Tests 1-FIRST Integration LOOP') {
+      steps {
+        script {
+          def count = "1";
+          TIA_Page_Tests(
+            run_number : count,
+            branch: params.BRANCH,
+            app_name : params.APP_NAME
+          )
+
+        }
+      }
+    }
+
     stage('Run Api-Tests Before Changes') {
       steps {
         script {
@@ -202,9 +216,24 @@ pipeline {
         }
       }
     }
+
+    stage('Run API Tests 2-SECOND Integration LOOP') {
+      steps {
+        script {
+          def count = "2";
+          TIA_Page_Tests(
+            run_number : count,
+            branch: params.BRANCH,
+            app_name : params.APP_NAME
+          )
+        }
+      }
+    }
+
     stage('Run TIA tests when TIA ON') {
       steps {
         script {
+
           run_TIA_ON_testresult(
             branch : params.BRANCH,
             lab_id : env.LAB_ID,
@@ -425,16 +454,7 @@ def run_TIA_ON_testresult(Map params){
     ])
   }
 }
-def run_TIA_OFF_testresult(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "TIA-Test-result", parameters: [
-      string(name: 'BRANCH', value: "BTQ-TIA"),
-      string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
-      string(name: 'LAB_ID', value: "${params.lab_id}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
-}
+
 
 
 
@@ -442,6 +462,17 @@ def run_api_tests_after_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "ApiTests", parameters: [
       string(name: 'BRANCH', value: "${params.branch}"),
+      string(name: 'APP_NAME', value: "${params.app_name}")
+    ])
+  }
+}
+
+def TIA_Page_Tests(Map params){
+  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    build(job: "TIA-Page-Tests", parameters: [
+      string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'RUN_NUMBER', value: "${params.run_number}"),
+      string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
     ])
   }

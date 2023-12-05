@@ -34,6 +34,7 @@ pipeline {
     stage('download NodeJs agent and scanning Mocha tests') {
       steps{
         script{
+          tools.set_npm_registries()
           sh """
             export APP_NAME="${params.APP_NAME}"
             export BRANCH_NAME="${params.BRANCH}"
