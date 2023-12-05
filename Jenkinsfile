@@ -9,13 +9,13 @@ pipeline {
 
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'APP_NAME', defaultValue: 'public-BTQ', description: 'name of the app (integration build)')
+    string(name: 'BRANCH', defaultValue: 'public', description: 'Branch to clone (ahmad-branch)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'new-changed', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'BUILD_BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BRANCH', defaultValue: 'public', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'public', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
-    string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
+    string(name: 'BUILD_NAME', defaultValue: 'public-1', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
     string(name: 'DOTNET_AGENT_URL', defaultValue: 'https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz', description: 'use different dotnet agent')
     string(name: 'NODE_AGENT_URL', defaultValue: 'slnodejs', description: 'use different node agent')
