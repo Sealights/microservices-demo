@@ -125,12 +125,12 @@ pipeline {
       }
     }
 
-    stage('Run API Tests 1-FIRST Integration LOOP') {
+    stage('Run TIA Tests 1-FIRST With SeaLights') {
       steps {
         script {
-          def count = "1";
+          def RUN_DATA = "full run";
           TIA_Page_Tests(
-            run_number : count,
+            run_number : RUN_DATA,
             branch: params.BRANCH,
             app_name : params.APP_NAME
           )
@@ -139,7 +139,7 @@ pipeline {
       }
     }
 
-    stage('Run Api-Tests Before Changes') {
+    stage('Run Coverage Tests Before Changes') {
       steps {
         script {
           run_api_tests_before_changes(
@@ -149,7 +149,19 @@ pipeline {
         }
       }
     }
-
+    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
+      steps {
+        script {
+          def RUN_DATA = "full run";
+          run_TIA_ON_testresult(
+            run_data : RUN_DATA,
+            branch : params.BRANCH,
+            lab_id : env.LAB_ID,
+            app_name : params.APP_NAME
+          )
+        }
+      }
+    }
 
     stage('Changed - Clone Repository') {
       steps {
@@ -217,12 +229,12 @@ pipeline {
       }
     }
 
-    stage('Run API Tests 2-SECOND Integration LOOP') {
+    stage('Run TIA Tests 2-SECOND With SeaLights') {
       steps {
         script {
-          def count = "2";
+          def RUN_DATA = "TIA RUN";
           TIA_Page_Tests(
-            run_number : count,
+            run_data : RUN_DATA,
             branch: params.BRANCH,
             app_name : params.APP_NAME
           )
@@ -230,11 +242,12 @@ pipeline {
       }
     }
 
-    stage('Run TIA tests when TIA ON') {
+    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
       steps {
         script {
-
+          def RUN_DATA = "TIA RUN";
           run_TIA_ON_testresult(
+            run_data : RUN_DATA,
             branch : params.BRANCH,
             lab_id : env.LAB_ID,
             app_name : params.APP_NAME
@@ -448,6 +461,7 @@ def run_TIA_ON_testresult(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "TIA-Test-result", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
       string(name: 'LAB_ID', value: "${params.lab_id}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
@@ -471,7 +485,7 @@ def TIA_Page_Tests(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "TIA-Page-Tests", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
-      string(name: 'RUN_NUMBER', value: "${params.run_number}"),
+      string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
     ])
