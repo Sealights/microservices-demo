@@ -142,8 +142,10 @@ pipeline {
     stage('Run Coverage Tests Before Changes') {
       steps {
         script {
+          def RUN_DATA = "without changes";
           run_api_tests_before_changes(
-            branch: params.BRANCH,
+            run_data : RUN_DATA,
+            integration_branch : params.BRANCH,
             app_name: params.APP_NAME
           )
         }
@@ -260,8 +262,10 @@ pipeline {
     stage('Run API-Tests After Changes') {
       steps {
         script {
+          def RUN_DATA = "with changes";
           run_api_tests_after_changes(
-            branch: params.BRANCH,
+            run_data : RUN_DATA,
+            integration_branch : params.BRANCH,
             app_name: params.APP_NAME
           )
         }
@@ -451,7 +455,9 @@ def failure_btq(Map params){
 def run_api_tests_before_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "StableApiTests", parameters: [
-      string(name: 'BRANCH', value: "${params.branch}"),
+      string(name: 'RUN_DATA', value: "${params.run_data}"),
+      string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
     ])
   }
@@ -475,7 +481,9 @@ def run_TIA_ON_testresult(Map params){
 def run_api_tests_after_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "ApiTests", parameters: [
-      string(name: 'BRANCH', value: "${params.branch}"),
+      string(name: 'RUN_DATA', value: "${params.run_data}"),
+      string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
     ])
   }

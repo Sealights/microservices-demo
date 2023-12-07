@@ -9,8 +9,12 @@ pipeline {
   }
 
   parameters {
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone')
+    string(name: 'BRANCH', defaultValue: 'BTQ-TIA', description: 'Branch to clone')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'app name')
+    string(name: 'RUN_DATA', defaultValue: 'without changes', description: 'RUN_NUMBER loop number')
+    string(name: 'INTEGRATION_BRANCH', defaultValue: 'ahmad-branch', description: 'RUN_NUMBER loop number')
+
+
 
   }
 
@@ -37,7 +41,9 @@ pipeline {
           tools.set_npm_registries()
           sh """
             export APP_NAME="${params.APP_NAME}"
-            export BRANCH_NAME="${params.BRANCH}"
+            export BRANCH_NAME="${params.INTEGRATION_BRANCH}"
+            export RUN_DATA="${params.RUN_DATA}"
+
             export EXTERNAL_CUSTOMER_ID="integration"
             export EXTERNAL_USER_EMAIL="integration@sealights.io"
             export EXTERNAL_USER_PASSWORD="SeaLights2019!"
@@ -46,20 +52,9 @@ pipeline {
 
             ./node_modules/.bin/tsc
 
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Cucmber_framework_java.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_cypress.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_integration_build.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_jest.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Junit_support_testNG.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Junit_without_testNG_gradle.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Junit_without_testNG.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Mocha.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_MS_Tests.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_NUnit_Tests.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_postman.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Pytest.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Robot_tests.js --no-timeouts
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_Soapui.js --no-timeouts
+            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/Modified-BTQ/btq_test_coverage.js --no-timeouts
+
+
           """
         }
       }
