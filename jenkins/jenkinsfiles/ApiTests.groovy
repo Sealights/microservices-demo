@@ -42,8 +42,11 @@ pipeline {
         script{
           tools.set_npm_registries()
           sh """
-          echo {"\\\\"server"\\\\":  "\\\\"${params.LAB_UNDER_TEST}"\\\\", "\\\\"env"\\\\":  "\\\\"${params.SEALIGHTS_ENV_NAME}"\\\\"} >server.json
 
+          ls
+          cat server.json
+            echo {"\\"server"\\":  "\\"${params.LAB_UNDER_TEST}"\\", "\\"env"\\":  "\\"${params.SEALIGHTS_ENV_NAME}"\\"} >server.json
+            cat server.json
             export APP_NAME="${params.APP_NAME}"
             export BRANCH_NAME="${params.INTEGRATION_BRANCH}"
             export RUN_DATA="${params.RUN_DATA}"
