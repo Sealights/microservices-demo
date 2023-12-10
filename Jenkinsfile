@@ -130,7 +130,7 @@ pipeline {
         script {
           def RUN_DATA = "full run";
           TIA_Page_Tests(
-            run_number : RUN_DATA,
+            run_data : RUN_DATA,
             branch: params.BRANCH,
             app_name : params.APP_NAME
           )
@@ -259,7 +259,7 @@ pipeline {
     }
 
 
-    stage('Run API-Tests After Changes') {
+    stage('Run Coverage Tests After Changes') {
       steps {
         script {
           def RUN_DATA = "with changes";
