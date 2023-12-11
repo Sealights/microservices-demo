@@ -244,6 +244,19 @@ pipeline {
       }
     }
 
+    stage('Run Coverage Tests After Changes') {
+      steps {
+        script {
+          def RUN_DATA = "with changes";
+          run_api_tests_after_changes(
+            run_data : RUN_DATA,
+            integration_branch : params.BRANCH,
+            app_name: params.APP_NAME
+          )
+        }
+      }
+    }
+
     stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
       steps {
         script {
@@ -253,20 +266,6 @@ pipeline {
             branch : params.BRANCH,
             lab_id : env.LAB_ID,
             app_name : params.APP_NAME
-          )
-        }
-      }
-    }
-
-
-    stage('Run Coverage Tests After Changes') {
-      steps {
-        script {
-          def RUN_DATA = "with changes";
-          run_api_tests_after_changes(
-            run_data : RUN_DATA,
-            integration_branch : params.BRANCH,
-            app_name: params.APP_NAME
           )
         }
       }
