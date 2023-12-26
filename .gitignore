@@ -4,6 +4,7 @@ pkg/
 *.pyc
 *.swp
 lib/
+
 *.tfstate
 *.tfstate*
 .vscode/
