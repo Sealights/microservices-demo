@@ -3,8 +3,7 @@ pkg/
 .idea/
 *.pyc
 *.swp
-lib/
-
+.lib/
 *.tfstate
 *.tfstate*
 .vscode/
