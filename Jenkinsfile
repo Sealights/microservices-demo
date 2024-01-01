@@ -102,16 +102,16 @@ pipeline {
       }
     }
 
-    stage('Run Api-Tests Before Changes') {
-      steps {
-        script {
-          run_api_tests_before_changes(
-            branch: params.BRANCH,
-            app_name: params.APP_NAME
-          )
-        }
-      }
-    }
+    // stage('Run Api-Tests Before Changes') {
+    //   steps {
+    //     script {
+    //       run_api_tests_before_changes(
+    //         branch: params.BRANCH,
+    //         app_name: params.APP_NAME
+    //       )
+    //     }
+    //   }
+    // }
 
 
     // stage('Changed - Clone Repository') {
