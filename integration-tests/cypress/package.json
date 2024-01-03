@@ -6,7 +6,7 @@
     "cypress:open": "cypress open"
   },
   "devDependencies": {
-    "cypress": "^9.7.0"
+    "cypress": "^13.6.1"
   },
   "main": "index.js",
   "keywords": [],
