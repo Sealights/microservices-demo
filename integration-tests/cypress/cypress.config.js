@@ -5,7 +5,7 @@ module.exports = defineConfig({
   e2e: {
     experimentalInteractiveRunEvents: true,
     testIsolation: false,
-    integrationFolder: 'cypress/integration',
+    specPattern: 'cypress/integration',
     async setupNodeEvents(on, config) {
       await registerSealightsTasks(on, config);
     },
