@@ -5,8 +5,8 @@ module.exports = defineConfig({
   e2e: {
     experimentalInteractiveRunEvents: true,
     testIsolation: false,
-    setupNodeEvents(on, config) {
-      registerSealightsTasks(on, config);
+    async setupNodeEvents(on, config) {
+      await registerSealightsTasks(on, config);
     },
   },
 });
