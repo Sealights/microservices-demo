@@ -104,7 +104,7 @@ pipeline {
               branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
               test_stage: "${TEST_STAGE}",
               token: "${params.SL_TOKEN}",
-              machine: "dev-integration.dev.sealights.co"
+              machine: "dev-integ-btq-testing-gw.dev.sealights.co"
             )
           }
 
@@ -357,7 +357,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-integration.dev.sealights.co",
+    machine: "https://dev-integ-btq-testing-gw.dev.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
