@@ -65,7 +65,7 @@ pipeline {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
-          def IDENTIFIER = "integ-btq-testing-gw"
+          def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
           SpinUpBoutiqeEnvironment(
             IDENTIFIER : IDENTIFIER,
             branch: params.BRANCH,
