@@ -116,7 +116,7 @@ pipeline {
                         "createBuildSessionId": false,
                         "testStage": "Junit-without-testNG-gradle",
                         "runFunctionalTests": true,
-                        "labId": "${SL_LABID}",
+                        "labId": "${params.SL_LABID}",
                         "proxy": null,
                         "logEnabled": false,
                         "logDestination": "console",
