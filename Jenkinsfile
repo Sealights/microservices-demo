@@ -22,7 +22,7 @@ pipeline {
     string(name: 'GO_SLCI_AGENT_URL', defaultValue: 'https://agents.sealights.co/slcli/latest/slcli-linux-amd64.tar.gz', description: 'use different slci go agent')
     string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
-    string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing')
+    string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integ-btq-testing-gw.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
   }
 
@@ -296,21 +296,21 @@ pipeline {
         )
       }
     }
-    failure {
-      script {
-        set_assume_role([
-          env       : "dev",
-          account_id: "159616352881",
-          role_name : "CD-TF-Role"
-        ])
-        failure_btq(
-          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
-        )
-        failure_btq(
-          IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
-        )
-      }
-    }
+//    failure {
+//      script {
+//        set_assume_role([
+//          env       : "dev",
+//          account_id: "159616352881",
+//          role_name : "CD-TF-Role"
+//        ])
+//        failure_btq(
+//          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
+//        )
+//        failure_btq(
+//          IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+//        )
+//      }
+//    }
   }
 }
 
