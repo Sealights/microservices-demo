@@ -50,18 +50,12 @@ pipeline {
             export APP_NAME="${params.APP_NAME}"
             export BRANCH_NAME="${params.INTEGRATION_BRANCH}"
             export RUN_DATA="${params.RUN_DATA}"
-
             export EXTERNAL_CUSTOMER_ID="integration"
             export EXTERNAL_USER_EMAIL="integration@sealights.io"
             export EXTERNAL_USER_PASSWORD="SeaLights2019!"
-
             npm install
-
             ./node_modules/.bin/tsc
-
             ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/modified-BTQ/btq_test_coverage.js --no-timeouts
-
-
           """
         }
       }
