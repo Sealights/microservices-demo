@@ -22,6 +22,8 @@ pipeline {
     string(name: 'GO_SLCI_AGENT_URL', defaultValue: 'https://agents.sealights.co/slcli/latest/slcli-linux-amd64.tar.gz', description: 'use different slci go agent')
     string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
+    string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing')
+    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integ-btq-testing-gw.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
   }
 
   stages {
@@ -129,6 +131,8 @@ pipeline {
         script {
           def RUN_DATA = "full run";
           TIA_Page_Tests(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
             branch: params.BRANCH,
             app_name : params.APP_NAME
@@ -143,6 +147,8 @@ pipeline {
         script {
           def RUN_DATA = "without changes";
           run_api_tests_before_changes(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
             integration_branch : params.BRANCH,
             app_name: params.APP_NAME
@@ -155,6 +161,8 @@ pipeline {
         script {
           def RUN_DATA = "full run";
           run_TIA_ON_testresult(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
             branch : params.BRANCH,
             lab_id : env.LAB_ID,
@@ -235,6 +243,8 @@ pipeline {
         script {
           def RUN_DATA = "TIA RUN";
           TIA_Page_Tests(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
             branch: params.BRANCH,
             app_name : params.APP_NAME
@@ -248,6 +258,8 @@ pipeline {
         script {
           def RUN_DATA = "with changes";
           run_api_tests_after_changes(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
             integration_branch : params.BRANCH,
             app_name: params.APP_NAME
@@ -261,6 +273,8 @@ pipeline {
         script {
           def RUN_DATA = "TIA RUN";
           run_TIA_ON_testresult(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
             branch : params.BRANCH,
             lab_id : env.LAB_ID,
@@ -454,6 +468,8 @@ def run_api_tests_before_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "StableApiTests", parameters: [
       string(name: 'RUN_DATA', value: "${params.run_data}"),
+      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
+      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
       string(name: 'BRANCH', value: "BTQ-TIA"),
       string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
@@ -465,6 +481,8 @@ def run_TIA_ON_testresult(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "TIA-Test-result", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
+      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
       string(name: 'LAB_ID', value: "${params.lab_id}"),
@@ -479,6 +497,8 @@ def run_TIA_ON_testresult(Map params){
 def run_api_tests_after_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "ApiTests", parameters: [
+      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
+      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'BRANCH', value: "BTQ-TIA"),
       string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
@@ -491,6 +511,8 @@ def TIA_Page_Tests(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "TIA-Page-Tests", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
+      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
+      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
       string(name: 'APP_NAME', value: "${params.app_name}")
