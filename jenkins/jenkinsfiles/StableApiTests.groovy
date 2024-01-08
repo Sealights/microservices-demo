@@ -60,8 +60,7 @@ pipeline {
             npm install
             ./node_modules/.bin/tsc
             ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/modified-BTQ/btq_test_coverage.js --no-timeouts
-
-                    """
+          """
         }
       }
     }
