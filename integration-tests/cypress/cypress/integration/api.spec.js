@@ -29,7 +29,7 @@ describe('Api Tests', () => {
   });
 
   it('should return 404 for a non-existent route', () => {
-    cy.request('GET', Cypress.env('machine_dns') + '/nonexistent-route', null, { failOnStatusCode: false }).then(response => {
+    cy.request({method:'GET', url: Cypress.env('machine_dns') + '/nonexistent-route', failOnStatusCode: false }).then(response => {
       cy.wrap(response.status).should('equal', 404);
     });
   });
