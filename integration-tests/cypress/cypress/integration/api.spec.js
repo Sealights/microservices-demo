@@ -3,6 +3,7 @@ describe('Api Tests', () => {
     cy.request('GET', Cypress.env('machine_dns')).then(response => {
       cy.wrap(response.status).should('equal', 200);
     });
+    cy.wait(15000);
   });
 
   it('should be able to set different currencies', () => {
@@ -26,18 +27,21 @@ describe('Api Tests', () => {
         cy.wrap(response.status).should('equal', 200);
       });
     }
+    cy.wait(15000);
   });
 
   it('should return 404 for a non-existent route', () => {
     cy.request({method:'GET', url: Cypress.env('machine_dns') + '/nonexistent-route', failOnStatusCode: false }).then(response => {
       cy.wrap(response.status).should('equal', 404);
     });
+    cy.wait(15000);
   });
 
  it('should return 200 for invalid request data', () => {
    cy.request({method: 'POST', url: Cypress.env('machine_dns') + '/setCurrency', body: { invalid_key: 'invalid_value' }, failOnStatusCode: false }).then(response => {
      cy.wrap(response.status).should('equal', 200);
    });
+   cy.wait(15000);
  });
 
 
