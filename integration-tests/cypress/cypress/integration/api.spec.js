@@ -1,6 +1,6 @@
 describe('Api Tests', () => {
   beforeEach(() => {
-    cy.request(Cypress.env('machine_dns'))
+    cy.visit(Cypress.env('machine_dns'))
   })
   it('should return 200 for index page', () => {
     cy.request('GET', '/').then(response => {
