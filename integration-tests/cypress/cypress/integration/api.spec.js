@@ -1,10 +1,5 @@
 before(() => {
-  // makes custom commands available to all subsequent cy.origin('cypress.io)
-  // calls in this spec. put it in your support file to make them available to
-  // all specs
-  cy.origin('cypress.io', () => {
     Cypress.require('../support/commands')
-  })
 })
 
 describe('Api Tests', () => {
