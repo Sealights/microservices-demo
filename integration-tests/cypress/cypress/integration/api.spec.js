@@ -1,6 +1,6 @@
 describe('Api Tests', () => {
   it('should return 200 for index page', () => {
-    cy.request('GET', '/').then(response => {
+    cy.apiRequest('GET', '/').then(response => {
       cy.wrap(response.status).should('equal', 200);
     });
   });
@@ -8,7 +8,7 @@ describe('Api Tests', () => {
   it('should be able to set different currencies', () => {
     const currencies = ['EUR', 'USD', 'JPY', 'CAD'];
     for (const currency of currencies) {
-      cy.request('POST', '/setCurrency', { currency_code: currency }).then(response => {
+      cy.apiRequest('POST', '/setCurrency', { currency_code: currency }).then(response => {
         cy.wrap(response.status).should('equal', 200);
       });
     }
@@ -22,20 +22,20 @@ describe('Api Tests', () => {
     ];
 
     for (const product_id of products) {
-      cy.request('GET', `/product/${product_id}`).then(response => {
+      cy.apiRequest('GET', `/product/${product_id}`).then(response => {
         cy.wrap(response.status).should('equal', 200);
       });
     }
   });
 
   it('should return 404 for a non-existent route', () => {
-    cy.request('GET', '/nonexistent-route', null, { failOnStatusCode: false }).then(response => {
+    cy.apiRequest('GET', '/nonexistent-route', null, { failOnStatusCode: false }).then(response => {
       cy.wrap(response.status).should('equal', 404);
     });
   });
 
  it('should return 200 for invalid request data', () => {
-   cy.request('POST', '/setCurrency', { invalid_key: 'invalid_value' }, { failOnStatusCode: false }).then(response => {
+   cy.apiRequest('POST', '/setCurrency', { invalid_key: 'invalid_value' }, { failOnStatusCode: false }).then(response => {
      cy.wrap(response.status).should('equal', 200);
    });
  });
