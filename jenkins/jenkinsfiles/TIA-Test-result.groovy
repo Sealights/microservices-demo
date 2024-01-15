@@ -23,7 +23,7 @@ pipeline {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'app name')
     string(name: 'LAB_ID', defaultValue: '', description: 'lab_id')
     string(name: 'RUN_DATA', defaultValue: 'full run', description: 'RUN_NUMBER loop number')
-    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integ-btq-testing-gw.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing')
 
 

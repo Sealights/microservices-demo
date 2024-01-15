@@ -23,7 +23,7 @@ pipeline {
     string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing',description: 'your environment name')
-    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integ-btq-testing-gw.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
   }
 
   stages {
@@ -106,7 +106,7 @@ pipeline {
               branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
               test_stage: "${TEST_STAGE}",
               token: "${params.SL_TOKEN}",
-              machine: "dev-integ-btq-testing-gw.dev.sealights.co"
+              machine: "dev-integration.dev.sealights.co"
             )
           }
 
@@ -371,7 +371,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-integ-btq-testing-gw.dev.sealights.co",
+    machine: "https://dev-integration.dev.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",

@@ -1,5 +1,4 @@
 @Library('main-shared-library') _
-
 pipeline {
   agent {
     kubernetes {
@@ -16,27 +15,18 @@ pipeline {
       defaultContainer 'shell'
     }
   }
-
   parameters {
     string(name: 'BRANCH', defaultValue: 'BTQ-TIA', description: 'Branch to clone')
     string(name: 'INTEGRAION_BRANCH', defaultValue: 'ahmad-branch', description: 'integration branch Branche')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'app name')
     string(name: 'RUN_DATA', defaultValue: 'full run', description: 'RUN_NUMBER loop number')
-    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integ-btq-testing-gw.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing')
-
-
-
-
   }
-
   options {
     buildDiscarder logRotator(numToKeepStr: '30')
     timestamps()
   }
-
-
-
   stages{
     stage("Init test"){
       steps{
@@ -45,8 +35,6 @@ pipeline {
         }
       }
     }
-
-
     stage('download NodeJs agent and scanning Mocha tests supported') {
       steps{
         script{
@@ -66,7 +54,6 @@ pipeline {
         }
       }
     }
-
     stage('download NodeJs agent and scanning Mocha tests unsupported frameworks') {
       steps{
         script{
@@ -86,5 +73,4 @@ pipeline {
       }
     }
   }
-
 }

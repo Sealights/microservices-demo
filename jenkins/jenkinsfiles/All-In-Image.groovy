@@ -33,35 +33,33 @@ pipeline {
       steps{
         script{
           sh """
-
-                    #!/bin/bash
-                    export lab_id="${params.SL_LABID}"
-                    echo 'Junit without testNG framework starting ..... '
-                    pwd
-                    ls
-                    cd integration-tests/java-tests
-                    export SL_TOKEN="${params.SL_TOKEN}"
-                    echo $SL_TOKEN>sltoken.txt
-                    export machine_dns="${params.MACHINE_DNS}"
-                    # shellcheck disable=SC2016
-                    echo  '{
-                            "executionType": "testsonly",
-                            "tokenFile": "./sltoken.txt",
-                            "createBuildSessionId": false,
-                            "testStage": "Junit-without-testNG",
-                            "runFunctionalTests": true,
-                            "labId": "${params.SL_LABID}",
-                            "proxy": null,
-                            "logEnabled": false,
-                            "logDestination": "console",
-                            "logLevel": "warn",
-                            "sealightsJvmParams": {}
-                            }' > slmaventests.json
-                    echo "Adding Sealights to Tests Project POM file..."
-                    java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-
-                    mvn clean package
-                    """
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            echo 'Junit without testNG framework starting ..... '
+            pwd
+            ls
+            cd integration-tests/java-tests
+            export SL_TOKEN="${params.SL_TOKEN}"
+            echo $SL_TOKEN>sltoken.txt
+            export machine_dns="${params.MACHINE_DNS}"
+            # shellcheck disable=SC2016
+            echo  '{
+                    "executionType": "testsonly",
+                    "tokenFile": "./sltoken.txt",
+                    "createBuildSessionId": false,
+                    "testStage": "Junit-without-testNG",
+                    "runFunctionalTests": true,
+                    "labId": "${params.SL_LABID}",
+                    "proxy": null,
+                    "logEnabled": false,
+                    "logDestination": "console",
+                    "logLevel": "warn",
+                    "sealightsJvmParams": {}
+                    }' > slmaventests.json
+            echo "Adding Sealights to Tests Project POM file..."
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            mvn clean package
+          """
         }
       }
     }
@@ -69,34 +67,33 @@ pipeline {
       steps{
         script{
           sh """
-
-                    #!/bin/bash
-                    export lab_id="${params.SL_LABID}"
-                    echo 'Junit support testNG framework starting ..... '
-                    pwd
-                    ls
-                    cd ./integration-tests/support-testNG
-                    export SL_TOKEN="${params.SL_TOKEN}"
-                    echo $SL_TOKEN>sltoken.txt
-                    export machine_dns="${params.MACHINE_DNS}"
-                    # shellcheck disable=SC2016
-                    echo  '{
-                            "executionType": "testsonly",
-                            "tokenFile": "./sltoken.txt",
-                            "createBuildSessionId": false,
-                            "testStage": "Junit-support-testNG",
-                            "runFunctionalTests": true,
-                            "labId": "${params.SL_LABID}",
-                            "proxy": null,
-                            "logEnabled": false,
-                            "logDestination": "console",
-                            "logLevel": "warn",
-                            "sealightsJvmParams": {}
-                            }' > slmaventests.json
-                    echo "Adding Sealights to Tests Project POM file..."
-                    java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-                    mvn clean package
-                    """
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            echo 'Junit support testNG framework starting ..... '
+            pwd
+            ls
+            cd ./integration-tests/support-testNG
+            export SL_TOKEN="${params.SL_TOKEN}"
+            echo $SL_TOKEN>sltoken.txt
+            export machine_dns="${params.MACHINE_DNS}"
+            # shellcheck disable=SC2016
+            echo  '{
+                    "executionType": "testsonly",
+                    "tokenFile": "./sltoken.txt",
+                    "createBuildSessionId": false,
+                    "testStage": "Junit-support-testNG",
+                    "runFunctionalTests": true,
+                    "labId": "${params.SL_LABID}",
+                    "proxy": null,
+                    "logEnabled": false,
+                    "logDestination": "console",
+                    "logLevel": "warn",
+                    "sealightsJvmParams": {}
+                    }' > slmaventests.json
+            echo "Adding Sealights to Tests Project POM file..."
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            mvn clean package
+          """
         }
       }
     }
@@ -135,34 +132,32 @@ pipeline {
       steps{
         script{
           sh """
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            export machine_dns="${params.MACHINE_DNS}"
+            echo 'Cucumber framework starting ..... '
+            cd ./integration-tests/cucumber-framework/
+            echo ${params.SL_TOKEN}>sltoken.txt
+            # shellcheck disable=SC2016
+            echo  '{
+                    "executionType": "testsonly",
+                    "tokenFile": "./sltoken.txt",
+                    "createBuildSessionId": false,
+                    "testStage": "Cucmber-framework-java ",
+                    "runFunctionalTests": true,
+                    "labId": "${params.SL_LABID}",
+                    "proxy": null,
+                    "logEnabled": false,
+                    "logDestination": "console",
+                    "logLevel": "warn",
+                    "sealightsJvmParams": {}
+                    }' > slmaventests.json
+            echo "Adding Sealights to Tests Project POM file..."
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
 
-                    #!/bin/bash
-                    export lab_id="${params.SL_LABID}"
-                    export machine_dns="${params.MACHINE_DNS}"
-                    echo 'Cucumber framework starting ..... '
-                    cd ./integration-tests/cucumber-framework/
-                    echo ${params.SL_TOKEN}>sltoken.txt
-                    # shellcheck disable=SC2016
-                    echo  '{
-                            "executionType": "testsonly",
-                            "tokenFile": "./sltoken.txt",
-                            "createBuildSessionId": false,
-                            "testStage": "Cucmber-framework-java ",
-                            "runFunctionalTests": true,
-                            "labId": "${params.SL_LABID}",
-                            "proxy": null,
-                            "logEnabled": false,
-                            "logDestination": "console",
-                            "logLevel": "warn",
-                            "sealightsJvmParams": {}
-                            }' > slmaventests.json
-                    echo "Adding Sealights to Tests Project POM file..."
-                    java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-
-                    unset MAVEN_CONFIG
-                    ./mvnw test
-                    """
-
+            unset MAVEN_CONFIG
+            ./mvnw test
+          """
         }
       }
     }
@@ -179,17 +174,17 @@ pipeline {
       steps{
         script{
           sh """
-                    echo 'Mocha framework starting ..... '
-                    export machine_dns="${params.MACHINE_DNS}"
-                    export Lab_id="${params.SL_LABID}"
+            echo 'Mocha framework starting ..... '
+            export machine_dns="${params.MACHINE_DNS}"
+            export Lab_id="${params.SL_LABID}"
 
-                    cd ./integration-tests/nodejs-tests/mocha
-                    cp -r /nodeModules/node_modules .
-                    npm install
-                    npm install slnodejs
-                    ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
-                    cd ../..
-                    """
+            cd ./integration-tests/nodejs-tests/mocha
+            cp -r /nodeModules/node_modules .
+            npm install
+            npm install slnodejs
+            ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
+            cd ../..
+          """
         }
       }
     }
@@ -198,10 +193,10 @@ pipeline {
       steps{
         script{
           sh """
-                echo 'MS-Tests framework starting ..... '
-                export machine_dns="${params.MACHINE_DNS}"
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
-                """
+            echo 'MS-Tests framework starting ..... '
+            export machine_dns="${params.MACHINE_DNS}"
+            dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
+          """
         }
       }
     }
