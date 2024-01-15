@@ -154,14 +154,12 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-
             unset MAVEN_CONFIG
             ./mvnw test
           """
         }
       }
     }
-
     stage('Cypress framework starting'){
       steps{
         script{
@@ -169,7 +167,6 @@ pipeline {
         }
       }
     }
-
     stage('Mocha framework'){
       steps{
         script{
@@ -177,7 +174,6 @@ pipeline {
             echo 'Mocha framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             export Lab_id="${params.SL_LABID}"
-
             cd ./integration-tests/nodejs-tests/mocha
             cp -r /nodeModules/node_modules .
             npm install
@@ -188,7 +184,6 @@ pipeline {
         }
       }
     }
-
     stage('MS-Tests framework'){
       steps{
         script{
@@ -200,22 +195,17 @@ pipeline {
         }
       }
     }
-
-
     stage('N-Unit framework starting'){
       steps{
         script{
           sh """
-                echo 'N-Unit framework starting ..... '
-                export machine_dns="${params.MACHINE_DNS}"
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
-                """
+            echo 'N-Unit framework starting ..... '
+            export machine_dns="${params.MACHINE_DNS}"
+            dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
+          """
         }
       }
     }
-
-
-
 //    stage('robot framework'){
 //      steps{
 //        script{
@@ -233,66 +223,45 @@ pipeline {
 //        }
 //      }
 //    }
-
-
-
-
-
-
-
-
-
-
-
     stage('Postman framework'){
       steps{
         script{
           sh """
-                    echo 'Postman framework starting ..... '
-                    export MACHINE_DNS="${params.MACHINE_DNS}"
-                    cd ./integration-tests/postman-tests/
-                    cp -r /nodeModules/node_modules .
-                    npm i slnodejs
-                    npm install newman
-                    npm install newman-reporter-xunit
-                    ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
-                    npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
-                    ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
-                    ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
-                    cd ../..
-                    """
+          echo 'Postman framework starting ..... '
+          export MACHINE_DNS="${params.MACHINE_DNS}"
+          cd ./integration-tests/postman-tests/
+          cp -r /nodeModules/node_modules .
+          npm i slnodejs
+          npm install newman
+          npm install newman-reporter-xunit
+          ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
+          npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
+          ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
+          ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
+          cd ../..
+        """
         }
       }
     }
-
-
     stage('Jest framework'){
       steps{
         script{
-
           sh """
-                echo 'Jest framework starting ..... '
-                export machine_dns="${params.MACHINE_DNS}"
-                cd ./integration-tests/nodejs-tests/Jest
-                cp -r /nodeModules/node_modules .
-                npm i jest-cli
-                export NODE_DEBUG=sl
-                export SL_TOKEN="${params.SL_TOKEN}"
-                export SL_LABID="${params.SL_LABID}"
-                npm install
-                npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest-tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}" --testTimeout=30000
-                cd ../..
-                """
+          echo 'Jest framework starting ..... '
+          export machine_dns="${params.MACHINE_DNS}"
+          cd ./integration-tests/nodejs-tests/Jest
+          cp -r /nodeModules/node_modules .
+          npm i jest-cli
+          export NODE_DEBUG=sl
+          export SL_TOKEN="${params.SL_TOKEN}"
+          export SL_LABID="${params.SL_LABID}"
+          npm install
+          npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest-tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}" --testTimeout=30000
+          cd ../..
+        """
         }
       }
     }
-
-
-
-
-
-
-
     stage('Soap-UI framework'){
       steps{
         script{
@@ -332,22 +301,18 @@ pipeline {
         }
       }
     }
-
-
-
-
     stage('Pytest framework'){
       steps{
         script{
           sh"""
-                echo 'Pytest tests starting ..... '
-                export machine_dns="${params.MACHINE_DNS}"
-                cd ./integration-tests/python-tests
-                pip install pytest
-                pip install requests
-                sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
-                cd ../..
-                """
+            echo 'Pytest tests starting ..... '
+            export machine_dns="${params.MACHINE_DNS}"
+            cd ./integration-tests/python-tests
+            pip install pytest
+            pip install requests
+            sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
+            cd ../..
+          """
         }
       }
     }
