@@ -36,8 +36,6 @@ pipeline {
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             echo 'Junit without testNG framework starting ..... '
-            pwd
-            ls
             cd integration-tests/java-tests
             export SL_TOKEN="${params.SL_TOKEN}"
             echo $SL_TOKEN>sltoken.txt

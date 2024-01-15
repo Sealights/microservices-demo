@@ -63,42 +63,40 @@ namespace FrontendTests.Tests
         [Test]
         public void TestBadRequests()
         {
+            System.Threading.Thread.Sleep(10000);
             var response = client.GetAsync(client.BaseAddress + "/product/89").Result;
             Assert.AreEqual(500, (int)response.StatusCode);
-
             var formData = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("currency_code", "not a currency") });
             response = client.PostAsync(client.BaseAddress + "/setCurrency", formData).Result;
-            System.Threading.Thread.Sleep(10000);
             Assert.AreEqual(405, (int)response.StatusCode);
         }
 
         [Test]
         public void TestIndex()
         {
-            var response = client.GetAsync("/").Result;
             System.Threading.Thread.Sleep(10000);
+            var response = client.GetAsync("/").Result;
             Assert.AreEqual(200, (int)response.StatusCode);
         }
 
         [Test]
         public void TestSetCurrency()
         {
+            System.Threading.Thread.Sleep(10000);
             foreach (var currency in new[] { "EUR", "USD", "JPY", "CAD" })
             {
                 var formData = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("currency_code", currency) });
                 var response = client.PostAsync("/setCurrency", formData).Result;
-                System.Threading.Thread.Sleep(10000);
                 Assert.AreEqual(200, (int)response.StatusCode);
             }
         }
-
         [Test]
         public void TestBrowseProduct()
         {
+            System.Threading.Thread.Sleep(10000);
             foreach (var product in products)
             {
                 var response = client.GetAsync($"/product/{product}").Result;
-                System.Threading.Thread.Sleep(10000);
                 Assert.AreEqual(200, (int)response.StatusCode);
             }
         }
@@ -106,11 +104,10 @@ namespace FrontendTests.Tests
         [Test]
         public void TestViewCart()
         {
+            System.Threading.Thread.Sleep(10000);
             var response = client.GetAsync("/cart").Result;
             Assert.AreEqual(200, (int)response.StatusCode);
-
             response = client.PostAsync("/cart/empty", null).Result;
-            System.Threading.Thread.Sleep(10000);
             Assert.AreEqual(200, (int)response.StatusCode);
         }
 
@@ -122,7 +119,6 @@ namespace FrontendTests.Tests
                 var response = client.GetAsync($"/product/{product}").Result;
                 System.Threading.Thread.Sleep(10000);
                 Assert.AreEqual(200, (int)response.StatusCode);
-
                 var formData = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("product_id", product),
@@ -137,6 +133,7 @@ namespace FrontendTests.Tests
         [Test]
         public void TestCheckout()
         {
+            System.Threading.Thread.Sleep(10000);
             foreach (var product in products)
             {
                 var formData = new FormUrlEncodedContent(new[]
@@ -156,7 +153,6 @@ namespace FrontendTests.Tests
                 });
 
                 var response = client.PostAsync("/cart/checkout", formData).Result;
-                System.Threading.Thread.Sleep(10000);
                 Assert.AreEqual(200, (int)response.StatusCode);
             }
         }

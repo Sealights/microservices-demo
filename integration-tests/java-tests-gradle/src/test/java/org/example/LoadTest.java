@@ -45,35 +45,33 @@ public class LoadTest {
 
     @Test
     public void testIndex() throws Exception {
+        Thread.sleep(20000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://34.245.65.231:8081";
         }
-
         HttpGet request = new HttpGet(myEnvVariable);
         HttpResponse response = httpClient.execute(request);
-        Thread.sleep(20000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
     @Test
     public void testSetCurrency() throws Exception {
+        Thread.sleep(20000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://34.245.65.231:8081";
         }
-
         String[] currencies = {"EUR", "USD", "JPY", "CAD"};
         String currency = currencies[new Random().nextInt(currencies.length)];
-
         HttpGet request = new HttpGet(myEnvVariable + "/setCurrency?currency_code=" + currency);
         HttpResponse response = httpClient.execute(request);
-        Thread.sleep(20000);
         assertEquals(405, response.getStatusLine().getStatusCode());
     }
 
     @Test
     public void testBrowseProduct() throws Exception {
+        Thread.sleep(20000);
         String myEnvVariable = System.getenv("machine_dns");
         if (myEnvVariable == null) {
             myEnvVariable = "http://34.245.65.231:8081";
@@ -86,7 +84,6 @@ public class LoadTest {
 
         HttpGet request = new HttpGet(myEnvVariable + "/product/" + product);
         HttpResponse response = httpClient.execute(request);
-        Thread.sleep(20000);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
