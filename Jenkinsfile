@@ -87,6 +87,7 @@ pipeline {
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : params.BRANCH,
             git_branch : params.BUILD_BRANCH
+            lab : params.lab
           )
         }
       }
