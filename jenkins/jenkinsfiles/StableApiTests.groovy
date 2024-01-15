@@ -21,7 +21,7 @@ pipeline {
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'app name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
-    string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'DEV-integ-btq-testing')
+    string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration')
     string(name: 'RUN_DATA', defaultValue: 'without changes', description: 'RUN_NUMBER loop number')
     string(name: 'INTEGRATION_BRANCH', defaultValue: 'ahmad-branch', description: 'RUN_NUMBER loop number')
 
