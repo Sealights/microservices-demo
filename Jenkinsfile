@@ -86,7 +86,7 @@ pipeline {
             java_agent_url: params.JAVA_AGENT_URL,
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : params.BRANCH,
-            git_branch : params.BUILD_BRANCH
+            git_branch : params.BUILD_BRANCH,
             lab : params.lab
           )
         }
