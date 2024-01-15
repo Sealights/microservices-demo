@@ -296,21 +296,21 @@ pipeline {
         )
       }
     }
-//    failure {
-//      script {
-//        set_assume_role([
-//          env       : "dev",
-//          account_id: "159616352881",
-//          role_name : "CD-TF-Role"
-//        ])
-//        failure_btq(
-//          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
-//        )
-//        failure_btq(
-//          IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
-//        )
-//      }
-//    }
+    failure {
+      script {
+        set_assume_role([
+          env       : "dev",
+          account_id: "159616352881",
+          role_name : "CD-TF-Role"
+        ])
+        failure_btq(
+          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
+        )
+        failure_btq(
+          IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+        )
+      }
+    }
   }
 }
 
