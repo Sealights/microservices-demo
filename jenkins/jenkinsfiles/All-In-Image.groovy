@@ -95,37 +95,37 @@ pipeline {
         }
       }
     }
-//    stage('Gradle framework'){
-//      steps{
-//        script{
-//          sh """
-//                    #!/bin/bash
-//                    export lab_id="${params.SL_LABID}"
-//                    export machine_dns="${params.MACHINE_DNS}"
-//                    cd ./integration-tests/java-tests-gradle
-//                    echo $SL_TOKEN>sltoken.txt
-//                    echo '{
-//                        "executionType": "testsonly",
-//                        "tokenFile": "./sltoken.txt",
-//                        "createBuildSessionId": false,
-//                        "testStage": "Junit-without-testNG-gradle",
-//                        "runFunctionalTests": true,
-//                        "labId": "${params.SL_LABID}",
-//                        "proxy": null,
-//                        "logEnabled": false,
-//                        "logDestination": "console",
-//                        "logLevel": "warn",
-//                        "sealightsJvmParams": {}
-//                    }' > slgradletests.json
-//                    echo "Adding Sealights to Tests Project gradle file..."
-//                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-//                    gradle test
-//
-//
-//                    """
-//        }
-//      }
-//    }
+    stage('Gradle framework'){
+      steps{
+        script{
+          sh """
+                    #!/bin/bash
+                    export lab_id="${params.SL_LABID}"
+                    export machine_dns="${params.MACHINE_DNS}"
+                    cd ./integration-tests/java-tests-gradle
+                    echo $SL_TOKEN>sltoken.txt
+                    echo '{
+                        "executionType": "testsonly",
+                        "tokenFile": "./sltoken.txt",
+                        "createBuildSessionId": false,
+                        "testStage": "Junit-without-testNG-gradle",
+                        "runFunctionalTests": true,
+                        "labId": "${params.SL_LABID}",
+                        "proxy": null,
+                        "logEnabled": false,
+                        "logDestination": "console",
+                        "logLevel": "warn",
+                        "sealightsJvmParams": {}
+                    }' > slgradletests.json
+                    echo "Adding Sealights to Tests Project gradle file..."
+                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+                    gradle test
+
+
+                    """
+        }
+      }
+    }
     stage('Cucumber framework') {
       steps{
         script{
