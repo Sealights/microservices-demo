@@ -139,7 +139,7 @@ public class StepDefinitions {
         System.out.println(baos);
         response.close();
         if (response.getStatusLine().getStatusCode() != 200) {
-            throw new Exception("Failed to checkout cart");
+            throw new Exception("Failed to checkout cart "+ response.getStatusLine().getStatusCode());
         }
     }
 
