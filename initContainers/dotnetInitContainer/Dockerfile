@@ -7,4 +7,4 @@ RUN wget -nv -O sealights-dotnet-agent-alpine.tar.gz https://agents.sealights.co
 
 RUN tar -xzf ./sealights-dotnet-agent-alpine.tar.gz --directory /app/sealights/agent
 RUN chmod -R 777 /app/sealights
-ENTRYPOINT ["/bin/sh" "-c" "ls / cp -r /app/sealights /sealights"]
+ENTRYPOINT [ "/bin/sh" , "-c" , " cp -r /app/sealights /sealights" ]
