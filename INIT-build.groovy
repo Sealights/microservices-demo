@@ -30,7 +30,7 @@ pipeline{
   }
   environment{
     ECR_FULL_NAME = "btq-${params.LANG}"
-    ECR_URI = "ahmadSealights/${env.ECR_FULL_NAME}"
+    ECR_URI = "Sealights/${env.ECR_FULL_NAME}"
   }
   stages{
     stage('Init') {
@@ -45,19 +45,12 @@ pipeline{
                 def CONTEXT = "./initContainers/${params.LANG}InitContainer"
                 def DP = "${CONTEXT}/Dockerfile"
                 def D = "${env.ECR_URI}:${params.TAG}"
-                def BUILD_NAME = params.BUILD_NAME
-                def SL_TOKEN = params.SL_TOKEN
-                def AGENT_URL = params.AGENT_URL
-                def AGENT_URL_SLCI = params.AGENT_URL_SLCI
 
                 sh """
                     /kaniko/executor \
                     --context ${CONTEXT} \
                     --dockerfile ${DP} \
-                    --destination ${D} \
-                    --build-arg BUILD_NAME=${BUILD_NAME} \
-                    --build-arg SEALIGHTS_TOKEN=${SL_TOKEN} \
-                    --build-arg AGENT_URL=${AGENT_URL}
+                    --destination ${D} 
                 """
                 }
             }
