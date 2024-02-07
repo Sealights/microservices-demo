@@ -34,7 +34,6 @@ spec:
       initContainers:
       - name: dotnet-cd-agent
         image: sealights/dotnetinitcontainer:test
-        command: ["/bin/sh", "-c", "cp -r /sealights /sealights"]
         volumeMounts:
           - mountPath: /sealights
             name: dotnet-cd-agent-file
