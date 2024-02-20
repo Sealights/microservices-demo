@@ -12,6 +12,7 @@ pipeline {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
+    booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
     string(name: 'BUILD_BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
     string(name: 'SL_TOKEN', defaultValue: 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL0RFVi1pbnRlZ3JhdGlvbi5hdXRoLnNlYWxpZ2h0cy5pby8iLCJqd3RpZCI6IkRFVi1pbnRlZ3JhdGlvbixuZWVkVG9SZW1vdmUsQVBJR1ctZDQ3YTRjYzAtOWM0MC00ZWIxLTg2NzYtMTA3NzMyOTk5YTA5LDE2OTg1OTU5ODUwOTYiLCJzdWJqZWN0IjoiaW50ZWdyYXRpb25AYWdlbnQiLCJhdWRpZW5jZSI6WyJhZ2VudHMiXSwieC1zbC1yb2xlIjoiYWdlbnQiLCJ4LXNsLXNlcnZlciI6Imh0dHBzOi8vZGV2LWludGVncmF0aW9uLmRldi5zZWFsaWdodHMuY28vYXBpIiwic2xfaW1wZXJfc3ViamVjdCI6IiIsImlhdCI6MTY5ODU5NTk4NX0.Zluo-1ixxNHU3QflitHZJAD3mGzDLUv2ntje-ENd_sIIfAV7t5-1AjZz5qScK9-3pKaamv3398GzlVcwWunNqpug0DfF2uCKHDb_pTBnQdbIOfLdh-d5fXHoXgSrNCSBXRsgjkuA0Sdit1jFlc198OE2FVawkLhf6MtX-6NHncV6EEyZ833i4DRvLt58IQRrDH0q6eGoG_i4ea2iwC-3TNhVskxigxCRIh2ZamNjqasXk3fJchoawKUlYKKPLyYaoPXtyWY1bCdR7UMyUmewUIJy9XBXjy7GcXNuouqu0638vjceY-IDWI6jyrAzBetAfybvDe8eVdT19cLSDP5Q_1MeVUbhfzFjkv4bUEy7kBd2ghtoMTSBAkaoRXD687MxRKanYTyrRbOOW1fXzGk-dtiWLSKAvAFsJrjibEf3EdnD8ewMvtbZWGVfn35gWffB41USTGqkkEY7sSpsEgW4nLATvYQv_nZY2bIBY2zaYi6Kklk3L2vp8i3zelZHm3dJ_IxZYDfJEp-TW0JgOdbhDgV6OjVxgW4YkGYYc58vuBpA6rIluU3OdBp9Vcr3_recnZLA3V6QtLyowOXwRgHOHaI9RSDJ5h1LG81N0nkOmrGbBiTW8vKI3taFrtu163cD0NFguYUjiZus-5gkQ1TU0bEsD3XIxh-4rTR0C2fmqXI', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
@@ -69,6 +70,7 @@ pipeline {
 
           def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
           SpinUpBoutiqeEnvironment(
+            enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
             branch: params.BRANCH,
             app_name: params.APP_NAME,
@@ -378,12 +380,12 @@ def SpinUpBoutiqeEnvironment(Map params){
     lab_alias: "${params.IDENTIFIER}",
     cdOnly: true,
   )
-
   build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"),
                                                       string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
                                                       ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
                                                       string(name:'GIT_BRANCH' , value:"${params.git_branch}"),
                                                       string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),
+                                                      string(name:'INSTALL_DD' , value:"${params.enable_dd}"),
                                                       string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
                                                       string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
                                                       string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
