@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 # enter sealight vars here:
 SealightsEnvVars:
+  env: ""
   token: ""
   lab_id: ""
   build_name: ""
