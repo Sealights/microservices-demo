@@ -1,0 +1,24 @@
+targetSystem: "linux"
+
+datadog:
+  collectEvents: true
+  kubeStateMetricsCore:
+    enabled: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+  apm:
+    portEnabled: true
+  networkMonitoring:
+    enabled: false
+  serviceMonitoring:
+    enabled: true
+  prometheusScrape:
+    enabled: false
+  processAgent:
+    enabled: false
+  systemProbe:
+    enableConntrack: false
+
+clusterAgent:
+  enabled: false
