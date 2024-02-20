@@ -18,10 +18,6 @@ kind: Deployment
 metadata:
   name: {{ .Values.adService.name }}
   namespace: {{ .Release.Namespace }}
-  labels:
-    tags.datadoghq.com/env: {{ .Values.SealightsEnvVars.env | quote }}
-    tags.datadoghq.com/service: {{ .Values.adService.name }}
-    tags.datadoghq.com/version: "latest"
 spec:
   selector:
     matchLabels:
@@ -32,9 +28,6 @@ spec:
         ad.datadoghq.com/{{ .Values.adService.name }}.logs: '[{"source":"{{ .Values.SealightsEnvVars.env }}","service":"{{ .Values.adService.name }}","namespace":"default","log_processing_rules":{{ .Values.logProcessingRules | default "[]" }}}]'
       labels:
         app: {{ .Values.adService.name }}
-        tags.datadoghq.com/env: {{ .Values.SealightsEnvVars.env | quote }}
-        tags.datadoghq.com/service: {{ .Values.adService.name }}
-        tags.datadoghq.com/version: "latest"
     spec:
       initContainers:
       - name: java-cd-agent
@@ -68,24 +61,6 @@ spec:
           value: "-javaagent:/sealights/sl-cd-agent.jar -Dsl.branchName={{ .Values.SealightsEnvVars.sl_branch }} -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.appName=adservice -Dsl.buildName={{ .Values.SealightsEnvVars.build_name }} -Dsl.tags=script,container,docker -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }} -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop* -Dsl.workspace=/app/build/install/hipstershop/lib"
         - name: PORT
           value: "9555"
-        - name: DD_AGENT_HOST
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: DD_ENV
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['tags.datadoghq.com/env']
-        - name: DD_VERSION
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['tags.datadoghq.com/version']
-        - name: DD_SERVICE
-          value: {{ .Values.adService.name }}
-        - name: DD_LOGS_INJECTION
-          value: "true"
-        - name: DD_RUNTIME_METRICS_ENABLED
-          value: "true"
         resources:
           {{- toYaml .Values.adService.resources | nindent 10 }}
         readinessProbe:
