@@ -26,6 +26,7 @@ WORKDIR /recommendationservice
 COPY . .
 RUN sl-python config --appname recommendationservice --branchname ${BRANCH} --buildname ${BUILD_NAME} --workspacepath ./ --token ${SEALIGHTS_TOKEN} --exclude "*grpc*"
 RUN sl-python scan --scm none --token ${SEALIGHTS_TOKEN}
+ENV SL_DEBUG=true
 #COPY --from=builder /recommendationservice/buildSessionId.txt .
 #RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
 ENV PORT "8080"

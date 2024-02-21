@@ -26,8 +26,8 @@ WORKDIR /email_server
 COPY . .
 RUN sl-python config --appname emailservice --branchname ${BRANCH} --buildname ${BUILD_NAME} --workspacepath ./ --token ${SEALIGHTS_TOKEN} --exclude "*grpc*"
 RUN sl-python scan --scm none --token ${SEALIGHTS_TOKEN}
-
+ENV SL_DEBUG=true
 # Add the application
 ENV PORT "8080"
-EXPOSE 8080 
+EXPOSE 8080
 CMD sl-python run python email_server.py --labid ${SL_LAB_ID} --token ${SL_TOKEN}

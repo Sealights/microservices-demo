@@ -100,13 +100,13 @@ spec:
         volumeMounts:
           - mountPath: /sealights
             name: dotnet-cd-agent-file
-        command: 
+        command:
           - /bin/sh
-          - -c 
+          - -c
           - |
             /sealights/agent/SL.DotNet cdAgent --appName cartservice --branchName ${SL_BRANCH} --buildName ${BUILD_NAME} \
             --binDir /app  --includeNamespace *.services* --target /app/cartservice --token ${SL_TOKEN} --workingDir /app \
-            --identifyMethodsByFqn --labId ${SL_LAB_ID}
+            --identifyMethodsByFqn --labId ${SL_LAB_ID} --logEnabled true --logAppendConsole true --enablePerformanceMonitoring true
       volumes:
       - name: dotnet-cd-agent-file
         emptyDir: {}

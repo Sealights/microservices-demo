@@ -60,6 +60,7 @@ COPY ./static ./static
 # Default behavior - a failure prints a stack trace for the current goroutine.
 # See https://golang.org/pkg/runtime/
 ENV GOTRACEBACK=single
+ENV SEALIGHTS_LOG_LEVEL=debug
 
 EXPOSE 8080
 CMD export SEALIGHTS_TOKEN="${SL_TOKEN}" && export SEALIGHTS_LAB_ID="${SL_LAB_ID}" && echo "${SEALIGHTS_LAB_ID}" && /src/server
