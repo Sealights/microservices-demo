@@ -14,7 +14,7 @@ RUN apt-get -qq update \
 # get packages
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-RUN pip install ${AGENT_URL}
+RUN pip install sealights-python-agent==2.0.0b2
 
 FROM builder
 # Enable unbuffered logging
