@@ -303,12 +303,14 @@ pipeline {
       steps{
         script{
           sh"""
+            export SL_SAVE_LOG_FILE=true
             echo 'Pytest tests starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             cd ./integration-tests/python-tests
             pip install pytest
             pip install requests
             sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
+            ls
             cd ../..
           """
         }
