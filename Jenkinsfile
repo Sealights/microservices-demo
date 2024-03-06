@@ -9,20 +9,22 @@ pipeline {
 
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'public-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'public', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'CHANGED_BRANCH', defaultValue: 'new-changed', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'BRANCH', defaultValue: 'public', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'BUILD_BRANCH', defaultValue: 'public', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
-    string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
-    string(name: 'BUILD_NAME', defaultValue: 'public-1', description: 'build name')
-    string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
-    string(name: 'DOTNET_AGENT_URL', defaultValue: 'https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz', description: 'use different dotnet agent')
-    string(name: 'NODE_AGENT_URL', defaultValue: 'slnodejs', description: 'use different node agent')
-    string(name: 'GO_AGENT_URL', defaultValue: 'https://agents.sealights.co/slgoagent/latest/slgoagent-linux-amd64.tar.gz', description: 'use different go agent')
-    string(name: 'GO_SLCI_AGENT_URL', defaultValue: 'https://agents.sealights.co/slcli/latest/slcli-linux-amd64.tar.gz', description: 'use different slci go agent')
-    string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
-    choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
+    string(name: 'APP_NAME', defaultValue: 'Boutique', description: 'name of the app (integration build)')
+    string(name: 'BRANCH', defaultValue: 'public', description: 'Branch to clone')
+    string(name: 'BUILD_NAME', defaultValue: '', description: 'build name (If not provided, default will be branchname-1-0-run ex: main-1-0-7)')
+    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Cucumber', defaultValue: false, description: 'Run tests using Cucumber testing framework (java)')
+    booleanParam(name: 'Cypress', defaultValue: false, description: 'Run tests using Cypress testing framework')
+    booleanParam(name: 'Junit_with_testNG', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (maven)')
+    booleanParam(name: 'Junit_without_testNG', defaultValue: false, description: 'Run tests using Junit testing framework without testNG (maven)')
+    booleanParam(name: 'Junit_with_testNG_gradle', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (gradle)')
+    booleanParam(name: 'Mocha', defaultValue: false, description: 'Run tests using Mocha testing framework')
+    booleanParam(name: 'MS', defaultValue: false, description: 'Run tests using MS testing framework')
+    booleanParam(name: 'NUnit', defaultValue: false, description: 'Run tests using NUnit testing framework')
+    booleanParam(name: 'Postman', defaultValue: false, description: 'Run tests using postman testing framework')
+    booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
+    booleanParam(name: 'Robot', defaultValue: false, description: 'Run tests using Robot testing framework')
+    booleanParam(name: 'Soapui', defaultValue: false, description: 'Run tests using Soapui testing framework')
   }
 
   stages {
@@ -41,21 +43,12 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          def MapUrl = new HashMap()
-          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
-          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
-          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
-          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
-          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
-          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
-
           build_btq(
             sl_report_branch: params.BRANCH,
             sl_token: params.SL_TOKEN,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}",
             branch: params.BRANCH,
-            mapurl: MapUrl
           )
         }
       }
@@ -72,8 +65,6 @@ pipeline {
             branch: params.BRANCH,
             app_name: params.APP_NAME,
             build_branch: params.BUILD_BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : params.BRANCH,
             git_branch : params.BUILD_BRANCH
           )
@@ -86,96 +77,22 @@ pipeline {
         script {
           run_tests(
             branch: params.BRANCH,
-            test_type: params.TEST_TYPE
-          )
-        }
-      }
-    }
-
-    stage('Run Api-Tests Before Changes') {
-      steps {
-        script {
-          run_api_tests_before_changes(
-            branch: params.BRANCH,
-            app_name: params.APP_NAME
-          )
-        }
-      }
-    }
-
-
-    stage('Changed - Clone Repository') {
-      steps {
-        script {
-          clone_repo(
-            branch: params.CHANGED_BRANCH
-          )
-        }
-      }
-    }
-
-    stage('Changed Build BTQ') {
-      steps {
-        script {
-          def MapUrl = new HashMap()
-          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
-          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
-          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
-          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
-          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
-          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
-
-          build_btq(
-            sl_token: params.SL_TOKEN,
-            sl_report_branch: params.CHANGED_BRANCH,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}-v2",
-            branch: params.BRANCH,
-            mapurl: MapUrl
-          )
-        }
-      }
-    }
-
-
-
-    stage('Changed Spin-Up BTQ') {
-      steps {
-        script {
-          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
-
-          SpinUpBoutiqeEnvironment(
-            IDENTIFIER : IDENTIFIER,
-            branch: params.CHANGED_BRANCH,
-            git_branch : params.CHANGED_BRANCH,
-            app_name: params.APP_NAME,
-            build_branch: params.BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.CHANGED_BRANCH
-          )
-        }
-      }
-    }
-
-    stage('Changed Run Tests') {
-      steps {
-        script {
-          run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
-          )
-        }
-      }
-    }
-
-
-    stage('Run API-Tests After Changes') {
-      steps {
-        script {
-          run_api_tests_after_changes(
-            branch: params.BRANCH,
-            app_name: params.APP_NAME
+            lab_id: env.LAB_ID,
+            token: env.SL_TOKEN,
+            Run_all_tests: params.Run_all_tests,
+            Cucumber: params.Cucumber,
+            Cypress: params.Cypress,
+            Junit_with_testNG: params.Junit_with_testNG,
+            Junit_without_testNG: params.Junit_without_testNG,
+            Junit_with_testNG_gradle: params.Junit_with_testNG_gradle,
+            Mocha: params.Mocha,
+            MS: params.Mocha,
+            NUnit: params.NUnit,
+            Postman: params.Postman,
+            Pytest: params.Pytest,
+            Robot: params.Robot,
+            Soapui: params.Soapui,
+            long_test: params.long_test
           )
         }
       }
@@ -248,21 +165,6 @@ def build_btq(Map params){
   parallel parallelLabs
 }
 
-def getParamForService(service, mapurl) {
-
-  switch (service) {
-    case "adservice":
-      return [mapurl['JAVA_AGENT_URL'].toString(),""]
-    case "cartservice":
-      return [mapurl['DOTNET_AGENT_URL'].toString(),""]
-    case ["checkoutservice","frontend","productcatalogservice","shippingservice"]:
-      return [mapurl['GO_AGENT_URL'].toString(),mapurl['GO_SLCI_AGENT_URL'].toString()]
-    case ["emailservice","recommendationservice"]:
-      return [mapurl['PYTHON_AGENT_URL'].toString(),""]
-    case ["currencyservice","paymentservice"]:
-      return [mapurl['NODE_AGENT_URL'].toString(),""]
-  }
-}
 
 def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
@@ -284,67 +186,32 @@ def SpinUpBoutiqeEnvironment(Map params){
                                                       string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
                                                       string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
                                                       string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
-                                                      string(name:'JAVA_AGENT_URL' , value: "${params.java_agent_url}"),
-                                                      string(name:'DOTNET_AGENT_URL' , value: "${params.dotnet_agent_url}"),
                                                       string(name:'SL_BRANCH' , value:"${params.sl_branch}")])
 }
 
+
 def run_tests(Map params){
-  if (params.test_type == 'Tests parallel') {
-    sleep time: 150, unit: 'SECONDS'
-    def parallelLabs = [:]
-    //List of all the jobs
-    def jobs_list = ["BTQ-java-tests(Junit without testNG)", "BTQ-java-tests(Junit without testNG)-gradle",
-                     "BTQ-python-tests(Pytest framework)", "BTQ-nodejs-tests(Mocha framework)", "BTQ-dotnet-tests(MS-test framework)",
-                     "BTQ-nodejs-tests(Jest framework)", "BTQ-python-tests(Robot framework)", "BTQ-dotnet-tests(NUnit-test framework)",
-                     "BTQ-java-tests(Junit support-testNG)", "BTQ-postman-tests", "BTQ-java-tests(Cucumber-framework-java)", "BTQ-java-tests-SoapUi-framework",
-                     "BTQ-nodejs-tests-Cypress-framework"]
-
-    jobs_list.each { job ->
-      parallelLabs["${job}"] = {
-        build(job: "${job}", parameters: [string(name: 'BRANCH', value: "${params.branch}"), string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"), string(name: 'SL_TOKEN', value: "${env.TOKEN}"), string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")])
-      }
-    }
-    parallel parallelLabs
-  } else {
-    if (params.test_type == 'Tests sequential') {
-      sleep time: 150, unit: 'SECONDS'
-      def jobs_list = [
-        "BTQ-java-tests(Junit without testNG)",
-        "BTQ-python-tests(Pytest framework)",
-        "BTQ-nodejs-tests(Mocha framework)",
-        "BTQ-dotnet-tests(MS-test framework)",
-        "BTQ-nodejs-tests(Jest framework)",
-        "BTQ-python-tests(Robot framework)",
-        "BTQ-dotnet-tests(NUnit-test framework)",
-        "BTQ-java-tests(Junit support-testNG)",
-        "BTQ-nodejs-tests-Cypress-framework",
-        "BTQ-java-tests-SoapUi-framework",
-        "BTQ-java-tests(Cucumber-framework-java)",
-        "BTQ-java-tests(Junit without testNG)-gradle",
-        "BTQ-postman-tests"
-      ]
-
-      jobs_list.each { job ->
-        build(job: "${job}", parameters: [
-          string(name: 'BRANCH', value: "${params.branch}"),
-          string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"),
-          string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-          string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")
-        ])
-        sleep time: 60, unit: 'SECONDS'
-      }
-    } else {
-      sleep time: 150, unit: 'SECONDS'
+      sleep time: 120, unit: 'SECONDS'
       build(job: "All-In-Image", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
-        string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"),
+        string(name: 'SL_LABID', value: "${params.lab_id}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}"),
+        booleanParam(name: 'Run_all_tests', value: params.Run_all_tests),
+        booleanParam(name: 'Cucumber', value: params.Cucumber),
+        booleanParam(name: 'Cypress', value: params.Cypress),
+        booleanParam(name: 'Junit_with_testNG', value: params.Junit_with_testNG),
+        booleanParam(name: 'Junit_without_testNG', value: params.Junit_without_testNG),
+        booleanParam(name: 'Junit_with_testNG_gradle', value: params.Junit_with_testNG_gradle),
+        booleanParam(name: 'Mocha', value: params.Mocha),
+        booleanParam(name: 'MS', value: params.Mocha),
+        booleanParam(name: 'NUnit', value: params.NUnit),
+        booleanParam(name: 'Postman', value: params.Postman),
+        booleanParam(name: 'Pytest', value: params.Pytest),
+        booleanParam(name: 'Robot', value: params.Robot),
+        booleanParam(name: 'Soapui', value: params.Soapui),
+        booleanParam(name: 'long_test', value: params.long_test)
       ])
-    }
-  }
-
 
 }
 
@@ -357,26 +224,6 @@ def failure_btq(Map params){
   def env_instance_id = sh(returnStdout: true, script: "aws ec2 --region eu-west-1 describe-instances --filters 'Name=tag:Name,Values=EUW-ALLINONE-DEV-${params.IDENTIFIER}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations[].Instances[].InstanceId'")
   sh "aws ec2 --region eu-west-1 stop-instances --instance-ids ${env_instance_id}"
   slackSend channel: "#btq-ci", tokenCredentialId: "slack_sldevops", color: "danger", message: "BTQ-CI build ${env.CURRENT_VERSION} for branch ${BRANCH_NAME} finished with status ${currentBuild.currentResult} (<${env.BUILD_URL}|Open>) and TearDownBoutiqeEnvironment"
-}
-
-
-
-def run_api_tests_before_changes(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "StableApiTests", parameters: [
-      string(name: 'BRANCH', value: "${params.branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
-}
-
-def run_api_tests_after_changes(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "ApiTests", parameters: [
-      string(name: 'BRANCH', value: "${params.branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
 }
 
 
