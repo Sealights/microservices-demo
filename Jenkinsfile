@@ -9,7 +9,7 @@ pipeline {
 
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'new-python-agent-2.0.0b2', description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: 'new-python-agent-2.0.0b4', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
@@ -21,7 +21,7 @@ pipeline {
     string(name: 'NODE_AGENT_URL', defaultValue: 'slnodejs', description: 'use different node agent')
     string(name: 'GO_AGENT_URL', defaultValue: 'https://agents.sealights.co/slgoagent/latest/slgoagent-linux-amd64.tar.gz', description: 'use different go agent')
     string(name: 'GO_SLCI_AGENT_URL', defaultValue: 'https://agents.sealights.co/slcli/latest/slcli-linux-amd64.tar.gz', description: 'use different slci go agent')
-    string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent==2.0.0b3', description: 'use different python agent')
+    string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent==2.0.0b4', description: 'use different python agent')
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
