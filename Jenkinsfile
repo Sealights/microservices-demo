@@ -131,7 +131,7 @@ pipeline {
     stage('Run TIA Tests 1-FIRST With SeaLights') {
       steps {
         script {
-          def RUN_DATA = "full run";
+          def RUN_DATA = "full-run";
           TIA_Page_Tests(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -161,7 +161,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
       steps {
         script {
-          def RUN_DATA = "full run";
+          def RUN_DATA = "full-run";
           run_TIA_ON_testresult(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -598,7 +598,7 @@ def schedule_full_run(Map params) {
     }
     return true
   } catch(err) {
-    error "Failed to schedule full run"
+    error "Failed to schedule full-run"
   }
 }
 
