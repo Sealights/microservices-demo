@@ -174,117 +174,117 @@ pipeline {
       }
     }
 
-//    stage('Changed - Clone Repository') {
-//      steps {
-//        script {
-//          clone_repo(
-//            branch: params.CHANGED_BRANCH
-//          )
-//        }
-//      }
-//    }
-//
-//    stage('Changed Build BTQ') {
-//      steps {
-//        script {
-//          def MapUrl = new HashMap()
-//          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
-//          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
-//          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
-//          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
-//          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
-//          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
-//
-//          build_btq(
-//            sl_token: params.SL_TOKEN,
-//            sl_report_branch: params.BRANCH,
-//            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-//            build_name: "1-0-${BUILD_NUMBER}-v2",
-//            branch: params.CHANGED_BRANCH,
-//            mapurl: MapUrl
-//          )
-//        }
-//      }
-//    }
-//
-//
-//
-//
-//    stage('Changed Spin-Up BTQ') {
-//      steps {
-//        script {
-//          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
-//
-//          SpinUpBoutiqeEnvironment(
-//            IDENTIFIER : IDENTIFIER,
-//            branch: params.BRANCH,
-//            git_branch : params.CHANGED_BRANCH,
-//            app_name: params.APP_NAME,
-//            build_branch: params.BRANCH,
-//            java_agent_url: params.JAVA_AGENT_URL,
-//            dotnet_agent_url: params.DOTNET_AGENT_URL,
-//            sl_branch : params.BRANCH
-//          )
-//        }
-//      }
-//    }
-//
-//    stage('Changed Run Tests') {
-//      steps {
-//        script {
-//          run_tests(
-//            branch: params.BRANCH,
-//            test_type: params.TEST_TYPE
-//          )
-//        }
-//      }
-//    }
-//
-//    stage('Run TIA Tests 2-SECOND With SeaLights') {
-//      steps {
-//        script {
-//          def RUN_DATA = "TIA RUN";
-//          TIA_Page_Tests(
-//            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-//            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-//            run_data : RUN_DATA,
-//            branch: params.BRANCH,
-//            app_name : params.APP_NAME
-//          )
-//        }
-//      }
-//    }
-//
-//    stage('Run Coverage Tests After Changes') {
-//      steps {
-//        script {
-//          def RUN_DATA = "with changes";
-//          run_api_tests_after_changes(
-//            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-//            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-//            run_data : RUN_DATA,
-//            integration_branch : params.BRANCH,
-//            app_name: params.APP_NAME
-//          )
-//        }
-//      }
-//    }
-//
-//    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
-//      steps {
-//        script {
-//          def RUN_DATA = "TIA RUN";
-//          run_TIA_ON_testresult(
-//            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-//            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-//            run_data : RUN_DATA,
-//            branch : params.BRANCH,
-//            lab_id : env.LAB_ID,
-//            app_name : params.APP_NAME
-//          )
-//        }
-//      }
-//    }
+    stage('Changed - Clone Repository') {
+      steps {
+        script {
+          clone_repo(
+            branch: params.CHANGED_BRANCH
+          )
+        }
+      }
+    }
+
+    stage('Changed Build BTQ') {
+      steps {
+        script {
+          def MapUrl = new HashMap()
+          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
+          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
+          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
+          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
+          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
+          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
+
+          build_btq(
+            sl_token: params.SL_TOKEN,
+            sl_report_branch: params.BRANCH,
+            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
+            build_name: "1-0-${BUILD_NUMBER}-v2",
+            branch: params.CHANGED_BRANCH,
+            mapurl: MapUrl
+          )
+        }
+      }
+    }
+
+
+
+
+    stage('Changed Spin-Up BTQ') {
+      steps {
+        script {
+          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+
+          SpinUpBoutiqeEnvironment(
+            IDENTIFIER : IDENTIFIER,
+            branch: params.BRANCH,
+            git_branch : params.CHANGED_BRANCH,
+            app_name: params.APP_NAME,
+            build_branch: params.BRANCH,
+            java_agent_url: params.JAVA_AGENT_URL,
+            dotnet_agent_url: params.DOTNET_AGENT_URL,
+            sl_branch : params.BRANCH
+          )
+        }
+      }
+    }
+
+    stage('Changed Run Tests') {
+      steps {
+        script {
+          run_tests(
+            branch: params.BRANCH,
+            test_type: params.TEST_TYPE
+          )
+        }
+      }
+    }
+
+    stage('Run TIA Tests 2-SECOND With SeaLights') {
+      steps {
+        script {
+          def RUN_DATA = "TIA RUN";
+          TIA_Page_Tests(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
+            run_data : RUN_DATA,
+            branch: params.BRANCH,
+            app_name : params.APP_NAME
+          )
+        }
+      }
+    }
+
+    stage('Run Coverage Tests After Changes') {
+      steps {
+        script {
+          def RUN_DATA = "with changes";
+          run_api_tests_after_changes(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
+            run_data : RUN_DATA,
+            integration_branch : params.BRANCH,
+            app_name: params.APP_NAME
+          )
+        }
+      }
+    }
+
+    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
+      steps {
+        script {
+          def RUN_DATA = "TIA RUN";
+          run_TIA_ON_testresult(
+            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
+            run_data : RUN_DATA,
+            branch : params.BRANCH,
+            lab_id : env.LAB_ID,
+            app_name : params.APP_NAME
+          )
+        }
+      }
+    }
 
 
   }
