@@ -59,6 +59,7 @@ pipeline {
             export EXTERNAL_CUSTOMER_ID="integration"
             export EXTERNAL_USER_EMAIL="integration@sealights.io"
             export EXTERNAL_USER_PASSWORD="SeaLights2019!"
+            npm install chai chai-deep-equal-in-any-order --save-dev
             npm install
             ./node_modules/.bin/tsc
             ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/TIA-test-result-spec.js --no-timeouts
