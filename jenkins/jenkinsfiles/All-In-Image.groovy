@@ -20,6 +20,7 @@ pipeline {
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
+    wait_time = "20"
   }
   stages{
     stage("Init test"){
@@ -133,7 +134,7 @@ pipeline {
                 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
               apt install -y ./google-chrome-stable_current_amd64.deb
               pip install -r requirements.txt
-              robot --listener "SLListener.py:${env.SL_TOKEN}::Robot Tests:${params.SL_LABID}" ./
+              robot --listener "SLListener.py:${params.SL_TOKEN}::Robot Tests:${params.SL_LABID}" ./
               cd ../..
               sleep ${env.wait_time}
             """
