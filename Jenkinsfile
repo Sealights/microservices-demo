@@ -243,7 +243,7 @@ pipeline {
     stage('Run TIA Tests 2-SECOND With SeaLights') {
       steps {
         script {
-          def RUN_DATA = "TIA RUN";
+          def RUN_DATA = "TIA-RUN";
           TIA_Page_Tests(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -273,7 +273,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
       steps {
         script {
-          def RUN_DATA = "TIA RUN";
+          def RUN_DATA = "TIA-RUN";
           run_TIA_ON_testresult(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
