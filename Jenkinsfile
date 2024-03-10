@@ -147,7 +147,7 @@ pipeline {
     stage('Run Coverage Tests Before Changes') {
       steps {
         script {
-          def RUN_DATA = "without changes";
+          def RUN_DATA = "without-changes";
           run_api_tests_before_changes(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -258,7 +258,7 @@ pipeline {
     stage('Run Coverage Tests After Changes') {
       steps {
         script {
-          def RUN_DATA = "with changes";
+          def RUN_DATA = "with-changes";
           run_api_tests_after_changes(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
