@@ -4,11 +4,9 @@ const { registerSealightsTasks } = require('sealights-cypress-plugin');
 module.exports = defineConfig({
   e2e: {
     experimentalInteractiveRunEvents: true,
-    experimentalOriginDependencies: true,
     testIsolation: false,
-    specPattern: 'cypress/integration',
     async setupNodeEvents(on, config) {
       await registerSealightsTasks(on, config);
-    },
+     },
   },
 });
