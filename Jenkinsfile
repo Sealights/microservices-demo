@@ -347,7 +347,7 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      build(job: "All-In-Image", parameters: [
+      build(job: "Wahbi-All-in-image", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
