@@ -49,6 +49,7 @@ pipeline {
                 sleep 30
                 dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
                 dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                sleep ${wait_time}
                 """
         }
       }
@@ -67,6 +68,7 @@ pipeline {
                   dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
                   sleep 30
                   dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                  sleep ${wait_time}
                   """
         }
       }
@@ -101,6 +103,7 @@ pipeline {
                     gradle test
 
 
+                    sleep ${wait_time}
                     """
         }
       }
@@ -137,6 +140,7 @@ pipeline {
               robot --listener "SLListener.py:${params.SL_TOKEN}::Robot Tests:${params.SL_LABID}" ./
               cd ../..
               sleep ${env.wait_time}
+            sleep ${wait_time}
             """
         }
       }
@@ -170,6 +174,7 @@ pipeline {
 
                     unset MAVEN_CONFIG
                     ./mvnw test
+                    sleep ${wait_time}
                     """
 
         }
@@ -207,6 +212,7 @@ pipeline {
                     echo "Adding Sealights to Tests Project POM file..."
                     java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
                     mvn clean package
+                    sleep ${wait_time}
                     """
         }
       }
@@ -243,6 +249,7 @@ pipeline {
                     java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
 
                     mvn clean package
+                    sleep ${wait_time}
                     """
         }
       }
@@ -265,6 +272,7 @@ pipeline {
                     ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
                     ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
                     cd ../..
+                    sleep ${wait_time}
                     """
         }
       }
@@ -287,7 +295,8 @@ pipeline {
     //             npm install
     //             npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}"
     //             cd ../..
-    //             """
+    //             sleep ${wait_time}
+    //           """
     //     }
     //   }
     // }
@@ -306,6 +315,7 @@ pipeline {
                     npm install slnodejs
                     ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha tests'  --useslnode2 -- ./test/test.js --recursive --no-timeouts
                     cd ../..
+                    sleep ${wait_time}
                     """
         }
       }
@@ -348,6 +358,7 @@ pipeline {
             export SL_JAVA_OPTS="-javaagent:sl-test-listener.jar -Dsl.token=${params.SL_TOKEN} -Dsl.labId=${params.SL_LABID} -Dsl.testStage=Soapui-Tests -Dsl.log.enabled=true -Dsl.log.level=debug -Dsl.log.toConsole=true"
             sed -i -r "s/(^\\S*java)(.*com.eviware.soapui.tools.SoapUITestCaseRunner)/\\1 \\\$SL_JAVA_OPTS \\2/g" testrunner.sh
             sh -x ./testrunner.sh -s "TestSuite 1" "test-soapui-project.xml"
+            sleep ${wait_time}
             """
         }
       }
@@ -367,6 +378,7 @@ pipeline {
                 pip install requests
                 sl-python pytest --teststage "Pytest tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
                 cd ../..
+                sleep ${wait_time}
                 """
         }
       }
