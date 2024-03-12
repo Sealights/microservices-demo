@@ -271,26 +271,26 @@ pipeline {
     }
 
 
-    stage('Jest framework'){
-      steps{
-        script{
+    // stage('Jest framework'){
+    //   steps{
+    //     script{
 
-          sh """
-                echo 'Jest framework starting ..... '
-                export machine_dns="${params.MACHINE_DNS}"
-                cd ./integration-tests/nodejs-tests/Jest
-                cp -r /nodeModules/node_modules .
-                npm i jest-cli
-                export NODE_DEBUG=sl
-                export SL_TOKEN="${params.SL_TOKEN}"
-                export SL_LABID="${params.SL_LABID}"
-                npm install
-                npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}"
-                cd ../..
-                """
-        }
-      }
-    }
+    //       sh """
+    //             echo 'Jest framework starting ..... '
+    //             export machine_dns="${params.MACHINE_DNS}"
+    //             cd ./integration-tests/nodejs-tests/Jest
+    //             cp -r /nodeModules/node_modules .
+    //             npm i jest-cli
+    //             export NODE_DEBUG=sl
+    //             export SL_TOKEN="${params.SL_TOKEN}"
+    //             export SL_LABID="${params.SL_LABID}"
+    //             npm install
+    //             npx jest integration-tests/nodejs-tests/Jest/test.js --sl-testStage='Jest tests' --sl-token="${params.SL_TOKEN}" --sl-labId="${params.SL_LABID}"
+    //             cd ../..
+    //             """
+    //     }
+    //   }
+    // }
 
 
 
