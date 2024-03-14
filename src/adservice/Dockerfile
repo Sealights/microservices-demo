@@ -15,7 +15,6 @@
 FROM eclipse-temurin:21@sha256:952185109e6790588902d524bd43fcf5f478e022847097ef9ae8ef5b82511bbd as builder
 
 WORKDIR /app
-
 COPY ["build.gradle", "gradlew", "./"]
 COPY gradle gradle
 RUN chmod +x gradlew
