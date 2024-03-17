@@ -9,7 +9,7 @@ pipeline {
 
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'abed-java-21-${BUILD_NUMBER}', description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: 'abed-java-21', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'abed-java-21', description: 'Branch to clone (abed-java-21)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (abed-java-21)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
