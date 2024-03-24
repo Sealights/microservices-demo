@@ -7,7 +7,7 @@ pipeline {
     }
   }
   environment {
-    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    GITHUB_SCTOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   parameters {
     string(name: 'APP_NAME', defaultValue: 'slnodejs', description: 'name of the app (integration build)')
