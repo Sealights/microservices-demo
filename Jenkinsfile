@@ -44,6 +44,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
+          echo "${env.GITHUB_SCTOKEN}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -53,6 +54,7 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
+            GITHUB_SCTOKEN : env.GITHUB_SCTOKEN ,
             sl_report_branch: params.BRANCH,
             sl_token: params.SL_TOKEN,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
@@ -349,7 +351,7 @@ def build_btq(Map params){
                                            string(name:'BRANCH' , value:"${params.branch}"),
                                            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
                                            string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
-                                           string(name:'GITHUB_SCTOKEN' , value:"${env.GITHUB_SCTOKEN}"),
+                                           string(name:'GITHUB_SCTOKEN' , value:"${params.GITHUB_SCTOKEN}"),
                                            string(name:'AGENT_URL' , value:AGENT_URL[0]),
                                            string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
     }
