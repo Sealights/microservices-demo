@@ -16,10 +16,14 @@ FROM node:20.5.0-alpine@sha256:11087abe911baf2fd7e34192f4598bf7e438239e9914f5b7e
 
 FROM base as builder
 
+ARG AGENT_URL
+ARG GITHUB_SCTOKEN
+ARG NPM_REGISTRIES_TOKEN_NORMAL
+ARG NPM_REGISTRIES_TOKEN_SEALIGHTS
 ARG SEALIGHTS_TOKEN
 ARG BRANCH
 ARG BUILD_NAME=0.4.3
-ARG AGENT_URL=slnodejs
+
 # Some packages (e.g. @google-cloud/profiler) require additional
 # deps for post-install scripts
 RUN apk add --update --no-cache \
@@ -32,6 +36,11 @@ WORKDIR /usr/src/app
 #COPY package*.json ./
 COPY . .
 RUN npm install --only=production
+# Create an .npmrc file on-the-fly with your GitHub PAT
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
 RUN npm i ${AGENT_URL}
 RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
