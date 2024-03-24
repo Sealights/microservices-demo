@@ -6,6 +6,7 @@ ARG SEALIGHTS_TOKEN
 ARG BUILD_NAME
 ARG AGENT_URL
 ARG BRANCH
+ARG GITHUB_SCTOKEN
 
 # Some packages (e.g. @google-cloud/profiler) require additional
 # deps for post-install scripts
@@ -19,8 +20,12 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --only=production
 
+# Create an .npmrc file on-the-fly with your GitHub PAT
+RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >> .npmrc && \
+    echo "email=devops@smth.co" >>  .npmrc
 
-RUN npm i ${AGENT_URL}
+RUN npm install @sealights/slnodejs@1.0.27
 
 FROM base
 
@@ -36,6 +41,7 @@ RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "c
 RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
+
 
 EXPOSE 7000
 CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
