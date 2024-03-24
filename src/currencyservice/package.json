@@ -17,7 +17,6 @@
     "@opentelemetry/instrumentation-grpc": "0.41.2",
     "@opentelemetry/sdk-node": "0.41.2",
     "@opentelemetry/sdk-trace-base": "1.15.2",
-    "@sealights/slnodejs": "npm:@seaLights/slnodejs@^1.0.35",
     "async": "3.2.4",
     "google-protobuf": "3.21.2",
     "pino": "8.15.0",
