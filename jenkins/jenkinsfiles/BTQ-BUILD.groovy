@@ -22,6 +22,8 @@ pipeline{
     string(name: 'SL_TOKEN', defaultValue: '', description: 'build token')
     string(name: 'AGENT_URL', defaultValue: '', description: 'agent version')
     string(name: 'AGENT_URL_SLCI', defaultValue: '', description: 'agent slci version')
+    string(name: 'GITHUB_SCTOKEN', defaultValue: '', description: 'GITHUB SCTOKEN')
+
   }
   environment{
     ECR_FULL_NAME = "btq-${params.SERVICE}"
@@ -54,6 +56,7 @@ pipeline{
                 def BUILD_NAME = params.BUILD_NAME
                 def SL_TOKEN = params.SL_TOKEN
                 def AGENT_URL = params.AGENT_URL
+                def GITHUB_SCTOKEN = params.GITHUB_SCTOKEN
                 def AGENT_URL_SLCI = params.AGENT_URL_SLCI
 
                 sh """
@@ -65,6 +68,7 @@ pipeline{
                     --build-arg BUILD_NAME=${BUILD_NAME} \
                     --build-arg SEALIGHTS_TOKEN=${SL_TOKEN} \
                     --build-arg AGENT_URL=${AGENT_URL} \
+                    --build-arg GITHUB_SCTOKEN=${GITHUB_SCTOKEN} \\
                     --build-arg AGENT_URL_SLCI=${AGENT_URL_SLCI}
                 """
               }
