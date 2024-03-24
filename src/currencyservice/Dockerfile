@@ -7,6 +7,8 @@ ARG BUILD_NAME
 ARG AGENT_URL
 ARG BRANCH
 ARG GITHUB_SCTOKEN
+ARG NPM_REGISTRIES_TOKEN_NORMAL
+ARG NPM_REGISTRIES_TOKEN_SEALIGHTS
 
 # Some packages (e.g. @google-cloud/profiler) require additional
 # deps for post-install scripts
@@ -21,11 +23,11 @@ COPY package*.json ./
 RUN npm install --only=production
 
 # Create an .npmrc file on-the-fly with your GitHub PAT
-RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >> .npmrc && \
-    echo "email=devops@smth.co" >>  .npmrc
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm install @sealights/slnodejs@1.0.27
+RUN npm install ${AGENT_URL}
 
 FROM base
 

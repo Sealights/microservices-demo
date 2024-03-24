@@ -23,7 +23,8 @@ pipeline{
     string(name: 'AGENT_URL', defaultValue: '', description: 'agent version')
     string(name: 'AGENT_URL_SLCI', defaultValue: '', description: 'agent slci version')
     string(name: 'GITHUB_SCTOKEN', defaultValue: '', description: 'GITHUB SCTOKEN')
-
+    string(name: 'NPM_REGISTRIES_TOKEN_NORMAL', defaultValue: '', description: 'NPM REGISTRIES TOKEN NORMAL')
+    string(name: 'NPM_REGISTRIES_TOKEN_SEALIGHTS', defaultValue: '', description: 'NPM REGISTRIES TOKEN SEALIGHTS')
   }
   environment{
     ECR_FULL_NAME = "btq-${params.SERVICE}"
@@ -57,6 +58,8 @@ pipeline{
                 def SL_TOKEN = params.SL_TOKEN
                 def AGENT_URL = params.AGENT_URL
                 def GITHUB_SCTOKEN = params.GITHUB_SCTOKEN
+                def NPM_REGISTRIES_TOKEN_NORMAL = params.NPM_REGISTRIES_TOKEN_NORMAL
+                def NPM_REGISTRIES_TOKEN_SEALIGHTS = params.NPM_REGISTRIES_TOKEN_SEALIGHTS
                 def AGENT_URL_SLCI = params.AGENT_URL_SLCI
 
                 sh """
@@ -68,7 +71,9 @@ pipeline{
                     --build-arg BUILD_NAME=${BUILD_NAME} \
                     --build-arg SEALIGHTS_TOKEN=${SL_TOKEN} \
                     --build-arg AGENT_URL=${AGENT_URL} \
-                    --build-arg GITHUB_SCTOKEN=${GITHUB_SCTOKEN} \\
+                    --build-arg GITHUB_SCTOKEN=${GITHUB_SCTOKEN} \
+                    --build-arg GITHUB_SCTOKEN=${NPM_REGISTRIES_TOKEN_SEALIGHTS} \
+                    --build-arg GITHUB_SCTOKEN=${NPM_REGISTRIES_TOKEN_NORMAL} \
                     --build-arg AGENT_URL_SLCI=${AGENT_URL_SLCI}
                 """
               }

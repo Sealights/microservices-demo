@@ -8,6 +8,8 @@ pipeline {
   }
   environment {
     GITHUB_SCTOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    NPM_REGISTRIES_TOKEN_NORMAL = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').normal}"
+    NPM_REGISTRIES_TOKEN_SEALIGHTS = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').sealights}"
   }
   parameters {
     string(name: 'APP_NAME', defaultValue: 'slnodejs', description: 'name of the app (integration build)')
@@ -44,7 +46,11 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          echo "${env.GITHUB_SCTOKEN}"
+          sh"""
+          echo GITHUB_SCTOKEN:  "${env.GITHUB_SCTOKEN}"
+          echo NPM_REGISTRIES_TOKEN_SEALIGHTS: "${env.NPM_REGISTRIES_TOKEN_SEALIGHTS}"
+          echo NPM_REGISTRIES_TOKEN_NORMAL: "${env.NPM_REGISTRIES_TOKEN_NORMAL}"
+          """
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -54,13 +60,15 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            GITHUB_SCTOKEN : env.GITHUB_SCTOKEN ,
-            sl_report_branch: params.BRANCH,
-            sl_token: params.SL_TOKEN,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}",
-            branch: params.BRANCH,
-            mapurl: MapUrl
+            NPM_REGISTRIES_TOKEN_SEALIGHTS  : env.NPM_REGISTRIES_TOKEN_SEALIGHTS,
+            NPM_REGISTRIES_TOKEN_NORMAL     : env.NPM_REGISTRIES_TOKEN_NORMAL,
+            GITHUB_SCTOKEN                  : env.GITHUB_SCTOKEN ,
+            sl_report_branch                : params.BRANCH,
+            sl_token                        : params.SL_TOKEN,
+            dev_integraion_sl_token         : env.DEV_INTEGRATION_SL_TOKEN,
+            build_name                      : "1-0-${BUILD_NUMBER}",
+            branch                          : params.BRANCH,
+            mapurl                          : MapUrl
           )
         }
       }
@@ -352,6 +360,8 @@ def build_btq(Map params){
                                            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
                                            string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
                                            string(name:'GITHUB_SCTOKEN' , value:"${params.GITHUB_SCTOKEN}"),
+                                           string(name:'NPM_REGISTRIES_TOKEN_NORMAL' , value:"${params.NPM_REGISTRIES_TOKEN_NORMAL}"),
+                                           string(name:'NPM_REGISTRIES_TOKEN_SEALIGHTS' , value:"${params.NPM_REGISTRIES_TOKEN_SEALIGHTS}"),
                                            string(name:'AGENT_URL' , value:AGENT_URL[0]),
                                            string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
     }
