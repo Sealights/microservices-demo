@@ -55,6 +55,8 @@ RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .n
 
 RUN npm i ${AGENT_URL}
 
+RUN npm i
+
 RUN cat package.json
 
 RUN ls ./node_modules/.bin
