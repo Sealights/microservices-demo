@@ -59,6 +59,8 @@ RUN cat package.json
 
 RUN ls ./node_modules/.bin
 
+RUN -d ./node_modules/slnodejs && echo "Directory 'slnodejs' exists in node_modules." || echo "Directory 'slnodejs' does not exist in node_modules."
+
 RUN  ./node_modules/.bin/@sealights/slnodejs-canary-interval config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
 
