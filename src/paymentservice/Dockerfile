@@ -57,7 +57,6 @@ RUN npm install @sealights/slnodejs@1.0.36
 
 RUN cat package.json
 
-RUN mkdir ./node_modules/slnodejs && cp -r ./node_modules/@sealights/slnodejs-canary-internal/* ./node_modules/slnodejs
 
 RUN chmod +x ./node_modules/slnodejs/
 
