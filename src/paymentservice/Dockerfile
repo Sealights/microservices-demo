@@ -53,12 +53,14 @@ RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .n
     echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm i ${AGENT_URL}
+RUN npm install @sealights/slnodejs@1.0.36
 
 RUN cat package.json
 
 RUN mkdir ./node_modules/slnodejs && cp -r ./node_modules/@sealights/slnodejs-canary-internal/* ./node_modules/slnodejs
+
 RUN chmod +x ./node_modules/slnodejs/
+
 RUN ls ./node_modules/.bin
 
 RUN test -d ./node_modules/@sealights/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
