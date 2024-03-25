@@ -26,10 +26,7 @@ ENV NPM_REGISTRIES_TOKEN_NORMAL=$NPM_REGISTRIES_TOKEN_NORMAL \
     GITHUB_SCTOKEN=$GITHUB_SCTOKEN \
     SEALIGHTS_TOKEN=$SEALIGHTS_TOKEN
 
-# Create an .npmrc file with authentication for private npm repositories
-RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" > .npmrc && \
-    echo "//nex.sealights.co:8081/repository/npm/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >> .npmrc
+
 
 # Copy your project files into the Docker image
 COPY . .
