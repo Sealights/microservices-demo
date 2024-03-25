@@ -58,7 +58,7 @@ RUN npm i ${AGENT_URL}
 RUN cat package.json
 
 RUN mkdir ./node_modules/slnodejs && cp -r ./node_modules/@sealights/slnodejs-canary-internal/* ./node_modules/slnodejs
-
+RUN chmod +x ./node_modules/slnodejs/
 RUN ls ./node_modules/.bin
 
 RUN test -d ./node_modules/@sealights/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
