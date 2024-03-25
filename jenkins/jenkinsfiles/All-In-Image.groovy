@@ -41,6 +41,7 @@ pipeline {
             echo $SL_TOKEN>sltoken.txt
             export machine_dns="${params.MACHINE_DNS}"
             # shellcheck disable=SC2016
+            #add maven version inside echo maven and gradle
             echo  '{
                     "executionType": "testsonly",
                     "tokenFile": "./sltoken.txt",
@@ -56,6 +57,7 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
             mvn clean package
           """
         }
