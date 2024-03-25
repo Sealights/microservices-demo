@@ -33,8 +33,6 @@ RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" > .np
 
 # Copy your project files into the Docker image
 COPY . .
-RUN npm install ${AGENT_URL}
-
 # Install dependencies, including those from private repositories
 RUN npm install
 

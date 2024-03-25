@@ -30,11 +30,8 @@ RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" > .np
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >> .npmrc
 
 # Installing production dependencies
-RUN npm install --only=production
-
+RUN npm install
 # Installing any additional dependencies including AGENT_URL if it's not part of package.json
-RUN npm install "${AGENT_URL}"
-
 # Final stage, setting up the runtime environment
 FROM base
 
