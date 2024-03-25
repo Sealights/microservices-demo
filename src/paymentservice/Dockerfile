@@ -48,12 +48,14 @@ RUN echo "NPM_REGISTRIES_TOKEN_NORMAL=${NPM_REGISTRIES_TOKEN_NORMAL}" && \
     echo "GITHUB_SCTOKEN=${GITHUB_SCTOKEN}"
 
 
-# Create an .npmrc file on-the-fly with your GitHub PAT
+# Create an .npmrc
 RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
     echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
 RUN npm i ${AGENT_URL}
+
+RUN can package.json
 
 RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
