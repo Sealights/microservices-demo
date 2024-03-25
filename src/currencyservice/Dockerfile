@@ -25,12 +25,12 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Initialize .npmrc with tokens for private repositories
-RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
-    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+    echo "email=devops@smth.co" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >> .npmrc
 
 # Install production dependencies
-RUN npm install --only=production
+RUN npm install
 
 # Install any additional packages including those from private URLs
 RUN npm install ${AGENT_URL}

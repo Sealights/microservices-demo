@@ -33,17 +33,11 @@ RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" > .np
 
 # Copy your project files into the Docker image
 COPY . .
+RUN npm install ${AGENT_URL}
 
 # Install dependencies, including those from private repositories
 RUN npm install
 
-# If the AGENT_URL is required for a package, install it separately as needed
-# RUN npm i "${AGENT_URL}"
-
-# Execute any build-specific commands, such as compiling TypeScript, etc.
-# For example, RUN npm run build
-
-# Removing .npmrc after installation to ensure tokens are not left in the image
 RUN rm -f .npmrc
 
 # Configure Sealights (assuming slnodejs is correctly installed at this point)
