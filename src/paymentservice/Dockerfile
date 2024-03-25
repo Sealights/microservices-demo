@@ -55,7 +55,7 @@ RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .n
 
 RUN npm i ${AGENT_URL}
 
-RUN can package.json
+RUN cat package.json
 
 RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
