@@ -57,10 +57,12 @@ RUN npm i ${AGENT_URL}
 
 RUN cat package.json
 
-RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN ls ./node_modules/.bin
+
+RUN  ./node_modules/.bin/@sealights/slnodejs-canary-interval config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
 
-RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN ./node_modules/.bin/@sealights/slnodejs-canary-interval scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 
 FROM base
 
@@ -76,4 +78,4 @@ ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 EXPOSE 50051
 
-CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
+CMD  ./node_modules/.bin/@sealights/slnodejs-canary-interval run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
