@@ -72,8 +72,8 @@ pipeline{
                     --build-arg SEALIGHTS_TOKEN=${SL_TOKEN} \
                     --build-arg AGENT_URL=${AGENT_URL} \
                     --build-arg GITHUB_SCTOKEN=${GITHUB_SCTOKEN} \
-                    --build-arg GITHUB_SCTOKEN=${NPM_REGISTRIES_TOKEN_SEALIGHTS} \
-                    --build-arg GITHUB_SCTOKEN=${NPM_REGISTRIES_TOKEN_NORMAL} \
+                    --build-arg NPM_REGISTRIES_TOKEN_SEALIGHTS=${NPM_REGISTRIES_TOKEN_SEALIGHTS} \
+                    --build-arg NPM_REGISTRIES_TOKEN_NORMAL=${NPM_REGISTRIES_TOKEN_NORMAL} \
                     --build-arg AGENT_URL_SLCI=${AGENT_URL_SLCI}
                 """
               }
