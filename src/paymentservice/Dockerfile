@@ -57,7 +57,7 @@ RUN npm i ${AGENT_URL}
 
 RUN cat package.json
 
-COPY ./node_modules/@sealights/slnodejs-canary-internal ./node_modules/slnodejs
+RUN cp ./node_modules/@sealights/slnodejs-canary-internal ./node_modules/slnodejs
 
 RUN ls ./node_modules/.bin
 
