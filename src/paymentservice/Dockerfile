@@ -1,10 +1,16 @@
-# Use a specific version of Node.js as a base image
+# Base image with specific Node.js version
 FROM node:20.5.0-alpine@sha256:11087abe911baf2fd7e34192f4598bf7e438239e9914f5b7ecda5fb5a7b1a2dd as base
 
-# Builder stage to handle building your application
+# Install build dependencies (if your packages require them for building)
+RUN apk add --no-cache python3 make g++
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Builder stage to handle dependencies and build
 FROM base as builder
 
-# Set build arguments
+# Passing build-time variables
 ARG AGENT_URL
 ARG GITHUB_SCTOKEN
 ARG NPM_REGISTRIES_TOKEN_NORMAL
@@ -13,50 +19,53 @@ ARG SEALIGHTS_TOKEN
 ARG BRANCH
 ARG BUILD_NAME=0.4.3
 
-# Install dependencies needed for building certain npm packages
-RUN apk add --update --no-cache \
-    python3 \
-    make \
-    g++
-
-WORKDIR /usr/src/app
-
-# Copy the entire project into the container
-# Make sure your .dockerignore file is configured to exclude what you don't need
-COPY . .
-
-# Install production dependencies only
-RUN npm install --only=production
-
-# Set environment variables from build arguments
+# Set environment variables from the build arguments
+# This step is crucial for using these tokens during npm install
 ENV NPM_REGISTRIES_TOKEN_NORMAL=$NPM_REGISTRIES_TOKEN_NORMAL \
     NPM_REGISTRIES_TOKEN_SEALIGHTS=$NPM_REGISTRIES_TOKEN_SEALIGHTS \
-    GITHUB_SCTOKEN=$GITHUB_SCTOKEN
+    GITHUB_SCTOKEN=$GITHUB_SCTOKEN \
+    SEALIGHTS_TOKEN=$SEALIGHTS_TOKEN
 
-# Configure .npmrc for private package access
-RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
-    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+# Create an .npmrc file with authentication for private npm repositories
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" > .npmrc && \
+    echo "//nex.sealights.co:8081/repository/npm/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >> .npmrc
 
-# Install the agent using the provided URL
-RUN npm i ${AGENT_URL}
+# Copy your project files into the Docker image
+COPY . .
 
-# Configure Sealights
-RUN ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+# Install dependencies, including those from private repositories
+RUN npm install
 
-# Scan with Sealights
-RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+# If the AGENT_URL is required for a package, install it separately as needed
+# RUN npm i "${AGENT_URL}"
 
+# Execute any build-specific commands, such as compiling TypeScript, etc.
+# For example, RUN npm run build
+
+# Removing .npmrc after installation to ensure tokens are not left in the image
+RUN rm -f .npmrc
+
+# Configure Sealights (assuming slnodejs is correctly installed at this point)
+RUN npx slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN npx slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+
+# Final stage, preparing the runtime environment
 FROM base
 
+# Set working directory
 WORKDIR /usr/src/app
-# Copy essential files from the builder stage
-COPY --from=builder /usr/src/app/buildSessionId .
 
-# Copy the node_modules directory from the builder stage
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY . .
-ENV NODE_DEBUG=sl
-ENV SL_LOG_LEVEL=debug
+# Copy built assets from the builder stage
+COPY --from=builder /usr/src/app .
+
+# Expose the port your app will run on
 EXPOSE 50051
-CMD ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
+
+# Set environment variables for runtime (if needed)
+ENV NODE_ENV=production \
+    NODE_DEBUG=sl \
+    SL_LOG_LEVEL=debug
+
+# Command to run your application
+CMD ["npx", "slnodejs", "run", "--tokenfile", "sltoken.txt", "--buildsessionidfile", "buildSessionId", "--labid", "integ_master_loadgenerator", "--workspacepath", ".", "--useinitialcolor", "true", "--useslnode2", "--", "index.js"]
