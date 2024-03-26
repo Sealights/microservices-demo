@@ -42,12 +42,6 @@ ENV NPM_REGISTRIES_TOKEN_NORMAL=$NPM_REGISTRIES_TOKEN_NORMAL \
     NPM_REGISTRIES_TOKEN_SEALIGHTS=$NPM_REGISTRIES_TOKEN_SEALIGHTS \
     GITHUB_SCTOKEN=$GITHUB_SCTOKEN
 
-# Run echo commands to print the values (useful for debugging; remove in production)
-RUN echo "NPM_REGISTRIES_TOKEN_NORMAL=${NPM_REGISTRIES_TOKEN_NORMAL}" && \
-    echo "NPM_REGISTRIES_TOKEN_SEALIGHTS=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" && \
-    echo "GITHUB_SCTOKEN=${GITHUB_SCTOKEN}"
-
-
 # Create an .npmrc
 RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
     echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
