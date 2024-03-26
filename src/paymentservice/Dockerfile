@@ -47,7 +47,7 @@ RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
     echo "email=devops@sealights.io" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm install @sealights/slnodejs@1.0.36
+RUN npm install @sealights/slnodejs@1.0.37
 
 RUN cat package.json
 
