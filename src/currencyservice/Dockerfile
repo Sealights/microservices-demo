@@ -26,7 +26,14 @@ RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
     echo "email=devops@sealights.io" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm install @sealights/slnodejs@1.0.37
+RUN npm install @sealights/slnodejs@1.0.38
+
+RUN cat package.json
+
+RUN ls ./node_modules/.bin
+
+RUN test -d ./node_modules/@sealights/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
+
 
 FROM base
 
