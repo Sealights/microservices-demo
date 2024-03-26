@@ -26,7 +26,7 @@ RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
     echo "email=devops@sealights.io" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm install @sealights/slnodejs@6.1.106-1.dev
+RUN npm install ${AGENT_URL}
 
 RUN cat package.json
 
@@ -44,12 +44,12 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY . .
 
 #run comfig
-RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN  ./node_modules/.bin/slnodejs-git config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
 #sl-scan
-RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN ./node_modules/.bin/slnodejs-git scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 
 
 EXPOSE 7000
-CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
+CMD  ./node_modules/.bin/slnodejs-git run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
