@@ -38,7 +38,7 @@ RUN cat package.json
 
 RUN ls ./node_modules/.bin
 
-RUN test -d ./node_modules/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
+RUN test -d ./node_modules/slnodejs && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
 
 
 FROM base
@@ -50,12 +50,12 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY . .
 
 #run comfig
-RUN  ./node_modules/.bin/slnodejs-canary-internal config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
 #sl-scan
-RUN ./node_modules/.bin/slnodejs-canary-internal scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 
 
 EXPOSE 7000
-CMD  ./node_modules/.bin/slnodejs-canary-internal run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
+CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js

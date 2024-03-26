@@ -52,7 +52,7 @@ RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
     echo "email=devops@sealights.io" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm install @sealights/slnodejs-canary-internal@1.0.40
+RUN npm install @sealights/slnodejs@1.0.41
 
 RUN cat package.json
 
@@ -60,10 +60,10 @@ RUN ls ./node_modules/.bin
 
 RUN test -d ./node_modules/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
 
-RUN  ./node_modules/.bin/slnodejs-canary-internal config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
 
-RUN ./node_modules/.bin/slnodejs-canary-internal scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 
 FROM base
 
