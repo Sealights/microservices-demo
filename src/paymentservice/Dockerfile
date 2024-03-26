@@ -54,7 +54,7 @@ RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
 
 RUN echo ${AGENT_URL}
 
-RUN npm install ${AGENT_URL} --registry=https://npm.pkg.github.com
+RUN npm install ${AGENT_URL}
 
 RUN cat package.json
 
