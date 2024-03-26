@@ -43,9 +43,14 @@ ENV NPM_REGISTRIES_TOKEN_NORMAL=$NPM_REGISTRIES_TOKEN_NORMAL \
     GITHUB_SCTOKEN=$GITHUB_SCTOKEN
 
 # Create an .npmrc
-RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
-    echo "email=devops@sealights.io" >> .npmrc && \
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
+
+#RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+#    echo "email=devops@sealights.io" >> .npmrc && \
+#    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
 RUN npm install ${AGENT_URL}
 
@@ -53,12 +58,12 @@ RUN cat package.json
 
 RUN ls ./node_modules/.bin
 
-RUN test -d ./node_modules/@sealights/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
+RUN test -d ./node_modules/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
 
-RUN  ./node_modules/.bin/slnodejs-git config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN  ./node_modules/.bin/slnodejs-canary-internal config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
 
 
-RUN ./node_modules/.bin/slnodejs-git scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN ./node_modules/.bin/slnodejs-canary-internal scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 
 FROM base
 
@@ -74,4 +79,4 @@ ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 EXPOSE 50051
 
-CMD  ./node_modules/.bin/slnodejs-git run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
+CMD  ./node_modules/.bin/slnodejs-canary-internal run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js

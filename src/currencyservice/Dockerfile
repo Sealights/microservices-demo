@@ -21,10 +21,14 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm install --only=production
-
-RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
-    echo "email=devops@sealights.io" >> .npmrc && \
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
+
+#RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+#    echo "email=devops@sealights.io" >> .npmrc && \
+#    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
 RUN npm install ${AGENT_URL}
 
@@ -32,7 +36,7 @@ RUN cat package.json
 
 RUN ls ./node_modules/.bin
 
-RUN test -d ./node_modules/@sealights/slnodejs && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
+RUN test -d ./node_modules/slnodejs-canary-internal && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
 
 
 FROM base
@@ -44,9 +48,9 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY . .
 
 #run comfig
-RUN  ./node_modules/.bin/slnodejs-git config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN  ./node_modules/.bin/slnodejs-canary-internal config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
 #sl-scan
-RUN ./node_modules/.bin/slnodejs-git scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN ./node_modules/.bin/slnodejs-canary-internal scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 
