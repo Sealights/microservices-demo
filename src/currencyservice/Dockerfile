@@ -21,16 +21,18 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm install --only=production
-RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
-    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+
+
+#RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+ #   echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+  #  echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
+
+RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+    echo "email=devops@sealights.io" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-
-#RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
-#    echo "email=devops@sealights.io" >> .npmrc && \
-#    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
-
-RUN npm install ${AGENT_URL}
+RUN npm install @sealights/slnodejs-canary-internal@1.0.40
 
 RUN cat package.json
 
@@ -56,4 +58,4 @@ ENV SL_LOG_LEVEL=debug
 
 
 EXPOSE 7000
-CMD  ./node_modules/.bin/slnodejs-git run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
+CMD  ./node_modules/.bin/slnodejs-canary-internal run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js

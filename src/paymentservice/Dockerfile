@@ -43,16 +43,16 @@ ENV NPM_REGISTRIES_TOKEN_NORMAL=$NPM_REGISTRIES_TOKEN_NORMAL \
     GITHUB_SCTOKEN=$GITHUB_SCTOKEN
 
 # Create an .npmrc
-RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
-    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
-
-
-#RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
-#    echo "email=devops@sealights.io" >> .npmrc && \
+#RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+#    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
 #    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
 
-RUN npm install ${AGENT_URL}
+
+RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+    echo "email=devops@sealights.io" >> .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
+RUN npm install @sealights/slnodejs-canary-internal@1.0.40
 
 RUN cat package.json
 
