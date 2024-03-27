@@ -36,7 +36,7 @@ RUN echo ${AGENT_URL}
 
 RUN npm install ${AGENT_URL}
 
-RUM npm install
+RUN npm install
 
 RUN cat package.json
 
