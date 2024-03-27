@@ -36,8 +36,6 @@ RUN echo ${AGENT_URL}
 
 RUN npm install ${AGENT_URL}
 
-RUN npm install
-
 RUN cat package.json
 
 RUN ls ./node_modules/.bin
