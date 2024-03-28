@@ -31,12 +31,12 @@ spec:
         - infinity
       resources:
         requests:
-          memory: 5000Mi
+          memory: 7000Mi
           cpu: 3
           ephemeral-storage: 3000Mi
         limits:
-          memory: 25000Mi
+          memory: 50000Mi
           cpu: 7
-          ephemeral-storage: 20000Mi
+          ephemeral-storage: 7000Mi
   nodeSelector:
     type: jenkins
