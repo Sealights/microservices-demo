@@ -15,12 +15,12 @@ spec:
       resources:
         requests:
           cpu: 2
-          memory: 25000Mi
-          ephemeral-storage: 50000Mi
+          memory: 2500Mi
+          ephemeral-storage: 5000Mi
         limits:
           cpu: 5
-          memory: 70000Mi
-          ephemeral-storage: 15000Mi
+          memory: 7000Mi
+          ephemeral-storage: 1500Mi
       securityContext:
         privileged: true
     - name: shell
@@ -31,12 +31,12 @@ spec:
         - infinity
       resources:
         requests:
-          memory: 25000Mi
+          memory: 2500Mi
           cpu: 2.5
-          ephemeral-storage: 30000Mi
+          ephemeral-storage: 3000Mi
         limits:
-          memory: 70000Mi
+          memory: 7000Mi
           cpu: 5
-          ephemeral-storage: 70000Mi
+          ephemeral-storage: 7000Mi
   nodeSelector:
     type: jenkins
