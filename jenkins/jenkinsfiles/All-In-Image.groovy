@@ -58,7 +58,6 @@ pipeline {
     stage('Cucumberjs framework starting'){
       steps{
         script{
-          if( params.Run_all_tests == true || params.Cucumberjs == true) {
             sh """
                   echo 'Cucumberjs framework starting ..... '
                   cd integration-tests/Cucumber-js
@@ -76,7 +75,6 @@ pipeline {
                   ./node_modules/.bin/slnodejs end --tokenfile ./sltoken.txt --labid ${params.SL_LABID}
                   sleep ${env.wait_time}
                   """
-          }
         }
       }
     }
@@ -104,32 +102,32 @@ pipeline {
       steps{
         script{
           sh """
-                    #!/bin/bash
-                    export machine_dns="${params.MACHINE_DNS}"
-                    cd ./integration-tests/java-tests-gradle
-                    echo $SL_TOKEN>sltoken.txt
-                    echo '{
-                        "executionType": "testsonly",
-                        "tokenFile": "./sltoken.txt",
-                        "createBuildSessionId": false,
-                        "testStage": "Junit without testNG-gradle",
-                        "runFunctionalTests": true,
-                        "labId": "${SL_LABID}",
-                        "proxy": null,
-                        "logEnabled": false,
-                        "logDestination": "console",
-                        "logLevel": "warn",
-                        "sealightsJvmParams": {}
-                    }' > slgradletests.json
+            #!/bin/bash
+            export machine_dns="${params.MACHINE_DNS}"
+            cd ./integration-tests/java-tests-gradle
+            echo $SL_TOKEN>sltoken.txt
+            echo '{
+                "executionType": "testsonly",
+                "tokenFile": "./sltoken.txt",
+                "createBuildSessionId": false,
+                "testStage": "Junit without testNG-gradle",
+                "runFunctionalTests": true,
+                "labId": "${SL_LABID}",
+                "proxy": null,
+                "logEnabled": false,
+                "logDestination": "console",
+                "logLevel": "warn",
+                "sealightsJvmParams": {}
+            }' > slgradletests.json
 
 
-                    echo "Adding Sealights to Tests Project gradle file..."
-                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-                    gradle test
+            echo "Adding Sealights to Tests Project gradle file..."
+            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+            gradle test
 
 
-                    sleep ${wait_time}
-                    """
+            sleep ${wait_time}
+            """
         }
       }
     }
@@ -175,32 +173,32 @@ pipeline {
       steps{
         script{
           sh """
-                    #!/bin/bash
-                    export machine_dns="${params.MACHINE_DNS}"
-                    echo 'Cucumber framework starting ..... '
-                    cd ./integration-tests/cucumber-framework/
-                    echo ${params.SL_TOKEN}>sltoken.txt
-                    # shellcheck disable=SC2016
-                    echo  '{
-                            "executionType": "testsonly",
-                            "tokenFile": "./sltoken.txt",
-                            "createBuildSessionId": false,
-                            "testStage": "Cucmber framework java ",
-                            "runFunctionalTests": true,
-                            "labId": "${params.SL_LABID}",
-                            "proxy": null,
-                            "logEnabled": false,
-                            "logDestination": "console",
-                            "logLevel": "warn",
-                            "sealightsJvmParams": {}
-                            }' > slmaventests.json
-                    echo "Adding Sealights to Tests Project POM file..."
-                    java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            #!/bin/bash
+            export machine_dns="${params.MACHINE_DNS}"
+            echo 'Cucumber framework starting ..... '
+            cd ./integration-tests/cucumber-framework/
+            echo ${params.SL_TOKEN}>sltoken.txt
+            # shellcheck disable=SC2016
+            echo  '{
+                    "executionType": "testsonly",
+                    "tokenFile": "./sltoken.txt",
+                    "createBuildSessionId": false,
+                    "testStage": "Cucmber framework java ",
+                    "runFunctionalTests": true,
+                    "labId": "${params.SL_LABID}",
+                    "proxy": null,
+                    "logEnabled": false,
+                    "logDestination": "console",
+                    "logLevel": "warn",
+                    "sealightsJvmParams": {}
+                    }' > slmaventests.json
+            echo "Adding Sealights to Tests Project POM file..."
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
 
-                    unset MAVEN_CONFIG
-                    ./mvnw test
-                    sleep ${wait_time}
-                    """
+            unset MAVEN_CONFIG
+            ./mvnw test
+            sleep ${wait_time}
+            """
 
         }
       }
@@ -212,33 +210,31 @@ pipeline {
       steps{
         script{
           sh """
-                    #!/bin/bash
-                    echo 'Junit support testNG framework starting ..... '
-                    pwd
-                    ls
-                    cd ./integration-tests/support-testNG
-                    export SL_TOKEN="${params.SL_TOKEN}"
-                    echo $SL_TOKEN>sltoken.txt
-                    export machine_dns="${params.MACHINE_DNS}"
-                    # shellcheck disable=SC2016
-                    echo  '{
-                            "executionType": "testsonly",
-                            "tokenFile": "./sltoken.txt",
-                            "createBuildSessionId": false,
-                            "testStage": "Junit support testNG",
-                            "runFunctionalTests": true,
-                            "labId": "${params.SL_LABID}",
-                            "proxy": null,
-                            "logEnabled": false,
-                            "logDestination": "console",
-                            "logLevel": "warn",
-                            "sealightsJvmParams": {}
-                            }' > slmaventests.json
-                    echo "Adding Sealights to Tests Project POM file..."
-                    java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-                    mvn clean package
-                    sleep ${wait_time}
-                    """
+            #!/bin/bash
+            echo 'Junit support testNG framework starting ..... '
+            cd ./integration-tests/support-testNG
+            export SL_TOKEN="${params.SL_TOKEN}"
+            echo $SL_TOKEN>sltoken.txt
+            export machine_dns="${params.MACHINE_DNS}"
+            # shellcheck disable=SC2016
+            echo  '{
+                    "executionType": "testsonly",
+                    "tokenFile": "./sltoken.txt",
+                    "createBuildSessionId": false,
+                    "testStage": "Junit support testNG",
+                    "runFunctionalTests": true,
+                    "labId": "${params.SL_LABID}",
+                    "proxy": null,
+                    "logEnabled": false,
+                    "logDestination": "console",
+                    "logLevel": "warn",
+                    "sealightsJvmParams": {}
+                    }' > slmaventests.json
+            echo "Adding Sealights to Tests Project POM file..."
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            mvn clean package
+            sleep ${wait_time}
+            """
         }
       }
     }
@@ -248,34 +244,32 @@ pipeline {
       steps{
         script{
           sh """
-                    #!/bin/bash
-                    echo 'Junit without testNG framework starting ..... '
-                    pwd
-                    ls
-                    cd integration-tests/java-tests
-                    export SL_TOKEN="${params.SL_TOKEN}"
-                    echo $SL_TOKEN>sltoken.txt
-                    export machine_dns="${params.MACHINE_DNS}"
-                    # shellcheck disable=SC2016
-                    echo  '{
-                            "executionType": "testsonly",
-                            "tokenFile": "./sltoken.txt",
-                            "createBuildSessionId": false,
-                            "testStage": "Junit without testNG",
-                            "runFunctionalTests": true,
-                            "labId": "${params.SL_LABID}",
-                            "proxy": null,
-                            "logEnabled": false,
-                            "logDestination": "console",
-                            "logLevel": "warn",
-                            "sealightsJvmParams": {}
-                            }' > slmaventests.json
-                    echo "Adding Sealights to Tests Project POM file..."
-                    java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            #!/bin/bash
+            echo 'Junit without testNG framework starting ..... '
+            cd integration-tests/java-tests
+            export SL_TOKEN="${params.SL_TOKEN}"
+            echo $SL_TOKEN>sltoken.txt
+            export machine_dns="${params.MACHINE_DNS}"
+            # shellcheck disable=SC2016
+            echo  '{
+                    "executionType": "testsonly",
+                    "tokenFile": "./sltoken.txt",
+                    "createBuildSessionId": false,
+                    "testStage": "Junit without testNG",
+                    "runFunctionalTests": true,
+                    "labId": "${params.SL_LABID}",
+                    "proxy": null,
+                    "logEnabled": false,
+                    "logDestination": "console",
+                    "logLevel": "warn",
+                    "sealightsJvmParams": {}
+                    }' > slmaventests.json
+            echo "Adding Sealights to Tests Project POM file..."
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
 
-                    mvn clean package
-                    sleep ${wait_time}
-                    """
+            mvn clean package
+            sleep ${wait_time}
+            """
         }
       }
     }
@@ -345,9 +339,6 @@ pipeline {
         }
       }
     }
-
-
-
     stage('Soap-UI framework'){
       steps{
         script{
@@ -389,9 +380,6 @@ pipeline {
       }
     }
 
-
-
-
     stage('Pytest framework'){
       steps{
         script{
@@ -405,6 +393,37 @@ pipeline {
                 cd ../..
                 sleep ${wait_time}
                 """
+        }
+      }
+    }
+    stage('Karate framework') {
+      steps{
+        script{
+            sh """
+                      #!/bin/bash
+                      echo 'Karate framework starting ..... '
+                      cd ./integration-tests/karate-tests/
+                      echo ${env.SL_TOKEN}>sltoken.txt
+                      echo  '{
+                              "executionType": "testsonly",
+                              "tokenFile": "./sltoken.txt",
+                              "createBuildSessionId": false,
+                              "testStage": "Karate framework java ",
+                              "runFunctionalTests": true,
+                              "labId": "${params.SL_LABID}",
+                              "proxy": null,
+                              "logEnabled": false,
+                              "logDestination": "console",
+                              "logLevel": "info",
+                              "sealightsJvmParams": {}
+                              }' > slmaventests.json
+                      echo "Adding Sealights to Tests Project POM file..."
+                      java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+
+                      unset MAVEN_CONFIG
+                      mvn clean test -Dkarate.env=${env.MACHINE_DNS}
+                      sleep ${env.wait_time}
+                      """
         }
       }
     }
