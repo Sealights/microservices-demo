@@ -201,7 +201,7 @@ pipeline {
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
-          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
+          MapUrl.put('NODE_AGENT_URL', "slnodejs")
           MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
           MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
