@@ -149,6 +149,13 @@ func main() {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 	r.HandleFunc("/robots.txt", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "User-agent: *\nDisallow: /") })
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
+// Add method
+	r.HandleFunc("/added", svc.added).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/added/number/{num}", svc.addedNumber).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/added/content", svc.addedContent).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/added/content", svc.addedContent).Methods(http.MethodPost, http.MethodHead)
+	r.HandleFunc("/added/content", svc.addedContent).Methods(http.MethodDelete, http.MethodHead)
+
 
 	var handler http.Handler = r
 	handler = &logHandler{log: log, next: handler}     // add logging

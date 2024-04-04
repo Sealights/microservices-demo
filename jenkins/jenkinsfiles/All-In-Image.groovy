@@ -427,6 +427,21 @@ pipeline {
         }
       }
     }
+    stage('Added tests'){
+      steps{
+        script{
+            sh"""
+                  pip install pytest && pip install requests
+                  echo 'Pytest tests starting ..... '
+                  export machine_dns="${env.MACHINE_DNS}"
+                  cd ./integration-tests/python-tests
+                  sl-python pytest --teststage "Added tests"  --labid ${params.SL_LABID} --token ${env.SL_TOKEN} added_tests.py
+                  cd ../..
+                  sleep ${env.wait_time}
+                  """
+        }
+      }
+    }
   }
 }
 

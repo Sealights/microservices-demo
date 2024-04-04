@@ -32,6 +32,8 @@ import (
 
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/frontend/genproto"
 	"github.com/GoogleCloudPlatform/microservices-demo/src/frontend/money"
+
+	"encoding/json"
 )
 
 type platformDetails struct {
@@ -245,6 +247,86 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusFound)
 }
 
+// Added new api function
+func (fe *frontendServer) added(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log.Debug("added")
+	
+	w.Header().Set("Content-Type", "application/json")
+    message := map[string]string{"message": "Hello from the frontend service!"}
+    json.NewEncoder(w).Encode(message)
+}
+
+// ceck api with value, nested, function in another file
+func (fe *frontendServer) addedNumber(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log.Debug("added number")
+	num := mux.Vars(r)["num"]
+	if num == "5" {
+		w.Header().Set("Content-Type", "application/json")
+		message := map[string]string{"message": "Number equals 5"}
+		json.NewEncoder(w).Encode(message)
+		nestedFunction()
+	} else if num == "4" {
+		w.Header().Set("Content-Type", "application/json")
+		message := map[string]string{"message": "Number equal 4"}
+		json.NewEncoder(w).Encode(message)
+		AnotherFile()
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		message := map[string]string{"message": "Number not equal 5 nor 4"}
+		json.NewEncoder(w).Encode(message)
+	}
+}
+func nestedFunction() {
+    nestedFunction1()
+}
+func nestedFunction1() {
+    nestedFunction2()
+}
+func nestedFunction2() {
+    fmt.Println("Nested function")
+}
+
+// If in api content
+type Data struct {
+    Num  int    `json:"num"`
+}
+
+func (fe *frontendServer) addedContent(w http.ResponseWriter, r *http.Request) {
+    if r.Method == "POST" {
+        var data Data
+        err := json.NewDecoder(r.Body).Decode(&data)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusBadRequest)
+            return
+        }
+		if data.Num == 5 {
+			
+		}else if data.Num == 4 {
+			fmt.Println("Num is 4")
+		} else {
+			nestedFunctionContentNone()
+		}
+    }
+	if r.Method == "GET" {
+		fmt.Println("Method is GET")
+	}
+	if r.Method == "DELETE" {
+		nestedFunctionContentDELETE()
+	}
+}
+func nestedFunctionContent() {
+    fmt.Println("Nested function Content")
+}
+func nestedFunctionContentNone() {
+    fmt.Println("Nested function Content none of the ifs")
+}
+func nestedFunctionContentDELETE() {
+    fmt.Println("Method is DELETE")
+}
+
+// End of Added new api function
 func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("view user cart")
