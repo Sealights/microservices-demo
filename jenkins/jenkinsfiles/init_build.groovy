@@ -39,7 +39,7 @@ pipeline {
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
                         | jq -r '.[0].name'""").trim()
-          echo "${verion}"
+          echo "${env.verion}"
         }
       }
     }
