@@ -24,10 +24,6 @@ pipeline {
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
   }
-  environment {
-    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
-  }
-
   stages {
     stage('Clone Repository') {
       steps {
