@@ -57,10 +57,16 @@ pipeline {
       steps {
         container(name: 'kaniko') {
           script {
+            def verion = sh(returnStdout: true, script: """gh api \\
+                        -H "Accept: application/vnd.github+json" \\
+                        -H "X-GitHub-Api-Version: 2022-11-28" \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
+                        | jq -r '.[0].name'""").trim()
+            echo "${verion}"
             def CONTEXT = "./initContainers/${params.LANG}InitContainer"
             def DP = "${CONTEXT}/Dockerfile"
             def D = "${env.ECR_URI}:${params.TAG}"
-            def VERSION = "${params.VERSION}"
+            def VERSION = "${verion}"
             sh """
                             /kaniko/executor \
                             --context ${CONTEXT} \
