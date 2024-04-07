@@ -6,9 +6,12 @@ pipeline {
       defaultContainer "shell"
     }
   }
+
   environment {
-    GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
+
+
   parameters {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
