@@ -25,7 +25,7 @@ pipeline {
     string(name: 'LANG', defaultValue: 'javaInitContainer', description: 'Service name to build')
   }
   environment {
-    ECR_FULL_NAME = "btq-${params.SERVICE}"
+    ECR_FULL_NAME = "${params.LANG}-InitContainer"
     ECR_URI = "534369319675.dkr.ecr.us-west-2.amazonaws.com/${env.ECR_FULL_NAME}"
     GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
