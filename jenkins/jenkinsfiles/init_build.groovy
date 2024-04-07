@@ -52,7 +52,7 @@ pipeline {
         }
       }
     }
-    stage("Build Docker ${params.LANG} Image") {
+    stage('Build InitContainer Image') {
       steps {
         container(name: 'kaniko') {
           script {
