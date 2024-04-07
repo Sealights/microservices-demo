@@ -40,7 +40,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          def verion = sh(returnStdout: true, script: """gh api \\                                                                                                                                           ─╯
+          def verion = sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
