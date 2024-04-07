@@ -43,6 +43,10 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
+          def verion = sh(returnStdout: true, script: """gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28"  /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions | jq -r '.[0].name')""").trim()
+          build(job: 'init_build', parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),
+                                                string(name:'LANG' , value:"javaInitContainer"),
+                                                string(name:'VERSION' , value:"${verion}"),])
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
