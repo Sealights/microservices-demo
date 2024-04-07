@@ -6,12 +6,6 @@ pipeline {
       defaultContainer "shell"
     }
   }
-
-  environment {
-    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
-  }
-
-
   parameters {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
@@ -29,6 +23,9 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+  }
+  environment {
+    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
 
   stages {
