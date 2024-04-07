@@ -1,5 +1,5 @@
 @Library('main-shared-library') _
-pipeline{
+pipeline {
   agent {
     kubernetes {
       yaml kubernetes.base_pod([
@@ -20,25 +20,27 @@ pipeline{
     }
   }
   parameters {
-    string(name: 'TAG', defaultValue: '1.2.2', description: 'latest tag')
-    string(name: 'BRANCH', defaultValue: 'main', description: 'defult branch')
+    string(name: 'TAG', defaultValue: '1.2.2', description: 'Latest tag')
+    string(name: 'BRANCH', defaultValue: 'main', description: 'Default branch')
     string(name: 'LANG', defaultValue: '', description: 'Service name to build')
-    string(name: 'VERSION', defaultValue: '', description: 'agent version')
-
+    string(name: 'VERSION', defaultValue: '', description: 'Agent version')
   }
-  environment{
+  environment {
     ECR_FULL_NAME = "btq-${params.SERVICE}"
     ECR_URI = "534369319675.dkr.ecr.us-west-2.amazonaws.com/${env.ECR_FULL_NAME}"
   }
-  stages{
+  stages {
     stage('Init') {
       steps {
         script {
-          // Clone the repository with the specified branch.
           git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
         }
-        stage("Create ECR repository") {
-          def repo_policy = libraryResource 'ci/ecr/repo_policy.json'
+      }
+    }
+    stage("Create ECR repository") {
+      steps {
+        script {
+          def repo_policy = libraryResource('ci/ecr/repo_policy.json')
           ecr.create_repo([
             artifact_name: "${env.ECR_FULL_NAME}",
             key_type: "KMS"
@@ -48,28 +50,29 @@ pipeline{
             repo_policy: repo_policy
           ])
         }
-        stage("Build Docker ${params.LANG} Image") {
-          container(name: 'kaniko'){
-            script {
-              def CONTEXT = "./initContainers/${params.LANG}InitContainer"
-              def DP = "${CONTEXT}/Dockerfile"
-              def D = "${env.ECR_URI}:${params.TAG}"
-              def VERSION = "${params.VERSION}"
-              def GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+      }
+    }
+    stage("Build Docker ${params.LANG} Image") {
+      steps {
+        container(name: 'kaniko') {
+          script {
+            def CONTEXT = "./initContainers/${params.LANG}InitContainer"
+            def DP = "${CONTEXT}/Dockerfile"
+            def D = "${env.ECR_URI}:${params.TAG}"
+            def VERSION = "${params.VERSION}"
+            def GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
 
-              sh """
-                    /kaniko/executor \
-                    --context ${CONTEXT} \
-                    --dockerfile ${DP} \
-                    --destination ${D} \
-                    --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} \
-                    --build-arg VERSION=${VERSION}
-                """
-            }
+            sh """
+                /kaniko/executor \
+                --context ${CONTEXT} \
+                --dockerfile ${DP} \
+                --destination ${D} \
+                --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} \
+                --build-arg VERSION=${VERSION}
+            """
           }
         }
       }
     }
   }
 }
-
