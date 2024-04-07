@@ -33,17 +33,6 @@ pipeline{
         script {
           // Clone the repository with the specified branch.
           git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
-          stage("Create ECR repository") {
-            def repo_policy = libraryResource 'ci/ecr/repo_policy.json'
-            ecr.create_repo([
-              artifact_name: "${env.ECR_FULL_NAME}",
-              key_type: "KMS"
-            ])
-            ecr.set_repo_policy([
-              artifact_name: "${env.ECR_FULL_NAME}",
-              repo_policy: repo_policy
-            ])
-          }
           stage("Build Docker ${params.SERVICE} Image") {
             container(name: 'kaniko'){
               script {
