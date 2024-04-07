@@ -28,6 +28,7 @@ pipeline {
   environment {
     ECR_FULL_NAME = "btq-${params.SERVICE}"
     ECR_URI = "534369319675.dkr.ecr.us-west-2.amazonaws.com/${env.ECR_FULL_NAME}"
+    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   stages {
     stage('Init') {
@@ -60,14 +61,12 @@ pipeline {
             def DP = "${CONTEXT}/Dockerfile"
             def D = "${env.ECR_URI}:${params.TAG}"
             def VERSION = "${params.VERSION}"
-            def GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
-
             sh """
                             /kaniko/executor \
                             --context ${CONTEXT} \
                             --dockerfile ${DP} \
                             --destination ${D} \
-                            --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} \
+                            --build-arg GITHUB_TOKEN=${env.GITHUB_TOKEN} \
                             --build-arg VERSION=${VERSION}
                         """
           }
