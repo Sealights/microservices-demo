@@ -13,7 +13,7 @@ pipeline {
         kaniko_cpu_request: "1.0",
         kaniko_memory_limit: "4500Mi",
         kaniko_cpu_limit: "2.5",
-        kaniko_storage_limit:"6500Mi",
+        kaniko_storage_limit: "6500Mi",
         node_selector: "jenkins"
       ])
       defaultContainer 'shell'
@@ -52,7 +52,7 @@ pipeline {
         }
       }
     }
-    stage("Build Docker ${params.LANG} Image") {
+    stage("Build Docker " + params.LANG + " Image") {
       steps {
         container(name: 'kaniko') {
           script {
@@ -63,13 +63,13 @@ pipeline {
             def GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
 
             sh """
-                /kaniko/executor \
-                --context ${CONTEXT} \
-                --dockerfile ${DP} \
-                --destination ${D} \
-                --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} \
-                --build-arg VERSION=${VERSION}
-            """
+                            /kaniko/executor \
+                            --context ${CONTEXT} \
+                            --dockerfile ${DP} \
+                            --destination ${D} \
+                            --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} \
+                            --build-arg VERSION=${VERSION}
+                        """
           }
         }
       }
