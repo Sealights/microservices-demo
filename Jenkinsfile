@@ -6,8 +6,9 @@ pipeline {
       defaultContainer "shell"
     }
   }
-
-
+  environment {
+    GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+  }
   parameters {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
@@ -44,6 +45,7 @@ pipeline {
       steps {
         script {
           def verion = sh(returnStdout: true, script: """gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28"  /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions | jq -r '.[0].name'""").trim()
+          echo "${verion}"
           build(job: 'init_build', parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),
                                                 string(name:'LANG' , value:"javaInitContainer"),
                                                 string(name:'VERSION' , value:"${verion}"),])
