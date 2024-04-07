@@ -22,8 +22,7 @@ pipeline {
   parameters {
     string(name: 'TAG', defaultValue: '1.2.2', description: 'Latest tag')
     string(name: 'BRANCH', defaultValue: 'main', description: 'Default branch')
-    string(name: 'LANG', defaultValue: '', description: 'Service name to build')
-    string(name: 'VERSION', defaultValue: '', description: 'Agent version')
+    string(name: 'LANG', defaultValue: 'javaInitContainer', description: 'Service name to build')
   }
   environment {
     ECR_FULL_NAME = "btq-${params.SERVICE}"
