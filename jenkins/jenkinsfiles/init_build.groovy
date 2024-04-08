@@ -67,13 +67,13 @@ pipeline {
             def D = "${env.ECR_URI}:${params.TAG}"
             def VERSION = "${env.verion}"
             sh """
-                            /kaniko/executor \
-                            --context ${CONTEXT} \
-                            --dockerfile ${DP} \
-                            --destination ${D} \
-                            --build-arg GITHUB_TOKEN=${env.GITHUB_TOKEN} \
-                            --build-arg VERSION=${VERSION}
-                        """
+                /kaniko/executor \
+                --context ${CONTEXT} \
+                --dockerfile ${DP} \
+                --destination ${D} \
+                --build-arg GITHUB_TOKEN=${env.GITHUB_TOKEN} \
+                --build-arg VERSION=${VERSION}
+            """
           }
         }
       }
