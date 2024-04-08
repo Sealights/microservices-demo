@@ -64,13 +64,15 @@ pipeline {
           script {
             def CONTEXT = "./initContainers/${params.LANG}"
             def DP = "${CONTEXT}/Dockerfile"
-            def D = "${env.ECR_URI}:${BUILD_NUMBER}"
+            def D = "${env.ECR_URI}:latest"
+            def DD ="${env.ECR_URI}:${BUILD_NUMBER}"
             def VERSION = "${env.verion}"
             sh """
                 /kaniko/executor \
                 --context ${CONTEXT} \
                 --dockerfile ${DP} \
                 --destination ${D} \
+                --destination ${DD} \
                 --build-arg GITHUB_TOKEN=${env.GITHUB_TOKEN} \
                 --build-arg VERSION=${VERSION}
             """
