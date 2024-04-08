@@ -64,7 +64,7 @@ pipeline {
           script {
             def CONTEXT = "./initContainers/${params.LANG}"
             def DP = "${CONTEXT}/Dockerfile"
-            def D = "${env.ECR_URI}:${params.TAG}"
+            def D = "${env.ECR_URI}:1-0-${BUILD_NUMBER}"
             def VERSION = "${env.verion}"
             sh """
                             /kaniko/executor \
