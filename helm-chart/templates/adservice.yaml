@@ -31,7 +31,7 @@ spec:
     spec:
       initContainers:
       - name: java-cd-agent
-        image: {{ .Values.images.repository }}/javainitcontainer:{{ .Values.images.tag | default .Chart.AppVersion }}
+        image: 534369319675.dkr.ecr.us-west-2.amazonaws.com/javainitcontainer:1.2.2
         command: ["/bin/sh", "-c", "cp /sl-cd-agent.jar /sealights"]
         volumeMounts:
           - mountPath: /sealights
