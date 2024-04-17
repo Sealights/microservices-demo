@@ -525,7 +525,6 @@ def TIA_Page_Tests(Map params){
 }
 
 
-
 def clone_repo(Map params){
   // Clone the repository with the specified branch
   git branch: params.branch, url: 'https://github.com/Sealights/microservices-demo.git'
