@@ -246,7 +246,7 @@ def build_btq(Map params){
   services_list.each { service ->
     parallelLabs["${service}"] = {
       def AGENT_URL = getParamForService(service , params.mapurl)
-      build(job: 'BTQ-BUILD', parameters: [string(name: 'SERVICE', value: "${service}"),
+      build(job: 'BTQ-BUILD/${params.branch}', parameters: [string(name: 'SERVICE', value: "${service}"),
                                            string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
                                            string(name:'SL_REPORT_BRANCH' , value:"${params.sl_report_branch}"),
                                            string(name:'BRANCH' , value:"${params.branch}"),
