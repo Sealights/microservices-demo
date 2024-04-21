@@ -43,6 +43,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
+          env.token = "${params.SL_TOKEN}" == null ? secrets.get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -53,7 +54,7 @@ pipeline {
 
           build_btq(
             sl_report_branch: params.BRANCH,
-            sl_token: params.SL_TOKEN,
+            sl_token: env.token,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}",
             branch: params.BRANCH,
@@ -107,7 +108,7 @@ pipeline {
               app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
               branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
               test_stage: "${TEST_STAGE}",
-              token: "${params.SL_TOKEN}",
+              token: "${env.token}",
               machine: "dev-integration.dev.sealights.co"
             )
           }
@@ -196,7 +197,7 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            sl_token: params.SL_TOKEN,
+            sl_token: env.token,
             sl_report_branch: params.BRANCH,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}-v2",
