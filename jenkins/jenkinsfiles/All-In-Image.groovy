@@ -53,12 +53,14 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "sealightsJvmParams": {}
+                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             ### dowload sl-build-scanner.jar from github ###
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -pluginversion 4.0.103 -workspacepath .
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -pluginversion ${params.VERION} -workspacepath .
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ./settings-github.xml
             mvn clean package
           """
         }
@@ -89,10 +91,13 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "sealightsJvmParams": {}
+                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${params.VERION}
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ../../settings-github.xml
             mvn clean package
           """
         }
@@ -102,32 +107,33 @@ pipeline {
       steps{
         script{
           sh """
-                    ### dolowad sl-build-scanner.jar ###
-                    #!/bin/bash
-                    export lab_id="${params.SL_LABID}"
-                    export machine_dns="${params.MACHINE_DNS}"
-                    cd ./integration-tests/java-tests-gradle
-                    echo $SL_TOKEN>sltoken.txt
-                    echo '{
-                        "executionType": "testsonly",
-                        "tokenFile": "./sltoken.txt",
-                        "createBuildSessionId": false,
-                        "testStage": "Junit-without-testNG-gradle",
-                        "runFunctionalTests": true,
-                        "labId": "${params.SL_LABID}",
-                        "proxy": null,
-                        "logEnabled": false,
-                        "logDestination": "console",
-                        "logLevel": "warn",
-                        "enable"
-                        "sealightsJvmParams": {}
-                    }' > slgradletests.json
-                    echo "Adding Sealights to Tests Project gradle file..."
-                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath . -pluginversion 4.0.103
-                    mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ../java-tests/settings-github.xml
-
-                    gradle test
-                    """
+            ### dolowad sl-build-scanner.jar ###
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            export machine_dns="${params.MACHINE_DNS}"
+            cd ./integration-tests/java-tests-gradle
+            echo $SL_TOKEN>sltoken.txt
+            echo '{
+                "executionType": "testsonly",
+                "tokenFile": "./sltoken.txt",
+                "createBuildSessionId": false,
+                "testStage": "Junit-without-testNG-gradle",
+                "runFunctionalTests": true,
+                "labId": "${params.SL_LABID}",
+                "proxy": null,
+                "logEnabled": false,
+                "logDestination": "console",
+                "logLevel": "warn",
+                "enable"
+                "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                "testListenerJar": "/sealights/sl-test-listener.jar",
+                "sealightsJvmParams": {"sl.enableUpgrade": false}
+            }' > slgradletests.json
+            echo "Adding Sealights to Tests Project gradle file..."
+            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ../../settings-github.xml
+            gradle test
+          """
         }
       }
     }
@@ -153,10 +159,13 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "sealightsJvmParams": {}
+                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${params.VERION}
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ../../settings-github.xml
             unset MAVEN_CONFIG
             ./mvnw test
           """
