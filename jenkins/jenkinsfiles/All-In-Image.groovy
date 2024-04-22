@@ -15,6 +15,8 @@ pipeline {
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
+    string(name: 'VERSION', defaultValue: '4.0.0', description: 'plugin version')
+
 
   }
   environment {
@@ -59,8 +61,8 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             ### dowload sl-build-scanner.jar from github ###
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -pluginversion ${params.VERION} -workspacepath .
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ./settings-github.xml
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -pluginversion ${params.VERSION} -workspacepath .
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERSION}  -gs ./settings-github.xml
             mvn clean package
           """
         }
@@ -96,8 +98,8 @@ pipeline {
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${params.VERION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ../../settings-github.xml
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${params.VERSION}
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERSION}  -gs ../../settings-github.xml
             mvn clean package
           """
         }
@@ -131,7 +133,7 @@ pipeline {
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
             java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ../../settings-github.xml
+            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERSION}  -gs ../../settings-github.xml
             gradle test
           """
         }
@@ -164,8 +166,8 @@ pipeline {
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${params.VERION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERION}  -gs ../../settings-github.xml
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${params.VERSION}
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERSION}  -gs ../../settings-github.xml
             unset MAVEN_CONFIG
             ./mvnw test
           """
