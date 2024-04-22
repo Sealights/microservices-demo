@@ -15,7 +15,7 @@ pipeline {
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
-    string(name: 'VERSION', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
+    string(name: 'VERSION', defaultValue: '4.0.0', description: 'plugin version')
 
 
   }
