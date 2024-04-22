@@ -176,6 +176,17 @@ shippingService:
       cpu: 200m
       memory: 128Mi
 
+sealightsService:
+  create: true
+  name: sealightsservice
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
 cartDatabase:
   # Specifies the type of the cartservice's database, could be either redis or spanner.
   type: redis
