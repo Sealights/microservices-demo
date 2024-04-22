@@ -53,7 +53,9 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "sealightsJvmParams": {}
+                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
@@ -88,7 +90,9 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "sealightsJvmParams": {}
+                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
@@ -101,30 +105,30 @@ pipeline {
       steps{
         script{
           sh """
-                    #!/bin/bash
-                    export lab_id="${params.SL_LABID}"
-                    export machine_dns="${params.MACHINE_DNS}"
-                    cd ./integration-tests/java-tests-gradle
-                    echo $SL_TOKEN>sltoken.txt
-                    echo '{
-                        "executionType": "testsonly",
-                        "tokenFile": "./sltoken.txt",
-                        "createBuildSessionId": false,
-                        "testStage": "Junit-without-testNG-gradle",
-                        "runFunctionalTests": true,
-                        "labId": "${params.SL_LABID}",
-                        "proxy": null,
-                        "logEnabled": false,
-                        "logDestination": "console",
-                        "logLevel": "warn",
-                        "sealightsJvmParams": {}
-                    }' > slgradletests.json
-                    echo "Adding Sealights to Tests Project gradle file..."
-                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-                    gradle test
-
-
-                    """
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            export machine_dns="${params.MACHINE_DNS}"
+            cd ./integration-tests/java-tests-gradle
+            echo $SL_TOKEN>sltoken.txt
+            echo '{
+                "executionType": "testsonly",
+                "tokenFile": "./sltoken.txt",
+                "createBuildSessionId": false,
+                "testStage": "Junit-without-testNG-gradle",
+                "runFunctionalTests": true,
+                "labId": "${params.SL_LABID}",
+                "proxy": null,
+                "logEnabled": false,
+                "logDestination": "console",
+                "logLevel": "warn",
+                "buildScannerJar": "/sealights/sl-build-scanner.jar",
+                "testListenerJar": "/sealights/sl-test-listener.jar",
+                "sealightsJvmParams": {"sl.enableUpgrade": false}
+            }' > slgradletests.json
+            echo "Adding Sealights to Tests Project gradle file..."
+            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+            gradle test
+          """
         }
       }
     }
