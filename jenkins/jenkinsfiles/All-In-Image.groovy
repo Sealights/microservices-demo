@@ -56,8 +56,9 @@ pipeline {
                     "sealightsJvmParams": {}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
+            ### dowload sl-build-scanner.jar from github ###
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -pluginversion 4.0.103 -workspacepath .
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
             mvn clean package
           """
         }
@@ -101,6 +102,7 @@ pipeline {
       steps{
         script{
           sh """
+                    ### dolowad sl-build-scanner.jar ###
                     #!/bin/bash
                     export lab_id="${params.SL_LABID}"
                     export machine_dns="${params.MACHINE_DNS}"
@@ -117,13 +119,14 @@ pipeline {
                         "logEnabled": false,
                         "logDestination": "console",
                         "logLevel": "warn",
+                        "enable"
                         "sealightsJvmParams": {}
                     }' > slgradletests.json
                     echo "Adding Sealights to Tests Project gradle file..."
-                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath . -pluginversion 4.0.103
+                    mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ../java-tests/settings-github.xml
+
                     gradle test
-
-
                     """
         }
       }
