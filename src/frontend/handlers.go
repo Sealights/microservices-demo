@@ -32,6 +32,8 @@ import (
 
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/frontend/genproto"
 	"github.com/GoogleCloudPlatform/microservices-demo/src/frontend/money"
+
+	"ioutil"
 )
 
 type platformDetails struct {
