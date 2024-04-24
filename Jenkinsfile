@@ -37,7 +37,6 @@ pipeline {
   }
 
   stages {
-
     //Build parallel images
     stage('Build BTQ') {
       steps {
