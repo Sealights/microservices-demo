@@ -39,10 +39,10 @@ pipeline {
             env.GT_PASSWORD =  "${script.secrets.get_secret('mgmt/github_token','us-west-2')}"
             echo "${env.GT_PASSWORD}"
 
-            env.PLUGIN_VERSION =(sh(returnStdout: true, script: """gh api \\
+            env.GRADLE_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
-                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-maven-plugin/versions \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-gradle-plugin/versions \\
                         | jq -r '.[0].name')""")).trim()
 
             env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """gh api \\
@@ -57,7 +57,7 @@ pipeline {
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
                         | jq -r '.[0].name')""")).trim()
 
-            echo "${env.PLUGIN_VERSION}"
+            echo "${env.GRADLE_VERSION}"
             env.GT_PASSWORD = env.GITHUB_PASSWORD == null  ? "${script.secrets.get_secret('mgmt/github_token','us-west-2')}" : "${env.GITHUB_PASSWORD}"
             sh
             """
@@ -160,8 +160,8 @@ pipeline {
                 "sealightsJvmParams": {}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
-            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.PLUGIN_VERSION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ../../settings-github.xml
+            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.GRADLE_VERSION}  -gs ../../settings-github.xml
             gradle test
           """
         }
