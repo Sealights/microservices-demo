@@ -38,7 +38,6 @@ pipeline {
       }
     }
 
-
     //Build parallel images
     stage('Build BTQ') {
       steps {
@@ -69,7 +68,7 @@ pipeline {
         script {
           def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
-          boutique.SpinUpBoutiqeEnvironment(
+          SpinUpBoutiqeEnvironment(
             IDENTIFIER : IDENTIFIER,
             branch: params.CHANGED_BRANCH,
             git_branch : params.CHANGED_BRANCH,
@@ -86,7 +85,7 @@ pipeline {
     stage('Changed Run Tests') {
       steps {
         script {
-          boutique.run_tests(
+          run_tests(
             branch: params.BRANCH,
             test_type: params.TEST_TYPE
           )
@@ -98,15 +97,13 @@ pipeline {
     stage('Run API-Tests After Changes') {
       steps {
         script {
-          boutique.run_api_tests_after_changes(
+          run_api_tests_after_changes(
             branch: params.BRANCH,
             app_name: params.APP_NAME
           )
         }
       }
     }
-
-
   }
 
   post {
