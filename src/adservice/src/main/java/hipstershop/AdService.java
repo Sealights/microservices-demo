@@ -126,6 +126,7 @@
              
              logger.log(Level.INFO, "Custom code executed0");
              logger.log(Level.INFO, "Custom code executed1");
+             logger.log(Level.INFO, "Custom code executed2");
          }
      }
  
