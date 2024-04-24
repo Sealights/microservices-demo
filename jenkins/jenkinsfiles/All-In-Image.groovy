@@ -31,6 +31,44 @@ pipeline {
         }
       }
     }
+
+    stage("Prepare GitHub Credentials"){
+      steps{
+        script{
+          dir('integration-tests'){
+            env.GT_PASSWORD =  "${script.secrets.get_secret('mgmt/github_token','us-west-2')}"
+            echo "${env.GT_PASSWORD}"
+
+            env.PLUGIN_VERSION =(sh(returnStdout: true, script: """gh api \\
+                        -H "Accept: application/vnd.github+json" \\
+                        -H "X-GitHub-Api-Version: 2022-11-28" \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-maven-plugin/versions \\
+                        | jq -r '.[0].name')""")).trim()
+
+            env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """gh api \\
+                        -H "Accept: application/vnd.github+json" \\
+                        -H "X-GitHub-Api-Version: 2022-11-28" \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
+                        | jq -r '.[0].name')""")).trim()
+
+            env.TEST_LISTENER = (sh(returnStdout: true, script: """gh api \\
+                        -H "Accept: application/vnd.github+json" \\
+                        -H "X-GitHub-Api-Version: 2022-11-28" \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
+                        | jq -r '.[0].name')""")).trim()
+
+            echo "${env.PLUGIN_VERSION}"
+            env.GT_PASSWORD = env.GITHUB_PASSWORD == null  ? "${script.secrets.get_secret('mgmt/github_token','us-west-2')}" : "${env.GITHUB_PASSWORD}"
+            sh
+            """
+              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
+              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
+              sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
+            """
+          }
+        }
+      }
+    }
     stage('Junit without testNG '){
       steps{
         script{
@@ -123,7 +161,7 @@ pipeline {
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
             java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${params.VERSION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${params.VERSION}  -gs ../../settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ../../settings-github.xml
             gradle test
           """
         }
