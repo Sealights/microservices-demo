@@ -16,8 +16,6 @@ pipeline {
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
     string(name: 'VERSION', defaultValue: '4.0.0', description: 'plugin version')
-
-
   }
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
@@ -38,14 +36,31 @@ pipeline {
           dir('integration-tests'){
             env.GT_PASSWORD =  "${script.secrets.get_secret('mgmt/github_token','us-west-2')}"
             echo "${env.GT_PASSWORD}"
-            env.PLUGIN_VERSION = (sh(returnStdout: true, script: """gh api \\
+
+            env.PLUGIN_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-maven-plugin/versions \\
                         | jq -r '.[0].name')""")).trim()
+
+            env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """gh api \\
+                        -H "Accept: application/vnd.github+json" \\
+                        -H "X-GitHub-Api-Version: 2022-11-28" \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
+                        | jq -r '.[0].name')""")).trim()
+
+            env.TEST_LISTENER = (sh(returnStdout: true, script: """gh api \\
+                        -H "Accept: application/vnd.github+json" \\
+                        -H "X-GitHub-Api-Version: 2022-11-28" \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
+                        | jq -r '.[0].name')""")).trim()
+
             echo "${env.PLUGIN_VERSION}"
+            env.GT_PASSWORD = env.GITHUB_PASSWORD == null  ? "${script.secrets.get_secret('mgmt/github_token','us-west-2')}" : "${env.GITHUB_PASSWORD}"
             sh
             """
+              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
+              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
               sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
             """
           }
@@ -77,13 +92,13 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
-                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}",
+                    "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             ### dowload sl-build-scanner.jar from github ###
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -pluginversion ${env.PLUGIN_VERSION} -workspacepath .
+            java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION} -pom -configfile slmaventests.json -pluginversion ${env.PLUGIN_VERSION} -workspacepath .
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ./settings-github.xml
             mvn clean package
           """
@@ -115,12 +130,12 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
-                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}",
+                    "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.PLUGIN_VERSION}
+            java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION} -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.PLUGIN_VERSION}
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ../../settings-github.xml
             mvn clean package
           """
@@ -149,12 +164,12 @@ pipeline {
                 "logDestination": "console",
                 "logLevel": "warn",
                 "enable"
-                "buildScannerJar": "/sealights/sl-build-scanner.jar",
-                "testListenerJar": "/sealights/sl-test-listener.jar",
+                "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}",
+                "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
                 "sealightsJvmParams": {"sl.enableUpgrade": false}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
-            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+            java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION} -gradle -configfile slgradletests.json -workspacepath .
             #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ../../settings-github.xml
             gradle test
           """
@@ -183,12 +198,12 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "/sealights/sl-build-scanner.jar",
-                    "testListenerJar": "/sealights/sl-test-listener.jar",
+                    "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}",
+                    "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.PLUGIN_VERSION}
+            java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION} -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.PLUGIN_VERSION}
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ../../settings-github.xml
             unset MAVEN_CONFIG
             ./mvnw test
