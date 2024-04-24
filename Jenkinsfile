@@ -261,6 +261,8 @@ def getParamForService(service, mapurl) {
       return [mapurl['PYTHON_AGENT_URL'].toString(),""]
     case ["currencyservice","paymentservice"]:
       return [mapurl['NODE_AGENT_URL'].toString(),""]
+    case "sealightsservice":
+      return [mapurl['JAVA_AGENT_URL'].toString(),""]
   }
 }
 
@@ -377,13 +379,6 @@ def run_api_tests_after_changes(Map params){
       string(name: 'APP_NAME', value: "${params.app_name}")
     ])
   }
-}
-
-
-
-def clone_repo(Map params){
-  // Clone the repository with the specified branch
-  git branch: params.branch, url: 'https://github.com/Sealights/microservices-demo.git'
 }
 
 def set_assume_role(Map params) {
