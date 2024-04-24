@@ -160,7 +160,7 @@ pipeline {
                 "sealightsJvmParams": {}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
-            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${params.VERSION}
+            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.PLUGIN_VERSION}
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.PLUGIN_VERSION}  -gs ../../settings-github.xml
             gradle test
           """
