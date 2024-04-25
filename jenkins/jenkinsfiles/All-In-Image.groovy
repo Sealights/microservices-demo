@@ -38,7 +38,7 @@ pipeline {
       steps{
         script{
           dir('integration-tests'){
-            sh"export GITHUB_TOKEN=${env.GT_PASSWORD}"
+            sh"export GH_TOKEN=${env.GT_PASSWORD}"
             env.GRADLE_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
