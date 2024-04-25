@@ -21,7 +21,7 @@ pipeline {
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
-    GT_PASSWORD = secrets.get_secret('mgmt/github_token','us-west-2')
+    GH_TOKEN = secrets.get_secret('mgmt/github_token','us-west-2')
   }
   stages{
     stage("Init test"){
@@ -36,8 +36,7 @@ pipeline {
       steps{
         script{
           dir('integration-tests'){
-            echo "${env.GT_PASSWORD}"
-            sh"export "
+            echo "${env.GH_TOKEN}"
             env.MAVEN_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
@@ -58,14 +57,13 @@ pipeline {
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
                         | jq -r '.[0].name'""")).trim()
 
+            echo "MAVEN_VERSION : ${env.MAVEN_VERSION}"
+            echo "BUILD_SCANER_VERSION : ${env.BUILD_SCANER_VERSION}"
             echo "TEST_LISTENER : ${env.TEST_LISTENER}"
 
-            echo "${env.MAVEN_VERSION}"
-
             sh"""
-              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
-              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
-              sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
+             wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar"
+             wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
             """
           }
         }
@@ -102,8 +100,9 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             ### dowload sl-build-scanner.jar from github ###
+            sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' ./../settings-github.xml
             java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION} -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ./settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ./../settings-github.xml
             mvn clean package
           """
         }
