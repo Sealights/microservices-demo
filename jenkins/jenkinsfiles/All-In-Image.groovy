@@ -12,7 +12,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'BRANCH', defaultValue: 'java-maven', description: 'Branch to clone (java-maven)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
