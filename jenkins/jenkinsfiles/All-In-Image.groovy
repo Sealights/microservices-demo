@@ -62,9 +62,10 @@ pipeline {
             echo "TEST_LISTENER : ${env.TEST_LISTENER}"
 
             sh"""
-             wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar"
-             wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
-            """
+            wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar"
+            wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
+            sed -i  's|<password>.*</password>|<password>"${env.GH_TOKEN}"</password>|' ./../settings-github.xml
+          """
           }
         }
       }
@@ -101,7 +102,6 @@ pipeline {
             echo "Adding Sealights to Tests Project POM file..."
             ### dowload sl-build-scanner.jar from github ###
             java -jar ../../java-build-agent-"${env.BUILD_SCANER_VERSION}.jar" -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
-            sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' ./../settings-github.xml
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ./../settings-github.xml
             mvn clean package
           """
