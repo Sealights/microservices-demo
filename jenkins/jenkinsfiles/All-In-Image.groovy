@@ -37,6 +37,7 @@ pipeline {
         script{
           dir('integration-tests'){
             echo "${env.GT_PASSWORD}"
+            sh"export "
             env.MAVEN_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
@@ -49,16 +50,19 @@ pipeline {
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
                         | jq -r '.[0].name'""")).trim()
 
+            echo "BUILD_SCANER_VERSION : ${env.BUILD_SCANER_VERSION}"
+
             env.TEST_LISTENER = (sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
                         | jq -r '.[0].name'""")).trim()
 
+            echo "TEST_LISTENER : ${env.TEST_LISTENER}"
+
             echo "${env.MAVEN_VERSION}"
 
-            sh
-            """
+            sh"""
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
               sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
