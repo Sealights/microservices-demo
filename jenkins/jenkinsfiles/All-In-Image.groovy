@@ -38,20 +38,24 @@ pipeline {
       steps{
         script{
           dir('integration-tests'){
-            sh"export GH_TOKEN=${env.GT_PASSWORD}"
-            env.GRADLE_VERSION =(sh(returnStdout: true, script: """gh api \\
+            sh"""
+              export GH_TOKEN=${env.GT_PASSWORD}
+              env
+
+            """
+            env.GRADLE_VERSION =(sh(returnStdout: true, script: """export GH_TOKEN=${env.GT_PASSWORD} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-gradle-plugin/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            def BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """gh api \\
+            def BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GT_PASSWORD} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            def TEST_LISTENER = (sh(returnStdout: true, script: """gh api \\
+            def TEST_LISTENER = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GT_PASSWORD} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
