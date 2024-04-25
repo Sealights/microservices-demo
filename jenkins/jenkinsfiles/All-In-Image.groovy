@@ -65,10 +65,8 @@ pipeline {
             echo "BUILD_SCANER_VERSION : ${BUILD_SCANER_VERSION}"
             echo "TEST_LISTENER : ${TEST_LISTENER}"
             sh"""
-              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${BUILD_SCANER_VERSION}"/java-build-agent-"${BUILD_SCANER_VERSION}".jar
-              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${TEST_LISTENER}"/java-agent-bootstrapper-"${TEST_LISTENER}.jar
-
-
+              wget "https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${BUILD_SCANER_VERSION}"/java-build-agent-"${BUILD_SCANER_VERSION}".jar"
+              wget "https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${TEST_LISTENER}"/java-agent-bootstrapper-"${TEST_LISTENER}.jar"
               sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
             """
           }
