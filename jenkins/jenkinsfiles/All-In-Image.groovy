@@ -44,19 +44,19 @@ pipeline {
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-gradle-plugin/versions \\
-                        | jq -r '.[0].name')""")).trim()
+                        | jq -r '.[0].name'""")).trim()
 
             env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
-                        | jq -r '.[0].name')""")).trim()
+                        | jq -r '.[0].name'""")).trim()
 
             env.TEST_LISTENER = (sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
-                        | jq -r '.[0].name')""")).trim()
+                        | jq -r '.[0].name'""")).trim()
 
             echo "${env.GRADLE_VERSION}"
             env.GT_PASSWORD = env.GITHUB_PASSWORD == null  ? "${script.secrets.get_secret('mgmt/github_token','us-west-2')}" : "${env.GITHUB_PASSWORD}"
