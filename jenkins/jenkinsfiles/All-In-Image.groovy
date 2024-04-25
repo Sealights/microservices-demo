@@ -100,9 +100,9 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             ### dowload sl-build-scanner.jar from github ###
-            sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' ./../settings-github.xml
+            sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' ../settings-github.xml
             java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION} -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ./../settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
             mvn clean package
           """
         }
