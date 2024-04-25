@@ -66,7 +66,8 @@ pipeline {
             echo "TEST_LISTENER : ${env.TEST_LISTENER}"
             sh"""
               wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar"
-              wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"              sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' settings-github.xml
+              wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
+              sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' integration-tests/../../settings-github.xml
             """
           }
         }
