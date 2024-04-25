@@ -58,6 +58,7 @@ pipeline {
                         | jq -r '.[0].name'""")).trim()
 
             echo "${env.GRADLE_VERSION}"
+            echo "${env.GT_PASSWORD}"
             sh"""
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
