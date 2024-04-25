@@ -43,27 +43,27 @@ pipeline {
               env
 
             """
-            env.GRADLE_VERSION =(sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
+            env.GRADLE_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-gradle-plugin/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
+            env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            env.TEST_LISTENER = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
+            env.TEST_LISTENER = (sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
                         | jq -r '.[0].name'""")).trim()
 
             echo "GRADLE_VERSION : ${env.GRADLE_VERSION}"
-            echo "BUILD_SCANER_VERSION : ${BUILD_SCANER_VERSION}"
-            echo "TEST_LISTENER : ${TEST_LISTENER}"
+            echo "BUILD_SCANER_VERSION : ${env.BUILD_SCANER_VERSION}"
+            echo "TEST_LISTENER : ${env.TEST_LISTENER}"
             sh"""
               wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar"
               wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
