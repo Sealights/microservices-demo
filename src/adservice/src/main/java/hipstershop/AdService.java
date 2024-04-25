@@ -122,15 +122,15 @@
          }
          private void getSampleCheck() {
             logger.log(Level.INFO, "Custom code executed4");
-             if(true) {
-                 return;
-             }
-             
-             logger.log(Level.INFO, "Custom code executed0");
-             logger.log(Level.INFO, "Custom code executed1");
-             logger.log(Level.INFO, "Custom code executed2");
-             logger.log(Level.INFO, "Custom code executed3");
-             logger.log(Level.INFO, "Custom code executed4");
+            logger.log(Level.INFO, "Custom code executed0");
+            if(true) {
+                return;
+            }
+            logger.log(Level.INFO, "Custom code executed0");
+            logger.log(Level.INFO, "Custom code executed1");
+            logger.log(Level.INFO, "Custom code executed2");
+            logger.log(Level.INFO, "Custom code executed3");
+            logger.log(Level.INFO, "Custom code executed4");
          }
      }
  
