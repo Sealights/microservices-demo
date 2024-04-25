@@ -133,6 +133,9 @@
             logger.log(Level.INFO, "Custom code executed4");
             logger.log(Level.INFO, "Custom code executed6");
          }
+         private void abc() {
+            logger.log(Level.INFO, "Custom code executed4");
+         }
      }
  
      private static final ImmutableListMultimap<String, Ad> adsMap = createAdsMap();
