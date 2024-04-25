@@ -34,7 +34,7 @@ pipeline {
       steps{
         script{
           dir('integration-tests'){
-            env.GT_PASSWORD =  "${script.secrets.get_secret('mgmt/github_token','us-west-2')}"
+            env.GT_PASSWORD =  secrets.get_secret('mgmt/github_token','us-west-2')
             echo "${env.GT_PASSWORD}"
 
             env.MAVEN_VERSION =(sh(returnStdout: true, script: """gh api \\
