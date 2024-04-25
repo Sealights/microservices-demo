@@ -23,7 +23,7 @@ pipeline {
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
-    GT_PASSWORD = secrets.get_secret('mgmt/github_token','us-west-2')
+    GH_TOKEN = secrets.get_secret('mgmt/github_token','us-west-2')
   }
   stages{
     stage("Init test"){
@@ -39,23 +39,23 @@ pipeline {
         script{
           dir('integration-tests'){
             sh"""
-              export GH_TOKEN=${env.GT_PASSWORD}
+              export GH_TOKEN=${env.GH_TOKEN}
               env
 
             """
-            env.GRADLE_VERSION =(sh(returnStdout: true, script: """export GH_TOKEN=${env.GT_PASSWORD} && gh api \\
+            env.GRADLE_VERSION =(sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-gradle-plugin/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            def BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GT_PASSWORD} && gh api \\
+            def BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent.java-build-agent/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            def TEST_LISTENER = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GT_PASSWORD} && gh api \\
+            def TEST_LISTENER = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
@@ -65,9 +65,9 @@ pipeline {
             echo "BUILD_SCANER_VERSION : ${BUILD_SCANER_VERSION}"
             echo "TEST_LISTENER : ${TEST_LISTENER}"
             sh"""
-              wget "https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${BUILD_SCANER_VERSION}"/java-build-agent-"${BUILD_SCANER_VERSION}".jar"
-              wget "https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-agent-bootstrapper/"${TEST_LISTENER}"/java-agent-bootstrapper-"${TEST_LISTENER}".jar"
-              sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
+              wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${BUILD_SCANER_VERSION}"/java-build-agent-"${BUILD_SCANER_VERSION}".jar"
+              wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-agent-bootstrapper/"${TEST_LISTENER}"/java-agent-bootstrapper-"${TEST_LISTENER}".jar"
+              sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' settings-github.xml
             """
           }
         }
