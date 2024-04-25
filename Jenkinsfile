@@ -1,4 +1,4 @@
-
+@Library('main-shared-library') _
 pipeline {
   agent {
     kubernetes {
@@ -6,14 +6,16 @@ pipeline {
       defaultContainer "shell"
     }
   }
+
+
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'java-CDAgent', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'java-CDAgent', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'APP_NAME', defaultValue: 'Java-CDAgent-BTQ', description: 'name of the app (integration build)')
+    string(name: 'BRANCH', defaultValue: 'java-CDAgent', description: 'Branch to clone (java-CDAgent)')
+    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (java-CDAgent)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
-    string(name: 'BUILD_BRANCH', defaultValue: 'java-CDAgent', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'java-CDAgent', description: 'Branch to Build images that have the creational LAB_ID (send to java-CDAgent branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
-    string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
+    string(name: 'BUILD_NAME', defaultValue: 'CDAgent', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
     string(name: 'DOTNET_AGENT_URL', defaultValue: 'https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz', description: 'use different dotnet agent')
     string(name: 'NODE_AGENT_URL', defaultValue: 'slnodejs', description: 'use different node agent')
@@ -24,6 +26,7 @@ pipeline {
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
   }
+
   stages {
     stage('Clone Repository') {
       steps {
@@ -40,9 +43,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          env.TOKEN = "${env.TOKEN}" == null ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${env.TOKEN}"
-          build(job: 'init_build', parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),
-                                                string(name:'LANG' , value:"javaInitContainer")])
+          env.token = "${params.SL_TOKEN}" == null ? secrets.get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -53,7 +54,7 @@ pipeline {
 
           build_btq(
             sl_report_branch: params.BRANCH,
-            sl_token: env.TOKEN,
+            sl_token: env.token,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}",
             branch: params.BRANCH,
@@ -107,7 +108,7 @@ pipeline {
               app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
               branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
               test_stage: "${TEST_STAGE}",
-              token: "${env.TOKEN}",
+              token: "${env.token}",
               machine: "dev-integration.dev.sealights.co"
             )
           }
@@ -196,7 +197,7 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            sl_token: env.TOKEN,
+            sl_token: env.token,
             sl_report_branch: params.BRANCH,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}-v2",
@@ -343,13 +344,13 @@ def build_btq(Map params){
     parallelLabs["${service}"] = {
       def AGENT_URL = getParamForService(service , params.mapurl)
       build(job: "BTQ-BUILD/${params.branch}", parameters: [string(name: 'SERVICE', value: "${service}"),
-                                           string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
-                                           string(name:'SL_REPORT_BRANCH' , value:"${params.sl_report_branch}"),
-                                           string(name:'BRANCH' , value:"${params.branch}"),
-                                           string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
-                                           string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
-                                           string(name:'AGENT_URL' , value:AGENT_URL[0]),
-                                           string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
+                                                            string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
+                                                            string(name:'SL_REPORT_BRANCH' , value:"${params.sl_report_branch}"),
+                                                            string(name:'BRANCH' , value:"${params.branch}"),
+                                                            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
+                                                            string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
+                                                            string(name:'AGENT_URL' , value:AGENT_URL[0]),
+                                                            string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
     }
   }
   parallel parallelLabs
@@ -443,7 +444,7 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      build(job: "All-In-One/${params.branch}", parameters: [
+      build(job: "All-In-Image", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
@@ -523,7 +524,6 @@ def TIA_Page_Tests(Map params){
     ])
   }
 }
-
 
 
 def clone_repo(Map params){
