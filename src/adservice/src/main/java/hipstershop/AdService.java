@@ -117,6 +117,7 @@
                  logger.log(Level.WARN, "GetAds Failed with status {}", e.getStatus());
                  responseObserver.onError(e);
              }
+             logger.log(Level.WARN,"just added");
          }
          private void getSampleCheck() {
              
@@ -127,6 +128,7 @@
              logger.log(Level.INFO, "Custom code executed0");
              logger.log(Level.INFO, "Custom code executed1");
              logger.log(Level.INFO, "Custom code executed2");
+             logger.log(Level.INFO, "Custom code executed3");
          }
      }
  
