@@ -118,6 +118,7 @@
                  responseObserver.onError(e);
              }
              logger.log(Level.WARN,"just added");
+             logger.log(Level.WARN,"just added");
          }
          private void getSampleCheck() {
              
@@ -129,6 +130,7 @@
              logger.log(Level.INFO, "Custom code executed1");
              logger.log(Level.INFO, "Custom code executed2");
              logger.log(Level.INFO, "Custom code executed3");
+             logger.log(Level.INFO, "Custom code executed4");
          }
      }
  
