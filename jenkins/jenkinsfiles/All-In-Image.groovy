@@ -61,9 +61,9 @@ pipeline {
                         /users/sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper/versions \\
                         | jq -r '.[0].name'""")).trim()
 
-            echo "${env.GRADLE_VERSION}"
-            echo "${BUILD_SCANER_VERSION}"
-            echo "${TEST_LISTENER}"
+            echo "GRADLE_VERSION : ${env.GRADLE_VERSION}"
+            echo "BUILD_SCANER_VERSION : ${BUILD_SCANER_VERSION}"
+            echo "TEST_LISTENER : ${TEST_LISTENER}"
             sh"""
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-build-agent/"${BUILD_SCANER_VERSION}"/java-build-agent-"${BUILD_SCANER_VERSION}".jar
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${TEST_LISTENER}"/java-agent-bootstrapper-"${TEST_LISTENER}.jar
