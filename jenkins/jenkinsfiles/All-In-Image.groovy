@@ -94,8 +94,8 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}.jar",
-                    "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
+                    "buildScannerJar": "./java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                    "testListenerJar": "./java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
@@ -133,8 +133,8 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}.jar",
-                    "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
+                    "buildScannerJar": "./java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                    "testListenerJar": "./java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
@@ -167,8 +167,8 @@ pipeline {
                 "logDestination": "console",
                 "logLevel": "warn",
                 "enable"
-                "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}.jar",
-                "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
+                "buildScannerJar": "./java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                "testListenerJar": "./java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                 "sealightsJvmParams": {"sl.enableUpgrade": false}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
@@ -201,8 +201,8 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "./java-build-agent-"${env.BUILD_SCANER_VERSION}.jar",
-                    "testListenerJar": "./java-agent-bootstrapper-"${env.TEST_LISTENER}.jar",
+                    "buildScannerJar": "./java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                    "testListenerJar": "./java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
