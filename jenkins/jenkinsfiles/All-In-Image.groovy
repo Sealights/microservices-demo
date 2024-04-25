@@ -21,7 +21,7 @@ pipeline {
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
-    GH_TOKEN = script.secrets.get_secret('mgmt/github_token','us-west-2')
+    GT_PASSWORD = script.secrets.get_secret('mgmt/github_token','us-west-2')
   }
   stages{
     stage("Init test"){
@@ -36,7 +36,7 @@ pipeline {
       steps{
         script{
           dir('integration-tests'){
-            echo "${env.GH_TOKEN}"
+            echo "${env.GT_PASSWORD}"
             env.MAVEN_VERSION =(sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
@@ -59,9 +59,9 @@ pipeline {
 
             sh
             """
-              wget https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
-              wget https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
-              sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' settings-github.xml
+              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
+              wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}.jar
+              sed -i  's|<password>.*</password>|<password>${env.GT_PASSWORD}</password>|' settings-github.xml
             """
           }
         }
