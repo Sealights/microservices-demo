@@ -121,7 +121,7 @@
              logger.log(Level.WARN,"just added");
          }
          private void getSampleCheck() {
-             
+            logger.log(Level.INFO, "Custom code executed4");
              if(true) {
                  return;
              }
