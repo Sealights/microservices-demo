@@ -67,7 +67,6 @@ pipeline {
             sh"""
               wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent/java-build-agent/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar"
               wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
-              sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' integration-tests/../settings-github.xml
             """
           }
         }
@@ -166,8 +165,10 @@ pipeline {
                 "sealightsJvmParams": {"sl.enableUpgrade": false}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
+            sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' ./../settings-github.xml
+
             java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.GRADLE_VERSION}  -gs ../../settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.GRADLE_VERSION}  -gs ./../settings-github.xml
             gradle test
           """
         }
