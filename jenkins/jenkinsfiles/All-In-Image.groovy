@@ -59,7 +59,7 @@ pipeline {
                         | jq -r '.[0].name'""")).trim()
 
             echo "${env.GRADLE_VERSION}"
-            env.GT_PASSWORD = env.GITHUB_PASSWORD == null  ? "${script.secrets.get_secret('mgmt/github_token','us-west-2')}" : "${env.GITHUB_PASSWORD}"
+            env.GT_PASSWORD =  script.secrets.get_secret('mgmt/github_token','us-west-2')
             sh
             """
               wget https://_:${env.GT_PASSWORD}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper-ftv/"${env.BUILD_SCANER_VERSION}"/java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
