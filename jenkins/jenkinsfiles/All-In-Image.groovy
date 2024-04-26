@@ -168,7 +168,7 @@ pipeline {
                 "sealightsJvmParams": {"sl.enableUpgrade": false}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
-            java -jar ./java-build-agent-"${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
+            java -jar ./java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.GRADLE_VERSION}  -gs ./../settings-github.xml
             gradle test
           """
