@@ -98,16 +98,16 @@ pipeline {
                     "logEnabled": false,
                     "logDestination": "console",
                     "logLevel": "warn",
-                    "buildScannerJar": "../../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
-                    "testListenerJar": "../../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
+                    "buildScannerJar": "../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                    "testListenerJar": "../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                     "sealightsJvmParams": {"sl.enableUpgrade": false}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             ls
             pwd
             ### dowload sl-build-scanner.jar from github ###
-            ls ../../
-            java -jar ../../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
+            ls ../
+            java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ./../settings-github.xml
             mvn clean package
           """
