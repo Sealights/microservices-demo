@@ -163,14 +163,14 @@ pipeline {
                 "logEnabled": false,
                 "logDestination": "console",
                 "logLevel": "warn",
-                "buildScannerJar": "../../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
-                "testListenerJar": "../../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
+                "buildScannerJar": "../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                "testListenerJar": "../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                 "sealightsJvmParams": {"sl.enableUpgrade": false}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
             ls
             pwd
-            java -jar ../../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
+            java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.GRADLE_VERSION}  -gs ./../settings-github.xml
             gradle test
           """
