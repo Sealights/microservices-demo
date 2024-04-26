@@ -13,7 +13,7 @@
       <repositories>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/Sealights/SL.OnPremise.MavenPlugin</url>
+          <url>https://maven.pkg.github.com/Sealights</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
