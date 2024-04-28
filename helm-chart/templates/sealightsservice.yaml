@@ -72,28 +72,3 @@ spec:
     port: 5732
     targetPort: 5732
 {{- if .Values.networkPolicies.create }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: {{ .Values.sealightsService.name }}
-  namespace: {{ .Release.Namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: {{ .Values.sealightsService.name }}
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: {{ .Values.checkoutService.name }}
-    ports:
-     - port: 5732
-       protocol: TCP
-  egress:
-  - {}
-{{- end }}
-{{- end }}
