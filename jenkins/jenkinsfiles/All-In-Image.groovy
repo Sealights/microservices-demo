@@ -67,6 +67,7 @@ pipeline {
             chmod +x java-build-agent-"${env.BUILD_SCANER_VERSION}".jar
             chmod +x java-agent-bootstrapper-"${env.TEST_LISTENER}".jar
             sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' settings-github.xml
+            cat settings-github.xml
             pwd
           """
           }
