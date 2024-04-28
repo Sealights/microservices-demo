@@ -171,7 +171,7 @@ pipeline {
             ls
             pwd
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-gradle-plugin:${env.GRADLE_VERSION}  -gs ./../settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-gradle-plugin:${env.GRADLE_VERSION}  -gs ../settings-github.xml
             gradle test
           """
         }
