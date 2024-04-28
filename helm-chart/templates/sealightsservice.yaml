@@ -48,9 +48,11 @@ spec:
         - name: PORT
           value: "5732"
         readinessProbe:
+          periodSeconds: 5
           grpc:
             port: 5732
         livenessProbe:
+          periodSeconds: 5
           grpc:
             port: 5732
         resources:
