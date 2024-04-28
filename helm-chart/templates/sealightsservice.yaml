@@ -47,14 +47,6 @@ spec:
           value: "{{ .Values.SealightsEnvVars.lab_id }}"
         - name: PORT
           value: "5732"
-        readinessProbe:
-          grpc:
-            port: 5732
-        livenessProbe:
-          grpc:
-            port: 5732
-        resources:
-          {{- toYaml .Values.sealightsService.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service
