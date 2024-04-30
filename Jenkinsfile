@@ -7,7 +7,7 @@ pipeline {
     }
   }
   environment {
-    token = secrets.get_secret('mgmt/layer_token', 'us-west-2')
+   token =  "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}"
   }
 
   parameters {
