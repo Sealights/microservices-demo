@@ -110,7 +110,7 @@ pipeline {
             ls ../
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
-            mvn clean package
+            mvn clean package -gs ../settings-github.xml
           """
         }
       }
@@ -146,8 +146,8 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.MAVEN_VERSION}
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
-            mvn clean package
+            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
+            mvn clean package -gs ../settings-github.xml
           """
         }
       }
@@ -216,7 +216,7 @@ pipeline {
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.MAVEN_VERSION}
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
             unset MAVEN_CONFIG
-            ./mvnw test
+            ./mvnw test -gs ../settings-github.xml
           """
         }
       }
