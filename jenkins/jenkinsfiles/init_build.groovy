@@ -26,7 +26,7 @@ pipeline {
   }
   environment {
     ECR_FULL_NAME = "javainitcontainer"
-    ECR_URI = "534369319675.dkr.ecr.us-west-2.amazonaws.com/${env.ECR_FULL_NAME}"
+    ECR_URI = "sealights/${env.ECR_FULL_NAME}"
     GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   stages {
