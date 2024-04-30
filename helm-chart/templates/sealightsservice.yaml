@@ -76,10 +76,11 @@ spec:
   - Ingress
   - Egress
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: {{ .Values.checkoutService.name }}
+  - {}
+  # - from:
+  #   - podSelector:
+  #       matchLabels:
+  #         app: {{ .Values.frontend.name }}
     ports:
      - port: 5732
        protocol: TCP
