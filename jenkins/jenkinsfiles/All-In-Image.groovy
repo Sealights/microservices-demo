@@ -103,7 +103,7 @@ pipeline {
                     "sealightsJvmParams": {}
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath . -repoConfig "maven { credentials {username "sldevopsd"; password "${env.GH_TOKEN}" }url "https://maven.pkg.github.com/Sealights/*"}"
+            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
             #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
             mvn clean package
           """
@@ -171,7 +171,7 @@ pipeline {
             echo "Adding Sealights to Tests Project gradle file..."
             ls
             pwd
-            java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION}
+            java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION} -repoConfig "maven { credentials {username "sldevopsd"; password "${env.GH_TOKEN}" }url "https://maven.pkg.github.com/Sealights/*"}"
             mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-gradle-plugin:${env.GRADLE_VERSION}  -gs ../settings-github.xml
             gradle test
           """
