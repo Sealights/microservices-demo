@@ -1,4 +1,4 @@
-
+@Library('main-shared-library') _
 pipeline {
   agent {
     kubernetes {
@@ -43,7 +43,8 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          env.token = "${params.SL_TOKEN}" == null ? secrets.get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
+          env.token = "${params.SL_TOKEN}".equals(null) ? secrets.get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
+          echp "${env.token}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
