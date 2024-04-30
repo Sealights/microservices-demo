@@ -22,9 +22,10 @@ pipeline {
   parameters {
     string(name: 'TAG', defaultValue: '1.2.2', description: 'Latest tag')
     string(name: 'BRANCH', defaultValue: 'main', description: 'Default branch')
-    choice(name: 'LANG', choices: ['javaInitContainer', 'dotnetInitContainer'], description: 'Choose lang technology')
+    choice(name: 'LANG', choices: ["javaInitContainer", "dotnetInitContainer"], description: 'Choose lang technology')
   }
   environment {
+    ECR_FULL_NAME = "${params.LANG}"
     ECR_URI = "sealights/${params.LANG}"
     GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
@@ -47,11 +48,11 @@ pipeline {
         script {
           def repo_policy = libraryResource('ci/ecr/repo_policy.json')
           ecr.create_repo([
-            artifact_name: "${params.LANG}",
+            artifact_name: "${env.ECR_FULL_NAME}",
             key_type: "KMS"
           ])
           ecr.set_repo_policy([
-            artifact_name: "${params.LANG}",
+            artifact_name: "${env.ECR_FULL_NAME}",
             repo_policy: repo_policy
           ])
         }
