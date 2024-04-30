@@ -69,6 +69,7 @@ pipeline {
               wget "https://_:${env.GH_TOKEN}@maven.pkg.github.com/Sealights/SL.OnPremise.Agents.Java/io/sealights/on-premise/agents/java-agent-bootstrapper/"${env.TEST_LISTENER}"/java-agent-bootstrapper-"${env.TEST_LISTENER}".jar"
               ls
               pwd
+              ### to download gradle plugin from maven packages in github ###
               sed -i  's|<password>.*</password>|<password>${env.GH_TOKEN}</password>|' settings-github.xml
             """
           }
