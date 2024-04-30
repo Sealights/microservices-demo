@@ -431,7 +431,7 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusFound)
 }
 func (fe *frontendServer) sealightsHandler(w http.ResponseWriter, r *http.Request) {
-    microserviceURL := "http://sealightsservice.svc.cluster.local:5732/about"
+    microserviceURL := "http://sealightsservice:5732/about"
 
     resp, err := http.Get(microserviceURL)
     if err != nil {
