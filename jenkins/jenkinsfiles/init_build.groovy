@@ -25,8 +25,7 @@ pipeline {
     choice(name: 'LANG', choices: ['javaInitContainer', 'dotnetInitContainer'], description: 'Choose lang technology')
   }
   environment {
-    ECR_FULL_NAME = "${params.LANG}"
-    ECR_URI = "sealights/${env.ECR_FULL_NAME}"
+    ECR_URI = "sealights/${params.LANG}"
     GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   stages {
@@ -48,11 +47,11 @@ pipeline {
         script {
           def repo_policy = libraryResource('ci/ecr/repo_policy.json')
           ecr.create_repo([
-            artifact_name: "${env.ECR_FULL_NAME}",
+            artifact_name: "${params.LANG}",
             key_type: "KMS"
           ])
           ecr.set_repo_policy([
-            artifact_name: "${env.ECR_FULL_NAME}",
+            artifact_name: "${params.LANG}",
             repo_policy: repo_policy
           ])
         }
