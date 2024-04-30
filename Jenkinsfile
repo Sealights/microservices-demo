@@ -43,7 +43,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          env.token = "${params.SL_TOKEN}".equals(null) ? get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
+          env.token = "${params.SL_TOKEN}".equals(null) ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
           echo "${env.token}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
@@ -319,16 +319,6 @@ pipeline {
     }
   }
 }
-
-def get_secret (SecretID, Region, Profile="") {
-  if (Profile != "") {
-    Profile = "--profile ${Profile}"
-  }
-  String secret_key = "${SecretID.split('/')[-1]}" as String
-  def secret_value = (sh(returnStdout: true, script: "aws secretsmanager get-secret-value --secret-id ${SecretID} --region ${Region} ${Profile}| jq -r '.SecretString' | jq -r '.${secret_key}'")).trim()
-  return secret_value
-}
-
 
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
