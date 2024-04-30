@@ -109,7 +109,7 @@ pipeline {
             ### dowload sl-build-scanner.jar from github ###
             ls ../
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -pluginversion ${env.MAVEN_VERSION} -workspacepath .
-            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
+            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
             mvn clean package -gs ../settings-github.xml
           """
         }
