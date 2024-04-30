@@ -25,7 +25,7 @@ pipeline {
     choice(name: 'LANG', choices: ['javaInitContainer', 'dotnetInitContainer'], description: 'Choose lang technology')
   }
   environment {
-    ECR_FULL_NAME = "javainitcontainer"
+    ECR_FULL_NAME = "${params.LANG}"
     ECR_URI = "sealights/${env.ECR_FULL_NAME}"
     GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
