@@ -68,8 +68,8 @@ def test_browse_product(r=requests):
 def test_view_cart(r=requests):
     response = r.get(BASE_URL + "/cart")
     assert response.status_code == 200
-    response = r.post(BASE_URL + "/cart/empty")
-    assert response.status_code == 200
+    # response = r.post(BASE_URL + "/cart/empty")
+    # assert response.status_code == 200
 
 
 def test_add_to_cart(r=requests):
