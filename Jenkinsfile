@@ -6,9 +6,9 @@ pipeline {
       defaultContainer "shell"
     }
   }
-  environment {
-    token = "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}"
-  }
+//  environment {
+//    token = "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}"
+//  }
 
   parameters {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
@@ -45,7 +45,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-//          env.token = "${params.SL_TOKEN}".equals(null) ? secrets.get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
+          env.token = "${params.SL_TOKEN}".equals(null) ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
           echo "${env.token}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
