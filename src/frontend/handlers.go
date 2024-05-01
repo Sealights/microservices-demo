@@ -310,7 +310,9 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 		client := &http.Client{
 			Timeout: time.Second * 10,
 		}
-		req, err := http.NewRequest("GET", "http://mhfc-service:8080/mhfc", nil)
+		sumMHFCString := strconv.FormatInt(sumMHFC, 10) // 10 denotes base-10
+
+		req, err := http.NewRequest("POST", "http://sealightsservice:5732/getDiscount", sumMHFCString)
 		if err != nil {
 			log.Error(err)
 		}
