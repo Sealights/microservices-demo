@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
 
     @PostMapping("/getDiscount")
-    public String getDiscount(@RequestBody Map<String, Object> requestData) {
-        double number = (Double) requestData.get("number");
+    public String getDiscount(@RequestBody String txt) {
+        double number = Double.parseDouble(txt);
         return  String.format("%.2f",number*0.9);
     }
 }
