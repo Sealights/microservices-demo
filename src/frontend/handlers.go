@@ -99,6 +99,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		env = "gcp"
 	}
 
+
 	log.Debugf("ENV_PLATFORM is: %s", env)
 	plat = platformDetails{}
 	plat.setPlatformDetails(strings.ToLower(env))
