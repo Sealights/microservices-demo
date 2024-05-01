@@ -52,33 +52,13 @@ var (
 
 var validEnvs = []string{"local", "gcp", "azure", "aws", "onprem", "alibaba"}
 
-func (fe *frontendServer) getDiscountedCartTotalHandler(w http.ResponseWriter, r *http.Request) {
-    log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
-    sessionID := sessionID(r)
-
-    cart, err := fe.getCart(r.Context(), sessionID)
-    if err != nil {
-        renderHTTPError(log, r, w, errors.Wrap(err, "failed to get cart"), http.StatusInternalServerError)
-        return
-    }
-
-    // Assuming the discounted total is a method on the cart
-    discountedTotal, err := fe.getDiscountedCartTotal(r.Context(), cart)
-    if err != nil {
-        renderHTTPError(log, r, w, errors.Wrap(err, "failed to calculate discounted total"), http.StatusInternalServerError)
-        return
-    }
-
-    fmt.Fprintf(w, "Discounted Total: %.2f", discountedTotal)
-}
-
 func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.WithField("currency", currentCurrency(r)).Info("home")
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
-		returngetShippingQuote
+		return
 	}
 	products, err := fe.getProducts(r.Context())
 	if err != nil {
@@ -273,19 +253,19 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
 		return
 	}
-	cart, err := fe.getCart(r.Context(), sessionID(r))
+	cartsItems, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
 		return
 	}
 
 	// ignores the error retrieving recommendations since it is not critical
-	recommendations, err := fe.getRecommendations(r.Context(), sessionID(r), cartIDs(cart))
+	recommendations, err := fe.getRecommendations(r.Context(), sessionID(r), cartIDs(cartsItems))
 	if err != nil {
 		log.WithField("error", err).Warn("failed to get product recommendations")
 	}
 
-	shippingCost, err := fe.getShippingQuote(r.Context(), cart, currentCurrency(r))
+	shippingCost, err := fe.getShippingQuote(r.Context(), cartsItems, currentCurrency(r))
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "failed to get shipping quote"), http.StatusInternalServerError)
 		return
@@ -296,50 +276,84 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 		Quantity int32
 		Price    *pb.Money
 	}
-	items := make([]cartItemView, len(cart))
+	items := make([]cartItemView, len(cartsItems))
 	totalPrice := pb.Money{CurrencyCode: currentCurrency(r)}
-	int sumMHFC=0
-	for i, item := range cart {
-		p , err := fe.getProduct(r.Context(), item.GetProductId())
+	sumMHFC := int64(0)
+	for i, item := range cartsItems {
+		product, err := fe.getProduct(r.Context(), item.GetProductId())
 		if err != nil {
 			renderHTTPError(log, r, w, errors.Wrapf(err, "could not retrieve product #%s", item.GetProductId()), http.StatusInternalServerError)
 			return
 		}
-		price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
+
+		price, err := fe.convertCurrency(r.Context(), product.GetPriceUsd(), currentCurrency(r))
 		if err != nil {
 			renderHTTPError(log, r, w, errors.Wrapf(err, "could not convert currency for product #%s", item.GetProductId()), http.StatusInternalServerError)
 			return
 		}
-		
-		multPrice := money.MultiplySlow(*price, uint32(item.GetQuantity()))
 
-		if(item.GetCategories().contains("MHFC")){
-			sumMHFC+=multPrice
+		multPrice := money.MultiplySlow(*price, uint32(item.GetQuantity()))
+		for _, category := range product.GetCategories() {
+			if category == "MHFC" {
+				sumMHFC += multPrice.Units
+			}
 		}
 
 		items[i] = cartItemView{
-			Item:     p,
+			Item:     product,
 			Quantity: item.GetQuantity(),
 			Price:    &multPrice}
 		totalPrice = money.Must(money.Sum(totalPrice, multPrice))
 	}
 
-	if(sumMHFC>100){
-		
-	}
+	if sumMHFC > 100 {
+		client := &http.Client{
+			Timeout: time.Second * 10,
+		}
+		req, err := http.NewRequest("GET", "http://mhfc-service:8080/mhfc", nil)
+		if err != nil {
+			log.Error(err)
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Error(err)
+		}
+		//Json
+		//type discountResponse struct {
+		//	Discount float64 `json:"discount"`
+		//}
+		//disResp:=&discountResponse{}
+		//err = json.NewDecoder(resp.Body).Decode(disResp)
+		//if err != nil {
+		//	log.Error(err)
+		//}
+		//disResp.Discount
 
+		//String
+		discount := ""
+		buf := make([]byte, 1024)
+		n, _ := resp.Body.Read(buf)
+		discount = string(buf[:n])
+		log.Info("Discount: ", discount)
+		discountFloat, err := strconv.ParseFloat(discount, 64)
+		if err != nil {
+			log.Error(err)
+		}
+		fmt.Println("Discount: ", discountFloat)
+
+		defer resp.Body.Close()
+	}
 
 	totalPrice = money.Must(money.Sum(totalPrice, *shippingCost))
 	year := time.Now().Year()
 
-	
 	if err := templates.ExecuteTemplate(w, "cart", map[string]interface{}{
 		"session_id":        sessionID(r),
 		"request_id":        r.Context().Value(ctxKeyRequestID{}),
 		"user_currency":     currentCurrency(r),
 		"currencies":        currencies,
 		"recommendations":   recommendations,
-		"cart_size":         cartSize(cart),
+		"cart_size":         cartSize(cartsItems),
 		"shipping_cost":     shippingCost,
 		"show_currency":     true,
 		"total_cost":        totalPrice,
