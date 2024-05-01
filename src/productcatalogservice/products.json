@@ -106,7 +106,7 @@
                 "units": 8,
                 "nanos": 990000000
             },
-            "categories": ["kitchen"]
+            "categories": ["kitchen","MHFC"]
         }
     ]
 }
