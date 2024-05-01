@@ -278,7 +278,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	}
 	items := make([]cartItemView, len(cartsItems))
 	totalPrice := pb.Money{CurrencyCode: currentCurrency(r)}
-	sumMHFC := int64(0)
+	sumMHFC := float64(0)
 	for i, item := range cartsItems {
 		product, err := fe.getProduct(r.Context(), item.GetProductId())
 		if err != nil {
