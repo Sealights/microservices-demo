@@ -52,6 +52,7 @@ var (
 
 var validEnvs = []string{"local", "gcp", "azure", "aws", "onprem", "alibaba"}
 
+
 func (fe *frontendServer) getDiscountedCartTotalHandler(w http.ResponseWriter, r *http.Request) {
     log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
     sessionID := sessionID(r)
