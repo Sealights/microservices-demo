@@ -27,6 +27,16 @@ const (
 	avoidNoopCurrencyConversionRPC = false
 )
 
+func (fe *frontendServer) getDiscountedCartTotal(ctx context.Context, cart *pb.Cart) (float64, error) {
+    client := pb.NewCartServiceClient(fe.cartSvcConn)
+    req := &pb.GetDiscountedTotalRequest{Cart: cart}
+    resp, err := client.GetDiscountedTotal(ctx, req)
+    if err != nil {
+        return 0, err
+    }
+    return resp.DiscountedTotal, nil
+}
+
 func (fe *frontendServer) getCurrencies(ctx context.Context) ([]string, error) {
 	currs, err := pb.NewCurrencyServiceClient(fe.currencySvcConn).
 		GetSupportedCurrencies(ctx, &pb.Empty{})
