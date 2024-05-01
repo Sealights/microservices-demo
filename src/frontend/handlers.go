@@ -295,7 +295,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 		multPrice := money.MultiplySlow(*price, uint32(item.GetQuantity()))
 		for _, category := range product.GetCategories() {
 			if category == "MHFC" {
-				sumMHFC += multPrice.Units
+				sumMHFC += float64(multPrice.Units)
 			}
 		}
 
@@ -310,7 +310,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 		client := &http.Client{
 			Timeout: time.Second * 10,
 		}
-		sumMHFCString := strconv.FormatInt(sumMHFC, 10) // 10 denotes base-10
+		sumMHFCString := fmt.Sprintf("%.2f",sumMHFC) // 10 denotes base-10
 		reader := strings.NewReader(sumMHFCString)
 
 		req, err := http.NewRequest("POST", "http://sealightsservice:5732/getDiscount", reader)
@@ -344,7 +344,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 			log.Error(err)
 		}
 		fmt.Println("Discount: ", discountFloat)
-		totalPrice = discountFloat
+		totalPrice.unit = int64(discountFloat)
 		defer resp.Body.Close()
 	}
 
