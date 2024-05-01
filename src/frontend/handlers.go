@@ -311,11 +311,13 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 			Timeout: time.Second * 10,
 		}
 		sumMHFCString := strconv.FormatInt(sumMHFC, 10) // 10 denotes base-10
+		reader := strings.NewReader(sumMHFCString)
 
-		req, err := http.NewRequest("POST", "http://sealightsservice:5732/getDiscount", sumMHFCString)
-		if err != nil {
-			log.Error(err)
-		}
+		req, err := http.NewRequest("POST", "http://sealightsservice:5732/getDiscount", reader)
+    	if err != nil {
+    		fmt.Println("Error creating request:", err)
+    		return
+    	}
 		resp, err := client.Do(req)
 		if err != nil {
 			log.Error(err)
