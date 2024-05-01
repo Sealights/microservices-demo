@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class Controller {
 
-    @GetMapping("/about")
+    @GetMapping("/getDiscount")
     public String hello() {
         try{
-            Path filePath = Path.of("src/main/resources/templates/page.html");
             String f=Files.readString(filePath);
             return f;
         } catch (IOException e) {
