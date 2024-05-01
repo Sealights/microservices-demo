@@ -52,7 +52,6 @@ var (
 
 var validEnvs = []string{"local", "gcp", "azure", "aws", "onprem", "alibaba"}
 
-
 func (fe *frontendServer) getDiscountedCartTotalHandler(w http.ResponseWriter, r *http.Request) {
     log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
     sessionID := sessionID(r)
@@ -72,13 +71,14 @@ func (fe *frontendServer) getDiscountedCartTotalHandler(w http.ResponseWriter, r
 
     fmt.Fprintf(w, "Discounted Total: %.2f", discountedTotal)
 }
+
 func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.WithField("currency", currentCurrency(r)).Info("home")
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
-		return
+		returngetShippingQuote
 	}
 	products, err := fe.getProducts(r.Context())
 	if err != nil {
@@ -298,8 +298,9 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	}
 	items := make([]cartItemView, len(cart))
 	totalPrice := pb.Money{CurrencyCode: currentCurrency(r)}
+	int sumMHFC=0
 	for i, item := range cart {
-		p, err := fe.getProduct(r.Context(), item.GetProductId())
+		p , err := fe.getProduct(r.Context(), item.GetProductId())
 		if err != nil {
 			renderHTTPError(log, r, w, errors.Wrapf(err, "could not retrieve product #%s", item.GetProductId()), http.StatusInternalServerError)
 			return
@@ -309,17 +310,29 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 			renderHTTPError(log, r, w, errors.Wrapf(err, "could not convert currency for product #%s", item.GetProductId()), http.StatusInternalServerError)
 			return
 		}
-
+		
 		multPrice := money.MultiplySlow(*price, uint32(item.GetQuantity()))
+
+		if(item.GetCategories().contains("MHFC")){
+			sumMHFC+=multPrice
+		}
+
 		items[i] = cartItemView{
 			Item:     p,
 			Quantity: item.GetQuantity(),
 			Price:    &multPrice}
 		totalPrice = money.Must(money.Sum(totalPrice, multPrice))
 	}
+
+	if(sumMHFC>100){
+		
+	}
+
+
 	totalPrice = money.Must(money.Sum(totalPrice, *shippingCost))
 	year := time.Now().Year()
 
+	
 	if err := templates.ExecuteTemplate(w, "cart", map[string]interface{}{
 		"session_id":        sessionID(r),
 		"request_id":        r.Context().Value(ctxKeyRequestID{}),
