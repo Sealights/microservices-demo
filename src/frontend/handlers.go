@@ -52,6 +52,25 @@ var (
 
 var validEnvs = []string{"local", "gcp", "azure", "aws", "onprem", "alibaba"}
 
+func (fe *frontendServer) getDiscountedCartTotalHandler(w http.ResponseWriter, r *http.Request) {
+    log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+    sessionID := sessionID(r)
+
+    cart, err := fe.getCart(r.Context(), sessionID)
+    if err != nil {
+        renderHTTPError(log, r, w, errors.Wrap(err, "failed to get cart"), http.StatusInternalServerError)
+        return
+    }
+
+    // Assuming the discounted total is a method on the cart
+    discountedTotal, err := fe.getDiscountedCartTotal(r.Context(), cart)
+    if err != nil {
+        renderHTTPError(log, r, w, errors.Wrap(err, "failed to calculate discounted total"), http.StatusInternalServerError)
+        return
+    }
+
+    fmt.Fprintf(w, "Discounted Total: %.2f", discountedTotal)
+}
 func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.WithField("currency", currentCurrency(r)).Info("home")
