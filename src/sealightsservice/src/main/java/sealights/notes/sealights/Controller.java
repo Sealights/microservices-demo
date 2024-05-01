@@ -1,9 +1,8 @@
 package sealights.notes.sealights;
 
-import java.nio.file.Path;
-import java.nio.file.Files;
-import java.io.IOException;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,15 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class Controller {
 
-    @GetMapping("/getDiscount")
-    public String hello() {
-        try{
-            String f=Files.readString(filePath);
-            return f;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Error reading file";
-        }
-
+    @PostMapping("/getDiscount")
+    public String getDiscount(@RequestBody Map<String, Object> requestData) {
+        double number = (Double) requestData.get("number");
+        return  String.format("%.2f",number*0.9);
     }
 }
