@@ -344,7 +344,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 			log.Error(err)
 		}
 		fmt.Println("Discount: ", discountFloat)
-		totalPrice.unit = int64(discountFloat)
+		totalPrice.Units = int64(discountFloat)
 		defer resp.Body.Close()
 	}
 
