@@ -2,7 +2,7 @@ import random
 import requests
 import pytest
 import os
-import threading
+from lxml import etree
 
 products = [
     '0PUK6V6EV0',
@@ -15,19 +15,8 @@ products = [
     'LS4PSXUNUM',
     'OLJCESPC7Z']
 
-load = 10  # number of users for load test
-
 BASE_URL = os.environ.get("machine_dns", "10.2.10.163:8081")  # internal or external test
 
-def test_load():
-    threads = []
-    for _ in range(load):
-        thread = threading.Thread(target=test_session)
-        thread.start()
-        threads.append(thread)
-
-    for thread in threads:
-        thread.join()
 
 
 def test_session():
@@ -37,6 +26,39 @@ def test_session():
     for o in order:
         o(session)
         # print("hello")
+
+def test_add_to_cart_check_add():
+        r=requests.Session()
+        data = {
+            'product_id': products[0],
+            'quantity': 5
+        }
+        #add item to cart
+        response = r.post(BASE_URL + "/cart", data=data)
+        assert response.status_code == 200
+        
+        #Fetch the cart
+        
+        response = r.get(BASE_URL + "/cart")
+        tree = etree.HTML(response.text)
+        print(tree)
+        element = tree.xpath('/html/body/main/section/div/div[1]/div[1]/div[1]/h3')
+        print(element[0])
+        assert etree.tostring(element[0]).decode('utf-8').strip()  == '<h3>Cart (5)</h3>'
+        r.close()
+
+def test_get_product():
+        r=requests.Session()
+
+        #add item to cart
+        response = r.get(BASE_URL + "/product/0PUK6V6EV0")
+        assert response.status_code == 200
+        
+        tree = etree.HTML(response.content)
+        print(tree)
+        element = tree.xpath('/html/body/main/div[1]/div/div[2]/div/h2')
+        assert etree.tostring(element[0]).decode('utf-8').strip()  == '<h2>Candle Holder</h2>'
+        r.close()
 
 
 def test_bad_requests(r=requests):
