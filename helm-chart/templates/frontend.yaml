@@ -94,6 +94,8 @@ spec:
             value: "{{ .Values.checkoutService.name }}:5050"
           - name: AD_SERVICE_ADDR
             value: "{{ .Values.adService.name }}:9555"
+          - name: SEALIGHTS_SERVICE_ADDR
+            value: "{{ .Values.sealightsService.name }}:5732"
           - name: ENV_PLATFORM
             value: {{ .Values.frontend.platform | quote }}
           {{- if .Values.opentelemetryCollector.create }}
@@ -202,6 +204,7 @@ spec:
     - ./{{ .Values.productCatalogService.name }}.{{ .Release.Namespace }}.svc.cluster.local
     - ./{{ .Values.recommendationService.name }}.{{ .Release.Namespace }}.svc.cluster.local
     - ./{{ .Values.shippingService.name }}.{{ .Release.Namespace }}.svc.cluster.local
+    - ./{{ .Values.sealightsService.name }}.{{ .Release.Namespace }}.svc.cluster.local
     {{- if .Values.opentelemetryCollector.create }}
     - ./{{ .Values.opentelemetryCollector.name }}.{{ .Release.Namespace }}.svc.cluster.local
     {{- end }}

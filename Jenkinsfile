@@ -37,16 +37,6 @@ pipeline {
   }
 
   stages {
-    stage('Clone Repository') {
-      steps {
-        script {
-          clone_repo(
-            branch: params.BRANCH
-          )
-        }
-      }
-    }
-
     //Build parallel images
     stage('Build BTQ') {
       steps {
@@ -238,7 +228,7 @@ def build_btq(Map params){
   def parallelLabs = [:]
   //List of all the images name
 
-  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
+  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice","sealightsservice"]
   //def special_services = ["cartservice"].
   env.BUILD_NAME= "${params.build_name}" == "" ? "${params.branch}-${env.CURRENT_VERSION}" : "${params.build_name}"
 
@@ -271,6 +261,8 @@ def getParamForService(service, mapurl) {
       return [mapurl['PYTHON_AGENT_URL'].toString(),""]
     case ["currencyservice","paymentservice"]:
       return [mapurl['NODE_AGENT_URL'].toString(),""]
+    case "sealightsservice":
+      return [mapurl['JAVA_AGENT_URL'].toString(),""]
   }
 }
 
@@ -387,13 +379,6 @@ def run_api_tests_after_changes(Map params){
       string(name: 'APP_NAME', value: "${params.app_name}")
     ])
   }
-}
-
-
-
-def clone_repo(Map params){
-  // Clone the repository with the specified branch
-  git branch: params.branch, url: 'https://github.com/Sealights/microservices-demo.git'
 }
 
 def set_assume_role(Map params) {
