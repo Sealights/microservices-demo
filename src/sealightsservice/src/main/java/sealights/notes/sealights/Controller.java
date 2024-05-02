@@ -10,9 +10,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class Controller {
 
+    public string GetPricePostDiscount(String txt){
+
+        double number = Double.parseDouble(txt);
+        if (number > 200 && number <= 300)  {
+            return  String.format("%.2f",number*0.78);
+        }
+        else if(number > 300){
+            return  String.format("%.2f",number*0.70);
+        }
+        return String.format("%.2f",number*0.9);
+    }
+
     @PostMapping("/getDiscount")
     public String getDiscount(@RequestBody String txt) {
-        double number = Double.parseDouble(txt);
-        return  String.format("%.2f",number*0.9);
+        return GetPricePostDiscount(txt);
     }
 }
