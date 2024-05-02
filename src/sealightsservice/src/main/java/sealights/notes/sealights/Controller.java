@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class Controller {
 
-    public string GetPricePostDiscount(String txt){
+    public String GetPricePostDiscount(String txt){
 
         double number = Double.parseDouble(txt);
         if (number > 200 && number <= 300)  {
