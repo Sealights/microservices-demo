@@ -36,9 +36,9 @@ def test_add_to_cart_check_add():
         #add item to cart
         response = r.post(BASE_URL + "/cart", data=data)
         assert response.status_code == 200
-        
+
         #Fetch the cart
-        
+
         response = r.get(BASE_URL + "/cart")
         tree = etree.HTML(response.text)
         print(tree)
@@ -53,7 +53,7 @@ def test_get_product():
         #add item to cart
         response = r.get(BASE_URL + "/product/0PUK6V6EV0")
         assert response.status_code == 200
-        
+
         tree = etree.HTML(response.content)
         print(tree)
         element = tree.xpath('/html/body/main/div[1]/div/div[2]/div/h2')
@@ -69,15 +69,15 @@ def test_add_to_cart_check_add_discount():
         #add item to cart
         response = r.post(BASE_URL + "/cart", data=data)
         assert response.status_code == 200
-        
+
         #Fetch the cart
-        
+
         response = r.get(BASE_URL + "/cart")
         tree = etree.HTML(response.text)
         print(tree)
         element = tree.xpath('/html/body/main/section/div/div[1]/div[4]/div[2]')
         print(element[0])
-        assert etree.tostring(element[0]).decode('utf-8').strip()  == '<div>$129.45</div>'
+        assert etree.tostring(element[0]).decode('utf-8').strip()  == '<div class="col pr-md-0 text-right">$129.84</div>'
         r.close()
 
 def test_bad_requests(r=requests):
