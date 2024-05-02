@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: BTQ Hackathon API
+  version: 1.0.0
+  description: |
+    This API is for the BTQ Hackathon project and provides a set of endpoints to interact with the shopping application. 
+    **Note:** All API calls should include the machine DNS before the API path.
+
+servers:
+  - url: 'https://{machineDNS}/'
+    description: Base server for all API calls
+
+paths:
+  /:
+    get:
+      summary: Home Page
+      tags:
+        - General
+      description: Handles the home page of the shopping application.
+      responses:
+        '200':
+          $ref: '#/components/responses/HomePage'
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+  
+  /product/{id}:
+    get:
+      summary: Get Product Details
+      tags:
+        - Product
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProductDetails'
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+  
+  /cart:
+    get:
+      summary: View Cart
+      tags:
+        - Cart
+      responses:
+        '200':
+          $ref: '#/components/responses/CartDetails'
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+    post:
+      summary: Add Item to Cart
+      tags:
+        - Cart
+      requestBody:
+        $ref: '#/components/requestBodies/AddToCart'
+      responses:
+        '201':
+          description: Item added to cart.
+  
+  /cart/empty:
+    post:
+      summary: Empty Cart
+      tags:
+        - Cart
+      responses:
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+  
+  /setCurrency:
+    post:
+      summary: Set Currency
+      tags:
+        - User Settings
+      requestBody:
+        $ref: '#/components/requestBodies/SetCurrency'
+      responses:
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+  
+  /logout:
+    get:
+      summary: User Logout
+      tags:
+        - User
+      responses:
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+  
+  /cart/checkout:
+    post:
+      summary: Place Order
+      tags:
+        - Cart
+      requestBody:
+        $ref: '#/components/requestBodies/PlaceOrder'
+      responses:
+        '201':
+          description: Order placed successfully.
+  
+  /robots.txt:
+    get:
+      summary: robots.txt
+      tags:
+        - General
+      responses:
+        '200':
+          description: robots.txt file served successfully.
+  
+  /_healthz:
+    get:
+      summary: Health Check
+      tags:
+        - General
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckSuccess'
+  
+components:
+  parameters:
+    ProductId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the product to retrieve.
+
+  requestBodies:
+    AddToCart:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: integer
+                description: ID of the product to add to the cart.
+
+    SetCurrency:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              currency:
+                type: string
+                description: Currency code to set (e.g., USD, EUR).
+
+    PlaceOrder:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              payment_method:
+                type: string
+                description: Payment method for the order.
+
+  responses:
+    HomePage:
+      description: Successful response containing the home page.
+    ProductDetails:
+      description: Successful response with product details.
+    CartDetails:
+      description: Successful response with cart details.
+    EmptyResponse:
+      description: No content returned.
+    HealthCheckSuccess:
+      description: Application health check successful.
