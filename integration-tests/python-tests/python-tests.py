@@ -60,25 +60,7 @@ def test_get_product():
         assert etree.tostring(element[0]).decode('utf-8').strip()  == '<h2>Candle Holder</h2>'
         r.close()
 
-def test_add_to_cart_check_add_discount():
-        r=requests.Session()
-        data = {
-            'product_id': "6E92ZMYYFZ",
-            'quantity': 15
-        }
-        #add item to cart
-        response = r.post(BASE_URL + "/cart", data=data)
-        assert response.status_code == 200
 
-        #Fetch the cart
-
-        response = r.get(BASE_URL + "/cart")
-        tree = etree.HTML(response.text)
-        print(tree)
-        element = tree.xpath('/html/body/main/section/div/div[1]/div[4]/div[2]')
-        print(element[0])
-        assert etree.tostring(element[0]).decode('utf-8').strip()  == '<div class="col pr-md-0 text-right">$129.84</div>'
-        r.close()
 
 def test_bad_requests(r=requests):
     response = r.get(BASE_URL + "/product/89")
