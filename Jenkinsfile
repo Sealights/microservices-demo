@@ -28,6 +28,9 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Cypress', defaultValue: true, description: 'Run tests using Cypress testing framework')
+    booleanParam(name: 'Mocha', defaultValue: true, description: 'Run tests using Mocha testing framework')
   }
 
   stages {
@@ -131,6 +134,9 @@ pipeline {
       steps {
         script {
           run_tests(
+            Run_all_tests : params.Run_all_tests ,
+            Mocha : params.Mocha,
+            Cypress : params.Cypress,
             branch: params.BRANCH,
             test_type: params.TEST_TYPE
           )
@@ -457,11 +463,14 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      build(job: "All-In-Image", parameters: [
+      build(job: "All-In-One", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}"),
+        booleanParam(name: 'Cypress', value: "${params.Cypress}"),
+        booleanParam(name: 'Mocha', value: "${params.Mocha}"),
+        booleanParam(name: 'Run_all_tests', value: "${params.Run_all_tests}"),
       ])
     }
   }
