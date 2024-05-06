@@ -216,7 +216,7 @@ pipeline {
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -pom -configfile slmaventests.json -workspacepath . -pluginversion ${env.MAVEN_VERSION}
             #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:${env.MAVEN_VERSION}  -gs ../settings-github.xml
             unset MAVEN_CONFIG
-            mvn clean package -gs ../settings-github.xml
+            ./mvnw test -gs ../settings-github.xml
           """
         }
       }
