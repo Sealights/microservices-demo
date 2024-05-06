@@ -6,5 +6,6 @@ import (
 )
 
 func AnotherFile() {
-    fmt.Println("Function in another file")
+	fmt.Println("Function in another file")
+	return ("Function in another file")
 }
