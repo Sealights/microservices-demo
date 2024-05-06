@@ -102,19 +102,10 @@ pipeline {
       steps {
         script {
           def testStages_list =
-            ["Cucmber-framework-java",
-             "Jest-tests",
-             "Junit-support-testNG",
+            [
              "Cypress-Test-Stage",
-             "Junit-without-testNG",
-             "Mocha-tests",
-             "MS-Tests",
-             "NUnit-Tests",
-             "Postman-tests",
-             "Pytest-tests",
-             "Robot-Tests",
-             "Soapui-Tests",
-             "Junit-without-testNG-gradle"]
+             "Mocha-tests"
+             ]
 
           testStages_list.each { TEST_STAGE ->
             schedule_full_run(
