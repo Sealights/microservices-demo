@@ -241,21 +241,6 @@ pipeline {
       }
     }
 
-    stage('Run TIA Tests 2-SECOND With SeaLights') {
-      steps {
-        script {
-          def RUN_DATA = "TIA-RUN-Node";
-          TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch: params.BRANCH,
-            app_name : params.APP_NAME
-          )
-        }
-      }
-    }
-
     stage('Run Coverage Tests After Changes') {
       steps {
         script {
