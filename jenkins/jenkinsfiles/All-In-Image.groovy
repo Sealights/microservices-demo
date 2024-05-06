@@ -15,6 +15,9 @@ pipeline {
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
+    booleanParam(name: 'Run_all_tests', defaultValue: false, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Cypress', defaultValue: true, description: 'Run tests using Cypress testing framework')
+    booleanParam(name: 'Mocha', defaultValue: true, description: 'Run tests using Mocha testing framework')
 
   }
   environment {
@@ -31,8 +34,9 @@ pipeline {
     }
     stage('Junit without testNG '){
       steps{
-        script{
-          sh """
+        script {
+          if (params.Run_all_tests == true) {
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             echo 'Junit without testNG framework starting ..... '
@@ -58,13 +62,15 @@ pipeline {
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
             mvn clean package
           """
+          }
         }
       }
     }
     stage('Junit support testNG framework'){
       steps{
-        script{
-          sh """
+        script {
+          if (params.Run_all_tests == true) {
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             echo 'Junit support testNG framework starting ..... '
@@ -92,44 +98,46 @@ pipeline {
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
             mvn clean package
           """
+          }
         }
       }
     }
     stage('Gradle framework'){
       steps{
-        script{
-          sh """
-                    #!/bin/bash
-                    export lab_id="${params.SL_LABID}"
-                    export machine_dns="${params.MACHINE_DNS}"
-                    cd ./integration-tests/java-tests-gradle
-                    echo $SL_TOKEN>sltoken.txt
-                    echo '{
-                        "executionType": "testsonly",
-                        "tokenFile": "./sltoken.txt",
-                        "createBuildSessionId": false,
-                        "testStage": "Junit-without-testNG-gradle",
-                        "runFunctionalTests": true,
-                        "labId": "${params.SL_LABID}",
-                        "proxy": null,
-                        "logEnabled": false,
-                        "logDestination": "console",
-                        "logLevel": "warn",
-                        "sealightsJvmParams": {}
-                    }' > slgradletests.json
-                    echo "Adding Sealights to Tests Project gradle file..."
-                    java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-                    gradle test
-
-
-                    """
+        script {
+          if (params.Run_all_tests == true) {
+            sh """
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            export machine_dns="${params.MACHINE_DNS}"
+            cd ./integration-tests/java-tests-gradle
+            echo $SL_TOKEN>sltoken.txt
+            echo '{
+                "executionType": "testsonly",
+                "tokenFile": "./sltoken.txt",
+                "createBuildSessionId": false,
+                "testStage": "Junit-without-testNG-gradle",
+                "runFunctionalTests": true,
+                "labId": "${params.SL_LABID}",
+                "proxy": null,
+                "logEnabled": false,
+                "logDestination": "console",
+                "logLevel": "warn",
+                "sealightsJvmParams": {}
+            }' > slgradletests.json
+            echo "Adding Sealights to Tests Project gradle file..."
+            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+            gradle test
+            """
+          }
         }
       }
     }
     stage('Cucumber framework') {
       steps{
-        script{
-          sh """
+        script {
+          if (params.Run_all_tests == true) {
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             export machine_dns="${params.MACHINE_DNS}"
@@ -155,20 +163,24 @@ pipeline {
             unset MAVEN_CONFIG
             ./mvnw test
           """
+          }
         }
       }
     }
     stage('Cypress framework starting'){
       steps{
-        script{
-          build(job:"BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),string(name: 'SL_LABID', value: "${params.SL_LABID}") , string(name:'SL_TOKEN' , value:"${params.SL_TOKEN}") ,string(name:'MACHINE_DNS1' , value:"${params.MACHINE_DNS}")])
+        script {
+          if (params.Run_all_tests == true || params.Cypress == true) {
+            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
+          }
         }
       }
     }
     stage('Mocha framework'){
       steps{
-        script{
-          sh """
+        script {
+          if (params.Run_all_tests == true || params.Mocha == true) {
+            sh """
             echo 'Mocha framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             export Lab_id="${params.SL_LABID}"
@@ -179,28 +191,33 @@ pipeline {
             ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
             cd ../..
           """
+          }
         }
       }
     }
     stage('MS-Tests framework'){
       steps{
-        script{
-          sh """
+        script {
+          if (params.Run_all_tests == true) {
+            sh """
             echo 'MS-Tests framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
           """
+          }
         }
       }
     }
     stage('N-Unit framework starting'){
       steps{
-        script{
-          sh """
+        script {
+          if (params.Run_all_tests == true) {
+            sh """
             echo 'N-Unit framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
           """
+          }
         }
       }
     }
@@ -223,21 +240,23 @@ pipeline {
 //    }
     stage('Postman framework'){
       steps{
-        script{
-          sh """
-          echo 'Postman framework starting ..... '
-          export MACHINE_DNS="${params.MACHINE_DNS}"
-          cd ./integration-tests/postman-tests/
-          cp -r /nodeModules/node_modules .
-          npm i slnodejs
-          npm install newman
-          npm install newman-reporter-xunit
-          ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
-          npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
-          ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
-          ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
-          cd ../..
-        """
+        script {
+            if (params.Run_all_tests == true) {
+              sh """
+            echo 'Postman framework starting ..... '
+            export MACHINE_DNS="${params.MACHINE_DNS}"
+            cd ./integration-tests/postman-tests/
+            cp -r /nodeModules/node_modules .
+            npm i slnodejs
+            npm install newman
+            npm install newman-reporter-xunit
+            ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
+            npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
+            ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
+            ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
+            cd ../..
+          """
+          }
         }
       }
     }
@@ -302,17 +321,19 @@ pipeline {
     stage('Pytest framework'){
       steps{
         script{
-          sh"""
-            export SL_SAVE_LOG_FILE=true
-            echo 'Pytest tests starting ..... '
-            export machine_dns="${params.MACHINE_DNS}"
-            cd ./integration-tests/python-tests
-            pip install pytest
-            pip install requests
-            sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
-            ls
-            cd ../..
-          """
+          if (params.Run_all_tests == true) {
+            sh """
+              export SL_SAVE_LOG_FILE=true
+              echo 'Pytest tests starting ..... '
+              export machine_dns="${params.MACHINE_DNS}"
+              cd ./integration-tests/python-tests
+              pip install pytest
+              pip install requests
+              sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
+              ls
+              cd ../..
+            """
+          }
         }
       }
     }
