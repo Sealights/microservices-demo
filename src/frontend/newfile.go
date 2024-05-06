@@ -1,6 +1,6 @@
 //Added file for testing
 package main
 
-func AnotherFile() {
-	return ("Function in another file")
+func AnotherFile() string {
+	return "Function in another file"
 }
