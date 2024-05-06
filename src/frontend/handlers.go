@@ -308,10 +308,10 @@ func (fe *frontendServer) addedContent(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if r.Method == "GET" {
-		fmt.Println("Method is GET")
+		fmt.Fprint(w, "Method is GET")
 	}
 	if r.Method == "DELETE" {
-		nestedFunctionContentDELETE()
+		fmt.Fprint(w, nestedFunctionContentDELETE())
 	}
 }
 func nestedFunctionContent() {
@@ -321,7 +321,7 @@ func nestedFunctionContentNone() string {
 	return "Nested function Content none of the ifs"
 }
 func nestedFunctionContentDELETE() {
-	fmt.Println("Method is DELETE")
+	return "Method is DELETE"
 }
 
 // End of Added new api function
