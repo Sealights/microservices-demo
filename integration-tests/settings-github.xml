@@ -10,18 +10,15 @@
   <profiles>
     <profile>
       <id>github</id>
-      <repositories>
-
-        <repository>
+      <pluginRepositories>
+        <pluginRepository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/Sealights/SL.OnPremise.GradlePlugin</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
+          <url>https://maven.pkg.github.com/Sealights/SL.OnPremise.MavenPlugin</url>
+        </pluginRepository>
+      </pluginRepositories>
     </profile>
   </profiles>
+
   <servers>
     <server>
       <id>github</id>
