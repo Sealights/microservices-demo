@@ -16,7 +16,7 @@ spec:
         requests:
           cpu: 2
           memory: 2500Mi
-          ephemeral-storage: 5000Mi
+          ephemeral-storage: 1500Mi  # Adjusted to not exceed the limit
         limits:
           cpu: 5
           memory: 7000Mi
@@ -33,7 +33,7 @@ spec:
         requests:
           memory: 2500Mi
           cpu: 2.5
-          ephemeral-storage: 3000Mi
+          ephemeral-storage: 3000Mi  # This setting is already within the limit
         limits:
           memory: 7000Mi
           cpu: 5
