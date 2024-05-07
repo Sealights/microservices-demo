@@ -165,8 +165,8 @@ pipeline {
                 "logEnabled": false,
                 "logDestination": "console",
                 "logLevel": "warn",
-                "buildScannerJar": "../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
-                "testListenerJar": "../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
+                "scannerJar": "../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                "listenerJar": "../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
                 "sealightsJvmParams": {"sl.enableUpgrade": false}
             }' > slgradletests.json
             echo "Adding Sealights to Tests Project gradle file..."
