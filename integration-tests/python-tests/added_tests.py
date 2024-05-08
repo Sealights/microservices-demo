@@ -45,7 +45,7 @@ def test_added_content_post():
             'num': int(num),
         }
         response = requests.post(BASE_URL + "/added/content",json=data)
-        assert response.json()['message'] == Switcher.get(num)
+        assert response.text == Switcher.get(num)
         assert response.status_code == 200
         
 
