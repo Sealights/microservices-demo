@@ -335,7 +335,7 @@ def run_tests(Map params){
         sleep time: 60, unit: 'SECONDS'
       }
     } else {
-      sleep time: 150, unit: 'SECONDS'
+      sleep time: 180, unit: 'SECONDS'
       build(job: "All-In-One/${params.branch}", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID_SPIN}"),
