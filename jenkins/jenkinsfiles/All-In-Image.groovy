@@ -105,25 +105,11 @@ pipeline {
             pwd
             cat gradle.properties
 
-            NEW_PASS="mavenPassword=${env.GH_TOKEN}"
-            FILE="gradle.properties"
-
-            # Create a temporary file
-            temp_file=\$(mktemp)
-
-            # Read each line and replace if needed
-            while IFS= read -r line
-            do
-              if [[ "\$line" == mavenPassword=* ]]; then
-                echo "\$NEW_PASS" >> "\$temp_file"
-              else
-                echo "\$line" >> "\$temp_file"
-              fi
-            done < "\$FILE"
-
-            # Move the temporary file to replace the original file
-            mv "\$temp_file" "\$FILE"
-            chmod 644 "\$FILE"
+            tmp="/path/to/your/directory"  # Update this path as needed
+            targetsubstring="^mavenPassword=.*"
+            newsubstring="mavenPassword=${env.GH_TOKEN}"
+            # Command
+            find "\$tmp" -type f -name "gradle.properties" -exec sed -i "s/\${targetsubstring}/\${newsubstring}/g" -- {} +
 
             cat gradle.properties
             sed -i 's/^mavenPassword=.*/mavenPassword='${env.GH_TOKEN}'/' /home/jenkins/agent/workspace/All-In-One_java-gradle/integration-tests/java-tests-gradle/gradle.properties
