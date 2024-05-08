@@ -76,6 +76,44 @@ pipeline {
         }
       }
     }
+    stage('Gradle framework'){
+      steps{
+        script{
+          sh """
+            #!/bin/bash
+            export lab_id="${params.SL_LABID}"
+            export machine_dns="${params.MACHINE_DNS}"
+            cd ./integration-tests/java-tests-gradle
+            echo $SL_TOKEN>sltoken.txt
+            echo '{
+                "executionType": "testsonly",
+                "tokenFile": "./sltoken.txt",
+                "createBuildSessionId": false,
+                "testStage": "Junit-without-testNG-gradle",
+                "runFunctionalTests": true,
+                "labId": "${params.SL_LABID}",
+                "proxy": null,
+                "logEnabled": false,
+                "logDestination": "console",
+                "logLevel": "warn",
+                "scannerJar": "../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
+                "listenerJar": "../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
+                "sealightsJvmParams": {"sl.enableUpgrade": false}
+            }' > slgradletests.json
+            echo "Adding Sealights to Tests Project gradle file..."
+            ls -l
+            pwd
+            cat gradle.properties
+            sed -i 's/^mavenPassword=.*/mavenPassword='${env.GH_TOKEN}'/' /home/jenkins/agent/workspace/All-In-One_java-gradle/integration-tests/java-tests-gradle/gradle.properties
+            java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar  -gradle -configfile slgradletests.json -workspacepath . -repoConfig 'maven {url "https://maven.pkg.github.com/Sealights/SL.OnPremise.GradlePlugin"}  credentials { username "sldevopsd" password "${env.GH_TOKEN}" }' -pluginversion ${env.GRADLE_VERSION}
+            #java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION} -repoConfig "maven { credentials {username "sldevopsd"; password "${env.GH_TOKEN}" }url "https://maven.pkg.github.com/Sealights/*"}"
+            ls
+            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-gradle-plugin:${env.GRADLE_VERSION}  -gs ../settings-github.xml
+            gradle test
+          """
+        }
+      }
+    }
     stage('Junit without testNG '){
       steps{
         script{
@@ -144,44 +182,7 @@ pipeline {
         }
       }
     }
-    stage('Gradle framework'){
-      steps{
-        script{
-          sh """
-            #!/bin/bash
-            export lab_id="${params.SL_LABID}"
-            export machine_dns="${params.MACHINE_DNS}"
-            cd ./integration-tests/java-tests-gradle
-            echo $SL_TOKEN>sltoken.txt
-            echo '{
-                "executionType": "testsonly",
-                "tokenFile": "./sltoken.txt",
-                "createBuildSessionId": false,
-                "testStage": "Junit-without-testNG-gradle",
-                "runFunctionalTests": true,
-                "labId": "${params.SL_LABID}",
-                "proxy": null,
-                "logEnabled": false,
-                "logDestination": "console",
-                "logLevel": "warn",
-                "scannerJar": "../java-build-agent-${env.BUILD_SCANER_VERSION}.jar",
-                "listenerJar": "../java-agent-bootstrapper-${env.TEST_LISTENER}.jar",
-                "sealightsJvmParams": {"sl.enableUpgrade": false}
-            }' > slgradletests.json
-            echo "Adding Sealights to Tests Project gradle file..."
-            ls -l
-            pwd
-            cat gradle.properties
-            sed -i 's/^mavenPassword=.*/mavenPassword='${env.GH_TOKEN}'/' /home/jenkins/agent/workspace/All-In-One_java-gradle/integration-tests/java-tests-gradle/gradle.properties
-            java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar  -gradle -configfile slgradletests.json -workspacepath . -repoConfig 'maven {url "https://maven.pkg.github.com/Sealights/SL.OnPremise.GradlePlugin"}  credentials { username "sldevopsd" password "${env.GH_TOKEN}" }' -pluginversion ${env.GRADLE_VERSION}
-            #java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION} -repoConfig "maven { credentials {username "sldevopsd"; password "${env.GH_TOKEN}" }url "https://maven.pkg.github.com/Sealights/*"}"
-            ls
-            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-gradle-plugin:${env.GRADLE_VERSION}  -gs ../settings-github.xml
-            gradle test
-          """
-        }
-      }
-    }
+
     stage('Cucumber framework') {
       steps{
         script{
