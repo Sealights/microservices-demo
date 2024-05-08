@@ -171,6 +171,7 @@ pipeline {
             echo "Adding Sealights to Tests Project gradle file..."
             ls -l
             pwd
+            cat gradle.properties
             sed -i 's/^mavenPassword=.*/mavenPassword='${env.GH_TOKEN}'/' /home/jenkins/agent/workspace/All-In-One_java-gradle/integration-tests/java-tests-gradle/gradle.properties
             java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar  -gradle -configfile slgradletests.json -workspacepath . -repoConfig 'maven {url "https://maven.pkg.github.com/Sealights/SL.OnPremise.GradlePlugin"}  credentials { username "sldevopsd" password "${env.GH_TOKEN}" }' -pluginversion ${env.GRADLE_VERSION}
             #java -jar ../java-build-agent-${env.BUILD_SCANER_VERSION}.jar -gradle -configfile slgradletests.json -workspacepath .  -pluginversion ${env.GRADLE_VERSION} -repoConfig "maven { credentials {username "sldevopsd"; password "${env.GH_TOKEN}" }url "https://maven.pkg.github.com/Sealights/*"}"
