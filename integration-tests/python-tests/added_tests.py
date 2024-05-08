@@ -35,14 +35,19 @@ def test_added_content_delete():
     assert response.text == "Method is DELETE"
 
 def test_added_content_post():
+    Switcher={
+        "1": "Nested function Content none of the ifs",
+        "4": "Num is 4",
+        "5": "Num is 5"
+    }
     for num in numbers:
         data = {
-            'num': num,
+            'num': int(num),
         }
-        response = requests.get(BASE_URL + "/added/content",data=data)
-        print(response.text)
+        response = requests.post(BASE_URL + "/added/content",json=data)
+        assert response.json()['message'] == Switcher.get(num)
         assert response.status_code == 200
-
+        
 
 
 

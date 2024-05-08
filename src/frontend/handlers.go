@@ -304,7 +304,7 @@ func (fe *frontendServer) addedContent(w http.ResponseWriter, r *http.Request) {
 		} else if data.Num == 4 {
 			fmt.Fprint(w, "Num is 4")
 		} else {
-			fmt.Fprint(w, nestedFunctionContentNone())
+			fmt.Fprint(w, nestedFunctionContent())
 		}
 	}
 	if r.Method == "GET" {
@@ -315,7 +315,7 @@ func (fe *frontendServer) addedContent(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func nestedFunctionContent() string {
-	return "Nested function Content"
+	return nestedFunctionContentNone()
 }
 func nestedFunctionContentNone() string {
 	return "Nested function Content none of the ifs"
