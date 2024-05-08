@@ -314,13 +314,13 @@ func (fe *frontendServer) addedContent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, nestedFunctionContentDELETE())
 	}
 }
-func nestedFunctionContent() {
-	fmt.Println("Nested function Content")
+func nestedFunctionContent() string {
+	return "Nested function Content"
 }
 func nestedFunctionContentNone() string {
 	return "Nested function Content none of the ifs"
 }
-func nestedFunctionContentDELETE() {
+func nestedFunctionContentDELETE() string {
 	return "Method is DELETE"
 }
 
