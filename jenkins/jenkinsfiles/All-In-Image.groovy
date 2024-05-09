@@ -46,7 +46,7 @@ pipeline {
             env.GRADLE_VERSION =(sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
-                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-maven-plugin/versions \\
+                        /users/Sealights/packages/maven/io.sealights.on-premise.agents.plugin.sealights-gradle-plugin/versions \\
                         | jq -r '.[0].name'""")).trim()
 
             env.BUILD_SCANER_VERSION = (sh(returnStdout: true, script: """export GH_TOKEN=${env.GH_TOKEN} && gh api \\
