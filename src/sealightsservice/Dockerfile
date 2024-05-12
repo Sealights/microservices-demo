@@ -3,16 +3,16 @@ FROM maven:3.9.6-sapmachine-17 as builder
 
 ARG SEALIGHTS_TOKEN
 ARG BRANCH
-ARG BUILD_NAME
+ARG BUILD_NAME=1.1
 ARG SERVICE_NAME=sealightsservice
 ENV OS_ARCH linux-amd64
 ARG AGENT_URL=https://agents.sealights.co/sealights-java/sealights-java-latest.zip
 
 
 WORKDIR /sealights
-RUN curl -nv ${AGENT_URL} -o sealights-java-latest.zip
+RUN curl -nv ${AGENT_URL} -o sealights-java.zip
 # Use jar to extract the contents of instead of installing unzip
-RUN jar -xf sealights-java-latest.zip
+RUN jar -xf sealights-java.zip
 
 
 WORKDIR /app
