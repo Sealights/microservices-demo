@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
 
     @GetMapping("/about")
-    public String hello() {
+    public String about() {
         try{
             Path filePath = Path.of("src/main/resources/templates/page.html");
             String f=Files.readString(filePath);

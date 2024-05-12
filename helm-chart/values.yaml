@@ -184,8 +184,8 @@ sealightsService:
       cpu: 200m
       memory: 180Mi
     limits:
-      cpu: 400m
-      memory: 640Mi
+      cpu: 300m
+      memory: 400Mi
 
 cartDatabase:
   # Specifies the type of the cartservice's database, could be either redis or spanner.
