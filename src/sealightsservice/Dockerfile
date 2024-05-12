@@ -6,15 +6,13 @@ ARG BRANCH
 ARG BUILD_NAME=1.1
 ARG SERVICE_NAME=sealightsservice
 ENV OS_ARCH linux-amd64
-ARG AGENT_URL=https://agents.sealights.co/sealights-java/sealights-java-latest.zip
 
 RUN apt-get update && apt-get install -y wget && apt-get install -y zip
 
 WORKDIR /sealights
-RUN wget -nv ${AGENT_URL}
+RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
 # Use jar to extract the contents of instead of installing unzip
-RUN unzip -oq sealights-java-latest
-
+RUN unzip -oq sealights-java-latest.zip
 
 WORKDIR /app
 COPY . /app
