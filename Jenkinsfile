@@ -27,6 +27,22 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Cypress', defaultValue: false, description: 'Run tests using Cypress testing framework')
+    booleanParam(name: 'MS', defaultValue: false, description: 'Run tests using MS testing framework')
+    booleanParam(name: 'Cucumberjs', defaultValue: false, description: 'Run tests using Cucumberjs testing framework (maven)')
+    booleanParam(name: 'NUnit', defaultValue: false, description: 'Run tests using NUnityour_dns testing framework')
+    booleanParam(name: 'Junit_with_testNG_gradle', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (gradle)')
+    booleanParam(name: 'Robot', defaultValue: false, description: 'Run tests using Robot testing framework')
+    booleanParam(name: 'Cucumber', defaultValue: false, description: 'Run tests using Cucumber testing framework (java)')
+    booleanParam(name: 'Junit_with_testNG', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (maven)')
+    booleanParam(name: 'Junit_without_testNG', defaultValue: false, description: 'Run tests using Junit testing framework without testNG (maven)')
+    booleanParam(name: 'Postman', defaultValue: false, description: 'Run tests using postman testing framework')
+    booleanParam(name: 'Mocha', defaultValue: false, description: 'Run tests using Mocha testing framework')
+    booleanParam(name: 'Soapui', defaultValue: false, description: 'Run tests using Soapui testing framework')
+    booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
+    booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
+    booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
   }
 
   stages {
@@ -56,12 +72,12 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            sl_report_branch: params.BRANCH,
-            sl_token: env.token,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}",
-            branch: params.BRANCH,
-            mapurl: MapUrl
+            sl_report_branch        : params.BRANCH,
+            sl_token                : env.token,
+            dev_integraion_sl_token : env.DEV_INTEGRATION_SL_TOKEN,
+            build_name              : "1-0-${BUILD_NUMBER}",
+            branch                  : params.BRANCH,
+            mapurl                  : MapUrl
           )
         }
       }
@@ -104,15 +120,17 @@ pipeline {
              "Pytest-tests",
              "Robot-Tests",
              "Soapui-Tests",
-             "Junit-without-testNG-gradle"]
+             "Junit-without-testNG-gradle" ,
+             "Karate framework java",
+             "CucumberJS Tests"]
 
           testStages_list.each { TEST_STAGE ->
             schedule_full_run(
-              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
-              test_stage: "${TEST_STAGE}",
-              token: "${env.token}",
-              machine: "dev-integration.dev.sealights.co"
+              app_name        :  URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
+              branch_name     :  URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+              test_stage      :  "${TEST_STAGE}",
+              token           :  "${env.token}",
+              machine         :  "dev-integration.dev.sealights.co"
             )
           }
 
@@ -124,10 +142,24 @@ pipeline {
       steps {
         script {
           run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
+            branch                    : params.BRANCH,
+            test_type                 : params.TEST_TYPE,
+            Run_all_tests             : params.Run_all_tests,
+            Cucumber                  : params.Cucumber,
+            Cypress                   : params.Cypress,
+            Cucumberjs                : params.Cucumberjs,
+            Junit_with_testNG         : params.Junit_with_testNG,
+            Junit_without_testNG      : parmas.Junit_without_testNG,
+            Junit_with_testNG_gradle  : params.Junit_with_testNG_gradle,
+            Mocha                     : parmas.Mocha,
+            MS                        : params.MS,
+            NUnit                     : parmas.NUnit,
+            Postman                   : parmas.Postman,
+            Pytest                    : params.Pytest,
+            Robot                     : params.Robot,
+            Soapui                    : params.Soapui,
+            Karate                    : parmas.Karate
           )
-
         }
       }
     }
@@ -137,11 +169,11 @@ pipeline {
         script {
           def RUN_DATA = "full-run";
           TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch: params.BRANCH,
-            app_name : params.APP_NAME
+            SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
+            run_data           :  RUN_DATA,
+            branch             :  params.BRANCH,
+            app_name           :  params.APP_NAME
           )
 
         }
@@ -153,11 +185,11 @@ pipeline {
         script {
           def RUN_DATA = "without-changes";
           run_api_tests_before_changes(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            integration_branch : params.BRANCH,
-            app_name: params.APP_NAME
+            SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
+            run_data           :  RUN_DATA,
+            integration_branch :  params.BRANCH,
+            app_name           :  params.APP_NAME
           )
         }
       }
@@ -167,12 +199,12 @@ pipeline {
         script {
           def RUN_DATA = "full-run";
           run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch : params.BRANCH,
-            lab_id : env.LAB_ID,
-            app_name : params.APP_NAME
+            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+            run_data            : RUN_DATA,
+            branch              : params.BRANCH,
+            lab_id              : env.LAB_ID,
+            app_name            : params.APP_NAME
           )
         }
       }
@@ -200,12 +232,12 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            sl_token: env.token,
-            sl_report_branch: params.BRANCH,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}-v2",
-            branch: params.CHANGED_BRANCH,
-            mapurl: MapUrl
+            sl_token                :   env.token,
+            sl_report_branch        :   params.BRANCH,
+            dev_integraion_sl_token :   env.DEV_INTEGRATION_SL_TOKEN,
+            build_name              :   "1-0-${BUILD_NUMBER}-v2",
+            branch                  :   params.CHANGED_BRANCH,
+            mapurl                  :   MapUrl
           )
         }
       }
@@ -220,14 +252,14 @@ pipeline {
           def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
           SpinUpBoutiqeEnvironment(
-            IDENTIFIER : IDENTIFIER,
-            branch: params.BRANCH,
-            git_branch : params.CHANGED_BRANCH,
-            app_name: params.APP_NAME,
-            build_branch: params.BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.BRANCH
+            IDENTIFIER        : IDENTIFIER,
+            branch            : params.BRANCH,
+            git_branch        : params.CHANGED_BRANCH,
+            app_name          : params.APP_NAME,
+            build_branch      : params.BRANCH,
+            java_agent_url    : params.JAVA_AGENT_URL,
+            dotnet_agent_url  : params.DOTNET_AGENT_URL,
+            sl_branch         : params.BRANCH
           )
         }
       }
@@ -237,8 +269,8 @@ pipeline {
       steps {
         script {
           run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
+            branch    : params.BRANCH,
+            test_type : params.TEST_TYPE
           )
         }
       }
@@ -249,11 +281,11 @@ pipeline {
         script {
           def RUN_DATA = "TIA-RUN";
           TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch: params.BRANCH,
-            app_name : params.APP_NAME
+            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+            run_data            : RUN_DATA,
+            branch              : params.BRANCH,
+            app_name            : params.APP_NAME
           )
         }
       }
@@ -264,11 +296,11 @@ pipeline {
         script {
           def RUN_DATA = "with-changes";
           run_api_tests_after_changes(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            integration_branch : params.BRANCH,
-            app_name: params.APP_NAME
+            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+            run_data            : RUN_DATA,
+            integration_branch  : params.BRANCH,
+            app_name            : params.APP_NAME
           )
         }
       }
@@ -279,12 +311,12 @@ pipeline {
         script {
           def RUN_DATA = "TIA-RUN";
           run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch : params.BRANCH,
-            lab_id : env.LAB_ID,
-            app_name : params.APP_NAME
+            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+            run_data            : RUN_DATA,
+            branch              : params.BRANCH,
+            lab_id              : env.LAB_ID,
+            app_name            : params.APP_NAME
           )
         }
       }
@@ -442,6 +474,21 @@ def run_tests(Map params){
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
         string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+        booleanParam(name: 'Run_all_tests', value: params.Run_all_tests),
+        booleanParam(name: 'Cucumber', value: params.Cucumber),
+        booleanParam(name: 'Cypress', value: params.Cypress),
+        booleanParam(name: 'Cucumberjs', value: params.Cucumberjs),
+        booleanParam(name: 'Junit_with_testNG', value: params.Junit_with_testNG),
+        booleanParam(name: 'Junit_without_testNG', value: params.Junit_without_testNG),
+        booleanParam(name: 'Junit_with_testNG_gradle', value: params.Junit_with_testNG_gradle),
+        booleanParam(name: 'Mocha', value: params.Mocha),
+        booleanParam(name: 'MS', value: params.Mocha),
+        booleanParam(name: 'NUnit', value: params.NUnit),
+        booleanParam(name: 'Postman', value: params.Postman),
+        booleanParam(name: 'Pytest', value: params.Pytest),
+        booleanParam(name: 'Robot', value: params.Robot),
+        booleanParam(name: 'Soapui', value: params.Soapui),
+        booleanParam(name: 'Karate', value: params.Karate)
       ])
     }
   }
