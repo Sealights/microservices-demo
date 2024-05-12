@@ -25,8 +25,8 @@ FROM openjdk:17-alpine as runtime
 COPY --from=builder /sealights/sl-test-listener.jar /sealights/sl-test-listener.jar
 COPY --from=builder /app/buildSessionId.txt /sealights/buildSessionId.txt
 WORKDIR /app
-COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /sealights/sealights-0.0.1-SNAPSHOT.jar 
+COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar 
 EXPOSE 5732
 
 # Command to run the Spring Boot application when the container starts
-CMD ["java", "-jar", "target/sealights-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "app/sealights-0.0.1-SNAPSHOT.jar"]
