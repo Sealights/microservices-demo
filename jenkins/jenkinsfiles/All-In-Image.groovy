@@ -9,12 +9,17 @@ pipeline {
     buildDiscarder logRotator(numToKeepStr: '30')
     timestamps()
   }
-
   parameters {
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
+    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Junit_with_testNG_gradle', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (gradle)')
+    booleanParam(name: 'Cucumber', defaultValue: false, description: 'Run tests using Cucumber testing framework (java)')
+    booleanParam(name: 'Junit_with_testNG', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (maven)')
+    booleanParam(name: 'Junit_without_testNG', defaultValue: false, description: 'Run tests using Junit testing framework without testNG (maven)')
+    booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
 
   }
   environment {
@@ -29,10 +34,44 @@ pipeline {
         }
       }
     }
-    stage('Junit without testNG '){
+
+    stage('Karate framework') {
       steps{
         script{
-          sh """
+          if( params.Run_all_tests == true || params.Karate == true) {
+            sh """
+              #!/bin/bash
+              echo 'Karate framework starting ..... '
+              cd ./integration-tests/karate-tests/
+              echo ${env.SL_TOKEN}>sltoken.txt
+              echo  '{
+                "executionType": "testsonly",
+                "tokenFile": "./sltoken.txt",
+                "createBuildSessionId": false,
+                "testStage": "Karate framework java ",
+                "runFunctionalTests": true,
+                "labId": "${params.SL_LABID}",
+                "proxy": null,
+                "logEnabled": false,
+                "logDestination": "console",
+                "logLevel": "info",
+                "sealightsJvmParams": {}
+                }' > slmaventests.json
+              echo "Adding Sealights to Tests Project POM file..."
+              java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+
+              mvn -q clean test -Dkarate.env=${env.MACHINE_DNS}
+              sleep 10
+              """
+          }
+        }
+      }
+    }
+    stage('Junit without testNG'){
+      steps{
+        script{
+          if( params.Run_all_tests == true || params.Junit_without_testNG == true) {
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             echo 'Junit without testNG framework starting ..... '
@@ -68,6 +107,8 @@ pipeline {
     stage('Junit support testNG framework'){
       steps{
         script{
+          if( params.Run_all_tests == true || params.Junit_with_testNG == true) {
+          }
           sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
@@ -104,6 +145,8 @@ pipeline {
     stage('Gradle framework'){
       steps{
         script{
+          if( params.Run_all_tests == true || params.Junit_with_testNG_gradle == true) {
+          }
           sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
@@ -135,6 +178,8 @@ pipeline {
     stage('Cucumber framework') {
       steps{
         script{
+          if( params.Run_all_tests == true || params.Cucumber == true) {
+          }
           sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"

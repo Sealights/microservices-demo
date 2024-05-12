@@ -90,17 +90,8 @@ pipeline {
         script {
           def testStages_list =
             ["Cucmber-framework-java",
-             "Jest-tests",
              "Junit-support-testNG",
-             "Cypress-Test-Stage",
              "Junit-without-testNG",
-             "Mocha-tests",
-             "MS-Tests",
-             "NUnit-Tests",
-             "Postman-tests",
-             "Pytest-tests",
-             "Robot-Tests",
-             "Soapui-Tests",
              "Junit-without-testNG-gradle"]
 
           testStages_list.each { TEST_STAGE ->
@@ -121,10 +112,14 @@ pipeline {
       steps {
         script {
           run_tests(
+            Karate : params.Karate,
+            Cucumber : params.Cucumber,
+            Junit_with_testNG_gradle : params.Junit_with_testNG_gradle,
+            Junit_without_testNG : params.Junit_without_testNG,
+            Junit_with_testNG : params.Junit_with_testNG,
             branch: params.BRANCH,
             test_type: params.TEST_TYPE
           )
-
         }
       }
     }
@@ -132,7 +127,7 @@ pipeline {
     stage('Run TIA Tests 1-FIRST With SeaLights') {
       steps {
         script {
-          def RUN_DATA = "full-run";
+          def RUN_DATA = "full-run-javaCD";
           TIA_Page_Tests(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -148,7 +143,7 @@ pipeline {
     stage('Run Coverage Tests Before Changes') {
       steps {
         script {
-          def RUN_DATA = "without-changes";
+          def RUN_DATA = "without-changes-javaCD";
           run_api_tests_before_changes(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -244,7 +239,7 @@ pipeline {
     stage('Run TIA Tests 2-SECOND With SeaLights') {
       steps {
         script {
-          def RUN_DATA = "TIA-RUN";
+          def RUN_DATA = "TIA-RUN-javaCD";
           TIA_Page_Tests(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
@@ -259,7 +254,7 @@ pipeline {
     stage('Run Coverage Tests After Changes') {
       steps {
         script {
-          def RUN_DATA = "with-changes";
+          def RUN_DATA = "with-changes-javaCD";
           run_api_tests_after_changes(
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
