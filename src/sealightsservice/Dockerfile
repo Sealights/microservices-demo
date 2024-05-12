@@ -11,9 +11,9 @@ ARG AGENT_URL=https://agents.sealights.co/sealights-java/sealights-java-latest.z
 RUN apt-get update && apt-get install -y wget && apt-get install -y zip
 
 WORKDIR /sealights
-RUN wget -nv ${AGENT_URL} -o sealights-java-p.zip
+RUN wget -nv ${AGENT_URL}
 # Use jar to extract the contents of instead of installing unzip
-RUN unzip -oq sealights-java-p.zip
+RUN unzip -oq sealights-java-latest.zip
 
 
 WORKDIR /app
