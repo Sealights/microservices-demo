@@ -17,7 +17,7 @@ RUN unzip -oq sealights-java-latest.zip
 WORKDIR /app
 COPY . /app
 RUN ./mvnw clean package
-RUN java -jar /sealights/sl-build-scanner.jar -config -token ${SEALIGHTS_TOKEN} -appname "sealightsservice" -branchname ${BRANCH} -buildname ${BUILD_NAME} -pi "sealights.notes.*" 
+RUN java -jar /sealights/sl-build-scanner.jar -config -token ${SEALIGHTS_TOKEN} -appname "sealightsservice" -branchname ${BRANCH} -buildname ${BUILD_NAME} -pi "sealights.notes.*" -pe "sealights.notes.sealights"
 RUN java -jar /sealights/sl-build-scanner.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "./target" -fi "*.jar"
 # Expose the port that your Spring Boot application listens on
 
