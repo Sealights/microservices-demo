@@ -10,9 +10,9 @@ ARG AGENT_URL=https://agents.sealights.co/sealights-java/sealights-java-latest.z
 
 
 WORKDIR /sealights
-RUN curl -nv ${AGENT_URL} -o sealights-java.zip
+RUN curl -nv ${AGENT_URL} -o sealights-java-p.zip
 # Use jar to extract the contents of instead of installing unzip
-RUN jar -xf sealights-java.zip
+RUN jar -xf sealights-java-p.zip
 
 
 WORKDIR /app
