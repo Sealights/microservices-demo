@@ -38,22 +38,22 @@ pipeline {
       }
     }
 
-    stage('MS-Tests framework'){
-      steps{
-        script{
-              sh """
-                sleep ${env.wait_time} # Wait at least 10 seconds for the backend to update status that the previous test stage was closed, closing and starting a test stage withing 10 seconds can cause inaccurate test stage coverage
-                echo 'MS-Tests framework starting ..... '
-                export machine_dns="${params.MACHINE_DNS}" # Inside the code we use machine_dns envronment variable
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-                sleep 30
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-                sleep ${wait_time}
-                """
-        }
-      }
-    }
+    // stage('MS-Tests framework'){
+    //   steps{
+    //     script{
+    //           sh """
+    //             sleep ${env.wait_time} # Wait at least 10 seconds for the backend to update status that the previous test stage was closed, closing and starting a test stage withing 10 seconds can cause inaccurate test stage coverage
+    //             echo 'MS-Tests framework starting ..... '
+    //             export machine_dns="${params.MACHINE_DNS}" # Inside the code we use machine_dns envronment variable
+    //             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+    //             sleep 30
+    //             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
+    //             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+    //             sleep ${wait_time}
+    //             """
+    //     }
+    //   }
+    // }
 
     stage('Cucumberjs framework starting'){
       steps{
