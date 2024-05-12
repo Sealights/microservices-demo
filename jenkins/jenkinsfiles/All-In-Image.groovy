@@ -26,19 +26,19 @@ pipeline {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
   }
-  stages{
-    stage("Init test"){
-      steps{
-        script{
+  stages {
+    stage("Init test") {
+      steps {
+        script {
           git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
         }
       }
     }
 
     stage('Karate framework') {
-      steps{
-        script{
-          if( params.Run_all_tests == true || params.Karate == true) {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Karate == true) {
             sh """
               #!/bin/bash
               echo 'Karate framework starting ..... '
@@ -67,10 +67,10 @@ pipeline {
         }
       }
     }
-    stage('Junit without testNG'){
-      steps{
-        script{
-          if( params.Run_all_tests == true || params.Junit_without_testNG == true) {
+    stage('Junit without testNG') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Junit_without_testNG == true) {
             sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
@@ -101,15 +101,15 @@ pipeline {
             #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
             mvn clean package
           """
+          }
         }
       }
-    }
-    stage('Junit support testNG framework'){
-      steps{
-        script{
-          if( params.Run_all_tests == true || params.Junit_with_testNG == true) {
-          }
-          sh """
+      stage('Junit support testNG framework') {
+        steps {
+          script {
+            if (params.Run_all_tests == true || params.Junit_with_testNG == true) {
+            }
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             echo 'Junit support testNG framework starting ..... '
@@ -139,15 +139,15 @@ pipeline {
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
             mvn clean package
           """
+          }
         }
       }
-    }
-    stage('Gradle framework'){
-      steps{
-        script{
-          if( params.Run_all_tests == true || params.Junit_with_testNG_gradle == true) {
-          }
-          sh """
+      stage('Gradle framework') {
+        steps {
+          script {
+            if (params.Run_all_tests == true || params.Junit_with_testNG_gradle == true) {
+            }
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             export machine_dns="${params.MACHINE_DNS}"
@@ -172,15 +172,15 @@ pipeline {
             java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
             gradle test
           """
+          }
         }
       }
-    }
-    stage('Cucumber framework') {
-      steps{
-        script{
-          if( params.Run_all_tests == true || params.Cucumber == true) {
-          }
-          sh """
+      stage('Cucumber framework') {
+        steps {
+          script {
+            if (params.Run_all_tests == true || params.Cucumber == true) {
+            }
+            sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
             export machine_dns="${params.MACHINE_DNS}"
@@ -206,20 +206,20 @@ pipeline {
             unset MAVEN_CONFIG
             ./mvnw test
           """
+          }
         }
       }
-    }
-    stage('Cypress framework starting'){
-      steps{
-        script{
-          build(job:"BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"),string(name: 'SL_LABID', value: "${params.SL_LABID}") , string(name:'SL_TOKEN' , value:"${params.SL_TOKEN}") ,string(name:'MACHINE_DNS1' , value:"${params.MACHINE_DNS}")])
+      stage('Cypress framework starting') {
+        steps {
+          script {
+            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
+          }
         }
       }
-    }
-    stage('Mocha framework'){
-      steps{
-        script{
-          sh """
+      stage('Mocha framework') {
+        steps {
+          script {
+            sh """
             echo 'Mocha framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             export Lab_id="${params.SL_LABID}"
@@ -230,31 +230,31 @@ pipeline {
             ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
             cd ../..
           """
+          }
         }
       }
-    }
-    stage('MS-Tests framework'){
-      steps{
-        script{
-          sh """
+      stage('MS-Tests framework') {
+        steps {
+          script {
+            sh """
             echo 'MS-Tests framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
           """
+          }
         }
       }
-    }
-    stage('N-Unit framework starting'){
-      steps{
-        script{
-          sh """
+      stage('N-Unit framework starting') {
+        steps {
+          script {
+            sh """
             echo 'N-Unit framework starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
           """
+          }
         }
       }
-    }
 //    stage('robot framework'){
 //      steps{
 //        script{
@@ -272,10 +272,10 @@ pipeline {
 //        }
 //      }
 //    }
-    stage('Postman framework'){
-      steps{
-        script{
-          sh """
+      stage('Postman framework') {
+        steps {
+          script {
+            sh """
           echo 'Postman framework starting ..... '
           export MACHINE_DNS="${params.MACHINE_DNS}"
           cd ./integration-tests/postman-tests/
@@ -289,9 +289,9 @@ pipeline {
           ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
           cd ../..
         """
+          }
         }
       }
-    }
 //    stage('Jest framework'){
 //      steps{
 //        script{
@@ -350,10 +350,10 @@ pipeline {
 //        }
 //      }
 //    }
-    stage('Pytest framework'){
-      steps{
-        script{
-          sh"""
+      stage('Pytest framework') {
+        steps {
+          script {
+            sh """
             export SL_SAVE_LOG_FILE=true
             echo 'Pytest tests starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
@@ -364,9 +364,9 @@ pipeline {
             ls
             cd ../..
           """
+          }
         }
       }
     }
   }
 }
-
