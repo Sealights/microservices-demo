@@ -473,7 +473,7 @@ def run_tests(Map params){
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}"),
         booleanParam(name: 'Run_all_tests', value: params.Run_all_tests),
         booleanParam(name: 'Cucumber', value: params.Cucumber),
         booleanParam(name: 'Cypress', value: params.Cypress),
