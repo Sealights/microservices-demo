@@ -1,5 +1,5 @@
 # Use a base image with Java installed
-FROM maven:3.9.6-sapmachine-17 as builder
+FROM eclipse-temurin:17 as builder
 
 ARG SEALIGHTS_TOKEN
 ARG BRANCH
@@ -18,7 +18,7 @@ RUN unzip -oq sealights-java-latest
 
 WORKDIR /app
 COPY . /app
-RUN mvn clean package
+RUN ./mvnw clean package
 RUN java -jar /sealights/sl-build-scanner.jar -config -token ${SEALIGHTS_TOKEN} -appname "sealightsservice" -branchname ${BRANCH} -buildname ${BUILD_NAME} -pi "sealights.notes.*" 
 RUN java -jar /sealights/sl-build-scanner.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "./target" -fi "*.jar"
 # Expose the port that your Spring Boot application listens on
