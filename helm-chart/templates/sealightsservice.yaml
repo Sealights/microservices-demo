@@ -46,7 +46,7 @@ spec:
         - name: SL_LAB_ID
           value: "{{ .Values.SealightsEnvVars.lab_id }}"
         - name: JAVA_TOOL_OPTIONS
-          value: "-javaagent:/sealights/sl-test-listener.jar -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/sealights/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}
+          value: "-javaagent:/sealights/sl-test-listener.jar -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/sealights/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}"
         - name: PORT
           value: "5732"
 ---
