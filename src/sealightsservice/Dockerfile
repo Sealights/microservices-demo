@@ -29,4 +29,4 @@ COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1
 EXPOSE 5732
 
 # Command to run the Spring Boot application when the container starts
-CMD ["java", "-jar", "app/sealights-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/app/sealights-0.0.1-SNAPSHOT.jar"]
