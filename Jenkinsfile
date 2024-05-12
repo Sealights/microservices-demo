@@ -149,16 +149,16 @@ pipeline {
             Cypress                   : params.Cypress,
             Cucumberjs                : params.Cucumberjs,
             Junit_with_testNG         : params.Junit_with_testNG,
-            Junit_without_testNG      : parmas.Junit_without_testNG,
+            Junit_without_testNG      : params.Junit_without_testNG,
             Junit_with_testNG_gradle  : params.Junit_with_testNG_gradle,
-            Mocha                     : parmas.Mocha,
+            Mocha                     : params.Mocha,
             MS                        : params.MS,
-            NUnit                     : parmas.NUnit,
-            Postman                   : parmas.Postman,
+            NUnit                     : params.NUnit,
+            Postman                   : params.Postman,
             Pytest                    : params.Pytest,
             Robot                     : params.Robot,
             Soapui                    : params.Soapui,
-            Karate                    : parmas.Karate
+            Karate                    : params.Karate
           )
         }
       }
