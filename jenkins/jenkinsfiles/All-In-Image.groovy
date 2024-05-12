@@ -61,7 +61,7 @@ pipeline {
                     "labid": "${params.SL_LABID}",
                     "testStage": "Cucumber Tests"
                     }' > sl.conf
-                  ./node_modules/.bin/slnodejs start --tokenfile ./sltoken.txt --labid ${params.SL_LABID} --teststage "CucumberJS Tests"
+                  ./node_modules/.bin/slnodejs start --tokenfile ./sltoken.txt --labid ${params.SL_LABID} --teststage "CucumberJS-Tests"
                   node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
                   ./node_modules/.bin/slnodejs end --tokenfile ./sltoken.txt --labid ${params.SL_LABID}
                   sleep ${env.wait_time}
@@ -84,7 +84,7 @@ pipeline {
                 "executionType": "testsonly",
                 "tokenFile": "./sltoken.txt",
                 "createBuildSessionId": false,
-                "testStage": "Karate framework java",
+                "testStage": "Karate-framework-java",
                 "runFunctionalTests": true,
                 "labId": "${params.SL_LABID}",
                 "proxy": null,
