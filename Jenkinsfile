@@ -1,4 +1,4 @@
-
+@Library('main-shared-library') _
 pipeline {
   agent {
     kubernetes {
@@ -6,14 +6,16 @@ pipeline {
       defaultContainer "shell"
     }
   }
-
+//  environment {
+//    token = "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}"
+//  }
 
   parameters {
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'changed1', description: 'Branch to clone (changed1)')
-    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (changed1)')
+    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
-    string(name: 'BUILD_BRANCH', defaultValue: 'changed1', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
@@ -25,6 +27,22 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Cypress', defaultValue: false, description: 'Run tests using Cypress testing framework')
+    booleanParam(name: 'MS', defaultValue: false, description: 'Run tests using MS testing framework')
+    booleanParam(name: 'Cucumberjs', defaultValue: false, description: 'Run tests using Cucumberjs testing framework (maven)')
+    booleanParam(name: 'NUnit', defaultValue: false, description: 'Run tests using NUnityour_dns testing framework')
+    booleanParam(name: 'Junit_with_testNG_gradle', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (gradle)')
+    booleanParam(name: 'Robot', defaultValue: false, description: 'Run tests using Robot testing framework')
+    booleanParam(name: 'Cucumber', defaultValue: false, description: 'Run tests using Cucumber testing framework (java)')
+    booleanParam(name: 'Junit_with_testNG', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (maven)')
+    booleanParam(name: 'Junit_without_testNG', defaultValue: false, description: 'Run tests using Junit testing framework without testNG (maven)')
+    booleanParam(name: 'Postman', defaultValue: false, description: 'Run tests using postman testing framework')
+    booleanParam(name: 'Mocha', defaultValue: false, description: 'Run tests using Mocha testing framework')
+    booleanParam(name: 'Soapui', defaultValue: false, description: 'Run tests using Soapui testing framework')
+    booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
+    booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
+    booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
   }
 
   stages {
@@ -37,12 +55,12 @@ pipeline {
         }
       }
     }
-
     //Build parallel images
     stage('Build BTQ') {
       steps {
         script {
-          env.token = "${params.SL_TOKEN}" == null ? secrets.get_secret('mgmt/layer_token', 'us-west-2') : "${params.SL_TOKEN}"
+          env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
+          echo "${env.token}"
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -52,12 +70,12 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            sl_report_branch: params.BRANCH,
-            sl_token: env.token,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}",
-            branch: params.BRANCH,
-            mapurl: MapUrl
+            sl_report_branch        : params.BRANCH,
+            sl_token                : env.token,
+            dev_integraion_sl_token : env.DEV_INTEGRATION_SL_TOKEN,
+            build_name              : "1-0-${BUILD_NUMBER}",
+            branch                  : params.BRANCH,
+            mapurl                  : MapUrl
           )
         }
       }
@@ -69,14 +87,14 @@ pipeline {
           def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
           SpinUpBoutiqeEnvironment(
-            IDENTIFIER : IDENTIFIER,
-            branch: params.CHANGED_BRANCH,
-            git_branch : params.CHANGED_BRANCH,
-            app_name: params.APP_NAME,
-            build_branch: params.BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.BRANCH
+            IDENTIFIER        : IDENTIFIER,
+            branch            : params.CHANGED_BRANCH,
+            git_branch        : params.CHANGED_BRANCH,
+            app_name          : params.APP_NAME,
+            build_branch      : params.BRANCH,
+            java_agent_url    : params.JAVA_AGENT_URL,
+            dotnet_agent_url  : params.DOTNET_AGENT_URL,
+            sl_branch         : params.BRANCH
           )
         }
       }
@@ -86,20 +104,8 @@ pipeline {
       steps {
         script {
           run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
-          )
-        }
-      }
-    }
-
-
-    stage('Run API-Tests After Changes') {
-      steps {
-        script {
-          run_api_tests_after_changes(
-            branch: params.BRANCH,
-            app_name: params.APP_NAME
+            branch    : params.BRANCH,
+            test_type : params.TEST_TYPE
           )
         }
       }
@@ -134,16 +140,6 @@ pipeline {
     }
   }
 }
-
-def get_secret (SecretID, Region, Profile="") {
-  if (Profile != "") {
-    Profile = "--profile ${Profile}"
-  }
-  String secret_key = "${SecretID.split('/')[-1]}" as String
-  def secret_value = (sh(returnStdout: true, script: "aws secretsmanager get-secret-value --secret-id ${SecretID} --region ${Region} ${Profile}| jq -r '.SecretString' | jq -r '.${secret_key}'")).trim()
-  return secret_value
-}
-
 
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
@@ -260,11 +256,26 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      build(job: "All-In-Image", parameters: [
+      build(job: "All-In-One/${params.branch}", parameters: [
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}"),
+        booleanParam(name: 'Run_all_tests', value: params.Run_all_tests),
+        booleanParam(name: 'Cucumber', value: params.Cucumber),
+        booleanParam(name: 'Cypress', value: params.Cypress),
+        booleanParam(name: 'Cucumberjs', value: params.Cucumberjs),
+        booleanParam(name: 'Junit_with_testNG', value: params.Junit_with_testNG),
+        booleanParam(name: 'Junit_without_testNG', value: params.Junit_without_testNG),
+        booleanParam(name: 'Junit_with_testNG_gradle', value: params.Junit_with_testNG_gradle),
+        booleanParam(name: 'Mocha', value: params.Mocha),
+        booleanParam(name: 'MS', value: params.Mocha),
+        booleanParam(name: 'NUnit', value: params.NUnit),
+        booleanParam(name: 'Postman', value: params.Postman),
+        booleanParam(name: 'Pytest', value: params.Pytest),
+        booleanParam(name: 'Robot', value: params.Robot),
+        booleanParam(name: 'Soapui', value: params.Soapui),
+        booleanParam(name: 'Karate', value: params.Karate)
       ])
     }
   }
