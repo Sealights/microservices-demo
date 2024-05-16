@@ -269,6 +269,7 @@ pipeline {
       steps {
         script {
           run_tests(
+            Run_all_tests : params.Run_all_tests,
             branch    : params.BRANCH,
             test_type : params.TEST_TYPE
           )
