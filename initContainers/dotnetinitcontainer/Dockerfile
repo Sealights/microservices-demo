@@ -12,7 +12,7 @@ WORKDIR /app
 RUN mkdir -p ./sealights/logs
 RUN mkdir -p ./sealights/agent
 
-# Download and rename the specific asset
+# Download and rename the specific asset with enhanced logging
 RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Sealights/SL.OnPremise.Agents.DotNet/releases/latest \
     | jq -r '.assets[] | select(.name | test("sealights-dotnet-agent-alpine-self-contained.tar.gz$")) | .browser_download_url' \
     | while read -r url; do \
@@ -23,6 +23,7 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
             mv "/tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz" "/app/sealights/agent/sealights-dotnet-agent-alpine.tar.gz"; \
           else \
             echo "Downloaded file is too small, indicating a possible error."; \
+            echo "Content of the downloaded file:"; \
             cat /tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz; \
             exit 1; \
           fi \
