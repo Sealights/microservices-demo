@@ -1,5 +1,5 @@
 FROM alpine:latest
-
+ARG GITHUB_TOKEN
 WORKDIR /app
 RUN mkdir -p ./sealights/logs
 RUN mkdir -p ./sealights/agent
