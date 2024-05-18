@@ -19,6 +19,8 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
             echo "Downloaded $(basename "$url")"; \
             ls -l "$(basename "$url")"; \
             file "$(basename "$url")"; \
+            echo "Content of $(basename "$url"):"; \
+            cat "$(basename "$url")"; \
             if [ ! -s "$(basename "$url")" ]; then \
                 echo "File is empty or invalid"; \
                 exit 1; \
