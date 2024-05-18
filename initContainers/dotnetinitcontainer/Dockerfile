@@ -23,6 +23,7 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
             mv "/tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz" "/app/sealights/agent/sealights-dotnet-agent-alpine.tar.gz"; \
           else \
             echo "Downloaded file is too small, indicating a possible error."; \
+            cat /tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz; \
             exit 1; \
           fi \
         else \
