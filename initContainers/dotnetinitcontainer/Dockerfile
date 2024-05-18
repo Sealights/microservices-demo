@@ -19,7 +19,11 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
     | while read -r url; do \
         if [ -n "$url" ]; then \
             echo "Downloading $url"; \
-            curl -L -o "/tmp/$(basename "$url")" "$url" || echo "Failed to download $url"; \
+            curl -L -o "/tmp/$(basename "$url")" "$url"; \
+            if [ $? -ne 0 ]; then \
+                echo "Failed to download $url"; \
+                exit 1; \
+            fi; \
             if [ $(stat -c%s "/tmp/$(basename "$url")") -le 100 ]; then \
                 echo "Downloaded file is too small, indicating a possible error."; \
                 echo "Content of the downloaded file:"; \
