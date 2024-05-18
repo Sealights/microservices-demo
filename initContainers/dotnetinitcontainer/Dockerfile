@@ -13,7 +13,9 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
            else \
              echo "No valid URL found"; \
            fi \
-         done
+         done \
+
+RUN ls
 #RUN wget -nv -O sealights-dotnet-agent-alpine.tar.gz https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz
 
 RUN tar -xzf ./sealights-dotnet-agent-alpine.tar.gz --directory /app/sealights/agent
