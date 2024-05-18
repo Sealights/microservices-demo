@@ -12,6 +12,9 @@ WORKDIR /app
 RUN mkdir -p ./sealights/logs
 RUN mkdir -p ./sealights/agent
 
+# Verify token permissions
+RUN curl -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/user
+
 # Fetch and log all asset names and URLs
 RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Sealights/SL.OnPremise.Agents.DotNet/releases/latest \
     | jq -r '.assets[] | [.name, .browser_download_url] | @tsv' \
