@@ -18,9 +18,16 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
     | while read -r url; do \
         if [ -n "$url" ]; then \
           echo "Downloading $url"; \
-          curl -L -o "/app/sealights/agent/sealights-dotnet-agent-alpine.tar.gz" "$url" || echo "Failed to download $url"; \
+          curl -L -o "/tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz" "$url" || echo "Failed to download $url"; \
+          if [ $(stat -c%s "/tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz") -gt 100 ]; then \
+            mv "/tmp/sealights-dotnet-agent-alpine-self-contained.tar.gz" "/app/sealights/agent/sealights-dotnet-agent-alpine.tar.gz"; \
+          else \
+            echo "Downloaded file is too small, indicating a possible error."; \
+            exit 1; \
+          fi \
         else \
           echo "No valid URL found"; \
+          exit 1; \
         fi \
       done
 
@@ -30,5 +37,6 @@ RUN ls -l /app/sealights/agent
 # Extract the downloaded tar.gz file
 RUN tar -xzf /app/sealights/agent/sealights-dotnet-agent-alpine.tar.gz --directory /app/sealights/agent
 RUN chmod -R 777 /app/sealights
+
 # Copy additional files
 COPY start-app.sh /app/sealights
