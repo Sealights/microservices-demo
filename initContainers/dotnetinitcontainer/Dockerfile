@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 WORKDIR /app
 RUN mkdir -p ./sealights/logs ./sealights/agent
 
-RUN apk add --no-cache curl jq
+RUN apk add --no-cache curl jq tar
 
 # Download and extract the tar file with debugging
 RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" \
@@ -17,7 +17,8 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
             curl -L -o "$(basename "$url")" "$url" || { echo "Failed to download $url"; exit 1; }; \
             echo "Downloaded $(basename "$url")"; \
             ls -l "$(basename "$url")"; \
-            tar -tzf "$(basename "$url")"; \
+            file "$(basename "$url")"; \
+            tar -tzf "$(basename "$url")" || { echo "Failed to list contents of $(basename "$url")"; exit 1; }; \
             tar -xzf "$(basename "$url")" --directory /app/sealights/agent || { echo "Failed to extract $(basename "$url")"; exit 1; }; \
         else \
             echo "No valid URL found"; \
