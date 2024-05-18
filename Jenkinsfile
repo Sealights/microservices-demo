@@ -11,11 +11,11 @@ pipeline {
 //  }
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'APP_NAME', defaultValue: 'dotnet-ci', description: 'name of the app (integration build)')
+    string(name: 'BRANCH', defaultValue: 'dotnet-ci', description: 'Branch to clone (dotnet-ci)')
+    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (dotnet-ci)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
-    string(name: 'BUILD_BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'dotnet-ci', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
@@ -27,11 +27,11 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
-    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Run_all_tests', defaultValue: false, description: 'Checking this box will run all tests even if individual ones are not checked')
     booleanParam(name: 'Cypress', defaultValue: false, description: 'Run tests using Cypress testing framework')
     booleanParam(name: 'MS', defaultValue: false, description: 'Run tests using MS testing framework')
-    booleanParam(name: 'Cucumberjs', defaultValue: false, description: 'Run tests using Cucumberjs testing framework (maven)')
-    booleanParam(name: 'NUnit', defaultValue: false, description: 'Run tests using NUnityour_dns testing framework')
+    booleanParam(name: 'Cucumberjs', defaultValue: true, description: 'Run tests using Cucumberjs testing framework (maven)')
+    booleanParam(name: 'NUnit', defaultValue: true, description: 'Run tests using NUnityour_dns testing framework')
     booleanParam(name: 'Junit_with_testNG_gradle', defaultValue: false, description: 'Run tests using Junit testing framework with testNG (gradle)')
     booleanParam(name: 'Robot', defaultValue: false, description: 'Run tests using Robot testing framework')
     booleanParam(name: 'Cucumber', defaultValue: false, description: 'Run tests using Cucumber testing framework (java)')
@@ -145,20 +145,8 @@ pipeline {
             branch                    : params.BRANCH,
             test_type                 : params.TEST_TYPE,
             Run_all_tests             : params.Run_all_tests,
-            Cucumber                  : params.Cucumber,
-            Cypress                   : params.Cypress,
-            Cucumberjs                : params.Cucumberjs,
-            Junit_with_testNG         : params.Junit_with_testNG,
-            Junit_without_testNG      : params.Junit_without_testNG,
-            Junit_with_testNG_gradle  : params.Junit_with_testNG_gradle,
-            Mocha                     : params.Mocha,
             MS                        : params.MS,
             NUnit                     : params.NUnit,
-            Postman                   : params.Postman,
-            Pytest                    : params.Pytest,
-            Robot                     : params.Robot,
-            Soapui                    : params.Soapui,
-            Karate                    : params.Karate
           )
         }
       }
@@ -167,7 +155,7 @@ pipeline {
     stage('Run TIA Tests 1-FIRST With SeaLights') {
       steps {
         script {
-          def RUN_DATA = "full-run";
+          def RUN_DATA = "full-run-dotnet-ci";
           TIA_Page_Tests(
             SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
@@ -183,7 +171,7 @@ pipeline {
     stage('Run Coverage Tests Before Changes') {
       steps {
         script {
-          def RUN_DATA = "without-changes";
+          def RUN_DATA = "without-changes-dotnet-ci";
           run_api_tests_before_changes(
             SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
@@ -194,22 +182,6 @@ pipeline {
         }
       }
     }
-    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
-      steps {
-        script {
-          def RUN_DATA = "full-run";
-          run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
-            run_data            : RUN_DATA,
-            branch              : params.BRANCH,
-            lab_id              : env.LAB_ID,
-            app_name            : params.APP_NAME
-          )
-        }
-      }
-    }
-
     stage('Changed - Clone Repository') {
       steps {
         script {
@@ -280,7 +252,7 @@ pipeline {
     stage('Run TIA Tests 2-SECOND With SeaLights') {
       steps {
         script {
-          def RUN_DATA = "TIA-RUN";
+          def RUN_DATA = "TIA-RUN-dotnet-ci";
           TIA_Page_Tests(
             SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
@@ -295,7 +267,7 @@ pipeline {
     stage('Run Coverage Tests After Changes') {
       steps {
         script {
-          def RUN_DATA = "with-changes";
+          def RUN_DATA = "with-changes-dotnet-ci";
           run_api_tests_after_changes(
             SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
@@ -306,24 +278,6 @@ pipeline {
         }
       }
     }
-
-    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
-      steps {
-        script {
-          def RUN_DATA = "TIA-RUN";
-          run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
-            run_data            : RUN_DATA,
-            branch              : params.BRANCH,
-            lab_id              : env.LAB_ID,
-            app_name            : params.APP_NAME
-          )
-        }
-      }
-    }
-
-
   }
 
   post {
