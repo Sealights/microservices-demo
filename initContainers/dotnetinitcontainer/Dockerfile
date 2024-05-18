@@ -12,9 +12,13 @@ WORKDIR /app
 RUN mkdir -p ./sealights/logs
 RUN mkdir -p ./sealights/agent
 
-# Download and rename the specific asset with enhanced logging
+# Fetch and log all asset names and URLs
 RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Sealights/SL.OnPremise.Agents.DotNet/releases/latest \
-    | jq -r '.assets[] | select(.name | test("sealights-dotnet-agent-alpine-self-contained.tar.gz$")) | .browser_download_url' \
+    | jq -r '.assets[] | [.name, .browser_download_url] | @tsv' \
+    | tee /tmp/assets.txt
+
+# Download the specific asset
+RUN grep "sealights-dotnet-agent-alpine-self-contained.tar.gz" /tmp/assets.txt | cut -f2 \
     | while read -r url; do \
         if [ -n "$url" ]; then \
           echo "Downloading $url"; \
