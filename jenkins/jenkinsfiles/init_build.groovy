@@ -10,9 +10,9 @@ pipeline {
         shell_memory_limit: "3000Mi",
         shell_cpu_limit: "1.5",
         kaniko_memory_request: "3500Mi",
-        kaniko_cpu_request: "1.0",
+        kaniko_cpu_request: "1.5",
         kaniko_memory_limit: "4500Mi",
-        kaniko_cpu_limit: "2.5",
+        kaniko_cpu_limit: "5",
         kaniko_storage_limit: "6500Mi",
         node_selector: "jenkins"
       ])
