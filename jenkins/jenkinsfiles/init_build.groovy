@@ -10,9 +10,9 @@ pipeline {
         shell_memory_limit: "3000Mi",
         shell_cpu_limit: "1.5",
         kaniko_memory_request: "3500Mi",
-        kaniko_cpu_request: "1.0",
+        kaniko_cpu_request: "1.5",
         kaniko_memory_limit: "4500Mi",
-        kaniko_cpu_limit: "2.5",
+        kaniko_cpu_limit: "5",
         kaniko_storage_limit: "6500Mi",
         node_selector: "jenkins"
       ])
@@ -39,7 +39,9 @@ pipeline {
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
                         | jq -r '.[0].name'""").trim()
-          echo "${env.verion}"
+          echo "java version : ${env.verion}"
+          env.dotnet_latest_version = (sh(returnStdout: true, script: "gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'")).trim()
+          echo "dotnet version : ${env.dotnet_latest_version}"
         }
       }
     }
@@ -67,12 +69,14 @@ pipeline {
             def D = "${env.ECR_URI}:latest"
             def DD ="${env.ECR_URI}:${BUILD_NUMBER}"
             def VERSION = "${env.verion}"
+            def DOTNET_LATEST_VERSION = "${env.dotnet_latest_version}"
             sh """
                 /kaniko/executor \
                 --context ${CONTEXT} \
                 --dockerfile ${DP} \
                 --destination ${D} \
                 --destination ${DD} \
+                --build-arg DOTNET_LATEST_VERSION=${DOTNET_LATEST_VERSION} \
                 --build-arg GITHUB_TOKEN=${env.GITHUB_TOKEN} \
                 --build-arg VERSION=${VERSION}
             """
