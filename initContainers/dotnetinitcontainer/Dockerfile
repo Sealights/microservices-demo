@@ -46,6 +46,7 @@ RUN echo "Fetching release assets..." && \
     fi; \
 done
 
+RUN ls /app/sealights/agent
 RUN chmod -R 777 /app/sealights
 
 COPY start-app.sh /app/sealights
