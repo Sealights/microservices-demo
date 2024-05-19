@@ -40,6 +40,8 @@ pipeline {
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
                         | jq -r '.[0].name'""").trim()
           echo "${env.verion}"
+          env.DOTNET_LATEST_VERSION = (sh(returnStdout: true, script: "gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'")).trim()
+          echo "${env.DOTNET_LATEST_VERSION}"
         }
       }
     }
@@ -67,12 +69,14 @@ pipeline {
             def D = "${env.ECR_URI}:latest"
             def DD ="${env.ECR_URI}:${BUILD_NUMBER}"
             def VERSION = "${env.verion}"
+            def DOTNET_LATEST_VERSION = ${env.DOTNET_LATEST_VERSION}
             sh """
                 /kaniko/executor \
                 --context ${CONTEXT} \
                 --dockerfile ${DP} \
                 --destination ${D} \
                 --destination ${DD} \
+                --build-arg DOTNET_LATEST_VERSION=${DOTNET_LATEST_VERSION} \
                 --build-arg GITHUB_TOKEN=${env.GITHUB_TOKEN} \
                 --build-arg VERSION=${VERSION}
             """
