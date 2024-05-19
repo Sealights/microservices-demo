@@ -17,8 +17,9 @@ RUN gh --version
 # Configure GitHub CLI to use the GITHUB_TOKEN
 RUN export GH_TOKEN=$GITHUB_TOKEN
 
+#RUN gh release download $DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet
 
-RUN gh release download $DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet
+RUN gh release download $DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D /app/sealights/agent
 
 # Download the latest release asset
 #RUN gh release download -R Sealights/SL.OnPremise.Agents.DotNet --pattern "sealights-dotnet-agent-alpine-self-contained.zip" -D /app/sealights/agent
