@@ -18,6 +18,8 @@ RUN curl "https://github.com/Sealights/SL.OnPremise.Agents.DotNet/releases/downl
 #        echo "No valid URL found"; \
 #    fi
 
+RUN ls
+
 RUN unzip ./sealights-dotnet-agent-alpine-self-contained.zip -d /app/sealights/agent
 RUN chmod -R 777 /app/sealights
 
