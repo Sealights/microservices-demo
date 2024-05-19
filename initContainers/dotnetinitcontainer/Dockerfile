@@ -40,7 +40,7 @@ RUN echo "Fetching release assets..." && \
                     echo "Failed to unzip $filename"; \
                     exit 1; \
                 fi; \
-            elif [[ "$filename" == *.tar.gz" ]]; then \
+            elif [[ "$filename" == *.tar.gz ]]; then \
                 if tar -tzf "$filename"; then \
                     tar -xzf "$filename" --directory /app/sealights/agent || { echo "Failed to extract $filename"; exit 1; }; \
                     break; \
@@ -57,3 +57,5 @@ RUN echo "Fetching release assets..." && \
 RUN chmod -R 777 /app/sealights
 
 COPY start-app.sh /app/sealights
+
+CMD ["/bin/sh", "/app/sealights/start-app.sh"]
