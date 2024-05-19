@@ -35,7 +35,7 @@ pipeline {
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
-    GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   stages {
     stage("Init test") {
@@ -50,6 +50,7 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.MS == true) {
             sh """
+                  export GH_TOKEN = ${env.GITHUB_TOKEN}
                   mkdir -p ./sealights/agent
                   DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
@@ -71,7 +72,8 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.NUnit == true) {
             sh """
-                echo 'N-Unit framework starting ..... '
+                  export GH_TOKEN = ${env.GITHUB_TOKEN}
+                  echo 'N-Unit framework starting ..... '
                   mkdir -p ./sealights/agent
                   DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
