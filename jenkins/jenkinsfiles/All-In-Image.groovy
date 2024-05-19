@@ -61,7 +61,7 @@ pipeline {
                 mkdir -p /app/sealights/agent
                 chmod -R 755 /app/sealights
 
-                unzip /app/sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+                unzip /sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
 
                 echo 'MS-Tests framework starting ..... '
                 export machine_dns="${params.MACHINE_DNS}"
@@ -89,7 +89,7 @@ pipeline {
                 mkdir -p /app/sealights/agent
                 chmod -R 755 /app/sealights
 
-                unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+                unzip /sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
                 export machine_dns="${params.MACHINE_DNS}"
                 dotnet /app/sealights/agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
                 sleep 10
@@ -195,11 +195,11 @@ pipeline {
         }
       }
     }
-      stage('Junit support testNG framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.Junit_with_testNG == true) {
-              sh """
+    stage('Junit support testNG framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Junit_with_testNG == true) {
+            sh """
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
                 echo 'Junit support testNG framework starting ..... '
@@ -227,15 +227,15 @@ pipeline {
                 java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
                 mvn clean package
               """
-            }
           }
         }
       }
-      stage('Gradle framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.Junit_without_testNG == true) {
-              sh """
+    }
+    stage('Gradle framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Junit_without_testNG == true) {
+            sh """
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
                 export machine_dns="${params.MACHINE_DNS}"
@@ -258,15 +258,15 @@ pipeline {
                 java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
                 gradle test
             """
-            }
           }
         }
       }
-      stage('Cucumber framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.Cucumber == true) {
-              sh """
+    }
+    stage('Cucumber framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Cucumber == true) {
+            sh """
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
                 export machine_dns="${params.MACHINE_DNS}"
@@ -292,24 +292,24 @@ pipeline {
                 unset MAVEN_CONFIG
                 ./mvnw test
               """
-            }
           }
         }
       }
-      stage('Cypress framework starting') {
-        steps {
-          script {
-              if (params.Run_all_tests == true || params.Cypress == true) {
-                build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
-              }
+    }
+    stage('Cypress framework starting') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Cypress == true) {
+            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
           }
         }
       }
-      stage('Mocha framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.Mocha == true) {
-              sh """
+    }
+    stage('Mocha framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Mocha == true) {
+            sh """
                 echo 'Mocha framework starting ..... '
                 export machine_dns="${params.MACHINE_DNS}"
                 export Lab_id="${params.SL_LABID}"
@@ -320,10 +320,10 @@ pipeline {
                 ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
                 cd ../..
               """
-            }
           }
         }
       }
+    }
 
 //    stage('robot framework'){
 //      steps{
@@ -342,11 +342,11 @@ pipeline {
 //        }
 //      }
 //    }
-      stage('Postman framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.Postman == true) {
-              sh """
+    stage('Postman framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Postman == true) {
+            sh """
                 echo 'Postman framework starting ..... '
                 export MACHINE_DNS="${params.MACHINE_DNS}"
                 cd ./integration-tests/postman-tests/
@@ -360,10 +360,10 @@ pipeline {
                 ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
                 cd ../..
               """
-            }
           }
         }
       }
+    }
 //    stage('Jest framework'){
 //      steps{
 //        script{
@@ -383,11 +383,11 @@ pipeline {
 //        }
 //      }
 //    }
-      stage('Soap-UI framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.Soapui == true) {
-              sh """
+    stage('Soap-UI framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Soapui == true) {
+            sh """
                 echo 'Soap-UI framework starting ..... '
                 wget https://dl.eviware.com/soapuios/5.7.1/SoapUI-5.7.1-mac-bin.zip
                 unzip SoapUI-5.7.1-mac-bin.zip
@@ -420,10 +420,10 @@ pipeline {
                 sed -i -r "s/(^\\S*java)(.*com.eviware.soapui.tools.SoapUITestCaseRunner)/\\1 \\\$SL_JAVA_OPTS \\2/g" testrunner.sh
                 sh -x ./testrunner.sh -s "TestSuite 1" "test-soapui-project.xml"
               """
-            }
           }
         }
       }
+    }
     stage('Pytest framework') {
       steps {
         script {
@@ -443,7 +443,7 @@ pipeline {
         }
       }
     }
-    }
   }
+}
 
 
