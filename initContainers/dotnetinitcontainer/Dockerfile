@@ -8,6 +8,11 @@ RUN mkdir -p ./sealights/agent
 
 RUN apk add --no-cache curl jq unzip
 
+# Configure npm to use GitHub package registry
+RUN echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+    echo "email=devops@sealights.io" >> .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> .npmrc
+
 # Fetch the download URL for the Sealights agent and handle both tar.gz and zip files
 RUN echo "Fetching release assets..." && \
     curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" \
@@ -46,7 +51,6 @@ RUN echo "Fetching release assets..." && \
     fi; \
 done
 
-RUN ls /app/sealights/agent
 RUN chmod -R 777 /app/sealights
 
 COPY start-app.sh /app/sealights
