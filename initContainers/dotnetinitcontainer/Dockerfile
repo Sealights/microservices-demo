@@ -7,7 +7,7 @@ RUN mkdir -p ./sealights/logs
 RUN mkdir -p ./sealights/agent
 
 # Install necessary packages
-RUN apt update && apt install -y \
+RUN apk update && apk install -y \
         curl \
         jq \
         unzip\
