@@ -13,7 +13,7 @@ RUN apk add --no-cache curl jq unzip git
 RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_amd64.tar.gz | tar xz -C /usr/local/bin --strip-components=1 gh_2.21.2_linux_amd64/bin/gh
 
 # Authenticate GitHub CLI
-RUN gh auth login --with-token < $GITHUB_TOKEN
+RUN echo $GITHUB_TOKEN | gh auth login --with-token
 
 # Download the latest release asset
 RUN gh release download -R Sealights/SL.OnPremise.Agents.DotNet --pattern "sealights-dotnet-agent-alpine-self-contained.zip" -D /app/sealights/agent
