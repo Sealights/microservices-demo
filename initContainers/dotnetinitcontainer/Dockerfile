@@ -13,11 +13,11 @@ RUN curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${
     if [[ -n "$url" ]]; then \
         echo "Downloading $url"; \
         filename=$(basename "$url"); \
-        curl -L -o "$filename" "$url" || echo "Failed to download $url"; \
+        curl -L -o "$filename" "$url" || { echo "Failed to download $url"; exit 1; }; \
         if [[ "$filename" == *.zip ]]; then \
-            unzip "$filename" -d /app/sealights/agent; \
+            unzip -t "$filename" && unzip "$filename" -d /app/sealights/agent || { echo "Failed to unzip $filename"; exit 1; }; \
         elif [[ "$filename" == *.tar.gz ]]; then \
-            tar -xzf "$filename" --directory /app/sealights/agent; \
+            tar -tzf "$filename" && tar -xzf "$filename" --directory /app/sealights/agent || { echo "Failed to extract $filename"; exit 1; }; \
         fi; \
     else \
         echo "No valid URL found"; \
