@@ -25,5 +25,3 @@ RUN ls /app/sealights/agent
 # Unzip the downloaded file
 RUN unzip /app/sealights/agent/sealights-dotnet-agent-alpine-self-contained.zip -d /app/sealights/agent
 RUN chmod -R 777 /app/sealights
-
-COPY start-app.sh /app/sealights
