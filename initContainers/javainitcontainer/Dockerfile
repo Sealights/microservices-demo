@@ -9,4 +9,3 @@ RUN curl -L -u sealights:${GITHUB_TOKEN} "https://maven.pkg.github.com/Sealights
 
 RUN ls
 # Copy the SL CD agent to the desired location
-COPY sl-cd-agent.jar /sl-cd-agent.jar
