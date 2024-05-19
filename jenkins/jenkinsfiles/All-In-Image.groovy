@@ -52,7 +52,7 @@ pipeline {
                   mkdir -p ./sealights/agent
                   DOTNET_LATEST_VERSION=gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
-                  RUN unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+                  unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
 
                   echo 'MS-Tests framework starting ..... '
                   export machine_dns="${params.MACHINE_DNS}"
@@ -74,7 +74,7 @@ pipeline {
                   mkdir -p ./sealights/agent
                   DOTNET_LATEST_VERSION=gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
-                  RUN unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+                  unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
 
                 export machine_dns="${params.MACHINE_DNS}"
                 dotnet /sealights/agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
