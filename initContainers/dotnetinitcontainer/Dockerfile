@@ -22,4 +22,3 @@ RUN chmod -R 777 /app/sealights
 
 COPY start-app.sh /app/sealights
 
-CMD ["/bin/sh", "/app/sealights/start-app.sh"]
