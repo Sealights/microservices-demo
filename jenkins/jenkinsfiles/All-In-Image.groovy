@@ -35,7 +35,7 @@ pipeline {
   environment {
     MACHINE_DNS = "${params.MACHINE_DNS}"
     machine_dns = "${params.MACHINE_DNS}"
-    GITHUB_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   stages {
     stage("Init test") {
