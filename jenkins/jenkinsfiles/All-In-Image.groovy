@@ -50,7 +50,7 @@ pipeline {
           if (params.Run_all_tests == true || params.MS == true) {
             sh """
                   mkdir -p ./sealights/agent
-                  DOTNET_LATEST_VERSION=gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'
+                  DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
                   unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
 
@@ -72,7 +72,7 @@ pipeline {
             sh """
                 echo 'N-Unit framework starting ..... '
                   mkdir -p ./sealights/agent
-                  DOTNET_LATEST_VERSION=gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'
+                  DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
                   unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
 
