@@ -39,9 +39,9 @@ pipeline {
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
                         | jq -r '.[0].name'""").trim()
-          echo "${env.verion}"
-          env.DOTNET_LATEST_VERSION = (sh(returnStdout: true, script: "gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'")).trim()
-          echo "${env.DOTNET_LATEST_VERSION}"
+          echo "java version : ${env.verion}"
+          env.dotnet_latest_version = (sh(returnStdout: true, script: "gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'")).trim()
+          echo "dotnet version : ${env.dotnet_latest_version}"
         }
       }
     }
@@ -69,7 +69,7 @@ pipeline {
             def D = "${env.ECR_URI}:latest"
             def DD ="${env.ECR_URI}:${BUILD_NUMBER}"
             def VERSION = "${env.verion}"
-            def DOTNET_LATEST_VERSION = ${env.DOTNET_LATEST_VERSION}
+            def DOTNET_LATEST_VERSION = ${env.dotnet_latest_version}
             sh """
                 /kaniko/executor \
                 --context ${CONTEXT} \
