@@ -10,9 +10,9 @@ RUN apk add --no-cache curl jq tar file
 
 # Download and extract the tar file with debugging
 RUN set -x; \
-    curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" \
-        https://api.github.com/repos/Sealights/SL.OnPremise.Agents.DotNet/releases/latest | \
-    jq -r '.assets[] | select(.name | test("sealights-dotnet-agent-alpine-self-contained.(tar.gz|zip)$")) | .browser_download_url' | \
+    response=$(curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Sealights/SL.OnPremise.Agents.DotNet/releases/latest); \
+    echo "GitHub API response: $response"; \
+    echo $response | jq -r '.assets[] | select(.name | test("sealights-dotnet-agent-alpine-self-contained.(tar.gz|zip)$")) | .browser_download_url' | \
     while read -r url; do \
         echo "Found URL: $url"; \
         if [[ -n "$url" ]]; then \
