@@ -69,7 +69,7 @@ pipeline {
             def D = "${env.ECR_URI}:latest"
             def DD ="${env.ECR_URI}:${BUILD_NUMBER}"
             def VERSION = "${env.verion}"
-            def DOTNET_LATEST_VERSION = ${env.dotnet_latest_version}
+            def DOTNET_LATEST_VERSION = "${env.dotnet_latest_version}"
             sh """
                 /kaniko/executor \
                 --context ${CONTEXT} \
