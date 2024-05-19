@@ -6,11 +6,17 @@ WORKDIR /app
 RUN mkdir -p ./sealights/logs
 RUN mkdir -p ./sealights/agent
 
-RUN apk add --no-cache wget jq unzip
+# Install necessary packages
+RUN apk add --no-cache curl jq unzip git
 
-# Use wget to download the Sealights agent zip file
-RUN wget --header="Authorization: token ${GITHUB_TOKEN}" \
-    https://github.com/Sealights/SL.OnPremise.Agents.DotNet/releases/download/v3.9.6/sealights-dotnet-agent-alpine-self-contained.zip -O /app/sealights/agent/sealights-dotnet-agent-alpine-self-contained.zip
+# Install GitHub CLI
+RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_amd64.tar.gz | tar xz -C /usr/local/bin --strip-components=1 gh_2.21.2_linux_amd64/bin/gh
+
+# Authenticate GitHub CLI
+RUN gh auth login --with-token <<< $GITHUB_TOKEN
+
+# Download the latest release asset
+RUN gh release download -R Sealights/SL.OnPremise.Agents.DotNet --pattern "sealights-dotnet-agent-alpine-self-contained.zip" -D /app/sealights/agent
 
 RUN ls /app/sealights/agent
 
@@ -19,4 +25,3 @@ RUN unzip /app/sealights/agent/sealights-dotnet-agent-alpine-self-contained.zip 
 RUN chmod -R 777 /app/sealights
 
 COPY start-app.sh /app/sealights
-
