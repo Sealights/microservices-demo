@@ -50,7 +50,6 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.MS == true) {
             sh """
-                  export GH_TOKEN = ${env.GITHUB_TOKEN}
                   mkdir -p ./sealights/agent
                   DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
                   gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
@@ -72,7 +71,6 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.NUnit == true) {
             sh """
-                  export GH_TOKEN = ${env.GITHUB_TOKEN}
                   echo 'N-Unit framework starting ..... '
                   mkdir -p ./sealights/agent
                   DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
