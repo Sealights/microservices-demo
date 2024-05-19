@@ -51,18 +51,25 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.MS == true) {
             sh """
-                  mkdir -p ./sealights/agent
-                  DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
-                  gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
-                  unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+                mkdir -p ./sealights/agent
+                ls
 
-                  echo 'MS-Tests framework starting ..... '
-                  export machine_dns="${params.MACHINE_DNS}"
-                  dotnet /sealights/agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-                  sleep 10
-                  dotnet /sealights/agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
-                  dotnet /sealights/agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-               """
+                DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
+                gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
+
+                # Ensure the target directory exists and has proper permissions
+                mkdir -p /app/sealights/agent
+                chmod -R 755 /app/sealights
+
+                unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+
+                echo 'MS-Tests framework starting ..... '
+                export machine_dns="${params.MACHINE_DNS}"
+                dotnet /sealights/agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                sleep 10
+                dotnet /sealights/agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
+                dotnet /sealights/agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+            """
           }
         }
       }
