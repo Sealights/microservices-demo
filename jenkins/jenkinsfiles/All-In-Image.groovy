@@ -38,13 +38,13 @@ pipeline {
     GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
   }
   stages {
-    stage("Init test") {
-      steps {
-        script {
-          git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
-        }
-      }
-    }
+//    stage("Init test") {
+//      steps {
+//        script {
+//          git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
+//        }
+//      }
+//    }
     stage('MS-Tests framework') {
       steps {
         script {
