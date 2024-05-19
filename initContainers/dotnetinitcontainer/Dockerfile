@@ -15,7 +15,7 @@ RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_li
 # Verify installation of GitHub CLI
 RUN gh --version
 # Configure GitHub CLI to use the GITHUB_TOKEN
-RUN gh auth setup-git -h github.com --hostname github.com --token $GITHUB_TOKEN
+RUN export GH_TOKEN=$GITHUB_TOKEN
 
 # Download the latest release asset
 RUN gh release download -R Sealights/SL.OnPremise.Agents.DotNet --pattern "sealights-dotnet-agent-alpine-self-contained.zip" -D /app/sealights/agent
