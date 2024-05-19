@@ -13,7 +13,7 @@ RUN apk add --no-cache curl jq unzip git github-cli
 RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.21.2/gh_2.21.2_linux_amd64.tar.gz | tar xz -C /usr/local/bin --strip-components=1 gh_2.21.2_linux_amd64/bin/gh
 
 # Verify installation of GitHub CLI
-RUN /usr/local/bin/gh --version
+RUN gh --version
 
 # Authenticate GitHub CLI
 RUN echo $GITHUB_TOKEN | /usr/local/bin/gh auth login --with-token
