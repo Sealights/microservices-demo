@@ -36,4 +36,4 @@ RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "c
 RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 
 EXPOSE 7000
-CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
+CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --collectorUrl 34.253.229.197:8080/api --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
