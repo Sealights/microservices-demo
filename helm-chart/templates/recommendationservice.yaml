@@ -65,6 +65,8 @@ spec:
           grpc:
             port: 8080
         env:
+        - name: SL_COLLECTOR_URL
+          value: "{{ .Values.SealightsEnvVars.collector_url }}"
         - name: SL_TOKEN
           value: "{{ .Values.SealightsEnvVars.token }}"
         - name: SL_LAB_ID
