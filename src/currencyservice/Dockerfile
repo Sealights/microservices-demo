@@ -37,4 +37,4 @@ RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessioni
 ENV NODE_DEBUG=sl
 
 EXPOSE 7000
-CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --collectorUrl https://34.253.229.197:8080/api --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
+CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --collectorUrl https://34.253.229.197:16500/api --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js

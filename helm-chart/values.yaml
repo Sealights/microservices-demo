@@ -9,6 +9,7 @@ SealightsEnvVars:
   java_agent_url: ""
   dotnet_agent_url: ""
   sl_branch: ""
+  collector_url: "https://34.253.229.197:16500/api"
 
 images:
   repository: 534369319675.dkr.ecr.us-west-2.amazonaws.com
