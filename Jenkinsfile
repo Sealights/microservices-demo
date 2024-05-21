@@ -437,7 +437,7 @@ def run_tests(Map params){
         booleanParam(name: 'Junit_without_testNG', value: params.Junit_without_testNG),
         booleanParam(name: 'Junit_with_testNG_gradle', value: params.Junit_with_testNG_gradle),
         booleanParam(name: 'Mocha', value: params.Mocha),
-        booleanParam(name: 'MS', value: params.Mocha),
+        booleanParam(name: 'MS', value: params.MS),
         booleanParam(name: 'NUnit', value: params.NUnit),
         booleanParam(name: 'Postman', value: params.Postman),
         booleanParam(name: 'Pytest', value: params.Pytest),
