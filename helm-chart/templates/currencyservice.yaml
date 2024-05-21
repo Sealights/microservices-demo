@@ -42,6 +42,8 @@ spec:
         - name: grpc
           containerPort: 7000
         env:
+        - name: SEALIGHTS_COLLECTOR_URL
+          value: "{{ .Values.SealightsEnvVars.collector_url }}"
         - name: SL_TOKEN
           value: "{{ .Values.SealightsEnvVars.token }}"
         - name: SL_LAB_ID
