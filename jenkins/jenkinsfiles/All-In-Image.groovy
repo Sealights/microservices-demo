@@ -55,7 +55,7 @@ pipeline {
                 ls
 
                 DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
-                gh release download v3.9.5 --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
+                gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
 
                 # Ensure the target directory exists and has proper permissions
                 mkdir -p /app/sealights/agent
@@ -83,7 +83,7 @@ pipeline {
                 ls
 
                 DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
-                gh release download v3.9.5 --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
+                gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
 
                 # Ensure the target directory exists and has proper permissions
                 mkdir -p /app/sealights/agent
