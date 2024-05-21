@@ -1,8 +1,11 @@
 package sealights.notes.sealights;
 
+
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.io.IOException;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,9 +17,10 @@ public class Controller {
     @GetMapping("/about")
     public String about() {
         try{
-            Path filePath = Path.of("src/main/resources/templates/page.html");
-            String f=Files.readString(filePath);
-            return f;
+            ClassPathResource resource = new ClassPathResource("templates/page.html");
+            Path filePath = Paths.get(resource.getURI());
+            String fileContent = Files.readString(filePath);
+            return fileContent;
         } catch (IOException e) {
             e.printStackTrace();
             return "Error reading file";
