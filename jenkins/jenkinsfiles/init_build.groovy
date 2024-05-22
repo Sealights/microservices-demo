@@ -21,7 +21,7 @@ pipeline {
   }
   parameters {
     string(name: 'TAG', defaultValue: '1.2.2', description: 'Latest tag')
-    string(name: 'BRANCH', defaultValue: 'main', description: 'Default branch')
+    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Default branch')
     choice(name: 'LANG', choices: ["javainitcontainer", "dotnetinitcontainer"], description: 'Choose lang technology')
   }
   environment {
