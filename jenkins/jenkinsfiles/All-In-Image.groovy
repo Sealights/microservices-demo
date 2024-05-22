@@ -59,7 +59,7 @@ pipeline {
                   echo '{
                     "tokenfile": "sltoken.txt",
                     "labid": "${params.SL_LABID}",
-                    "testStage": "Cucumber Tests"
+                    "testStage": "CucumberJS-Tests"
                     }' > sl.conf
                   ./node_modules/.bin/slnodejs start --tokenfile ./sltoken.txt --labid ${params.SL_LABID} --teststage "CucumberJS-Tests"
                   node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
