@@ -6,16 +6,12 @@ pipeline {
       defaultContainer "shell"
     }
   }
-//  environment {
-//    token = "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}"
-//  }
-
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'APP_NAME', defaultValue: 'line-coverage', description: 'name of the app (integration build)')
+    string(name: 'BRANCH', defaultValue: 'line-coverage', description: 'Branch to clone (line-coverage)')
+    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (line-coverage)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
-    string(name: 'BUILD_BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: 'line-coverage', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
@@ -44,20 +40,49 @@ pipeline {
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
   }
-
   stages {
-    stage('Clone Repository') {
+    stage('build the latest java version on init container') {
       steps {
         script {
-          clone_repo(
-            branch: params.BRANCH
-          )
+          build(job: "init_build/${params.BRANCH}", parameters: [
+            string(name: 'BRANCH', value: "${params.BRANCH}"),
+            string(name: 'LANG', value: "javainitcontainer"),
+          ])
+        }
+      }
+    }
+    stage('Enabling line coverage for agent'){
+      steps {
+        script {
+          try {
+            def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -H \"Content-Type: application/json\" -d '{\"key\": \"BuildMethodology\", \"value\": \"MethodLines\"}'  https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}" )).trim()
+            if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
+              return false
+            }
+            return true
+          } catch(err) {
+            error "Failed to Enabling line coverage for agent"
+          }
         }
       }
     }
 
+    stage('Enabling line coverage for coverage apis'){
+      steps{
+        script{
+          try {
+            def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -H \"Content-Type: application/json\" -d '{\"appName\": \"${params.APP_NAME}\", \"coverageThreshold\": 85,  \"lineThreshold\": 200, \"showLineCoverage\": true}' https://dev-integration.dev.sealights.co/api/v2/coverage-settings" )).trim()
+            if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
+              return false
+            }
+            return true
+          } catch(err) {
+            error "Failed to Enabling line coverage for coverage apis"
+          }
+        }
+      }
+    }
 
-    //Build parallel images
     stage('Build BTQ') {
       steps {
         script {
@@ -104,39 +129,7 @@ pipeline {
       }
     }
 
-    stage('Full Run') {
-      steps {
-        script {
-          def testStages_list =
-            ["Cucmber-framework-java",
-             "Jest-tests",
-             "Junit-support-testNG",
-             "Cypress-Test-Stage",
-             "Junit-without-testNG",
-             "Mocha-tests",
-             "MS-Tests",
-             "NUnit-Tests",
-             "Postman-tests",
-             "Pytest-tests",
-             "Robot-Tests",
-             "Soapui-Tests",
-             "Junit-without-testNG-gradle" ,
-             "Karate-framework-java",
-             "CucumberJS-Tests"]
 
-          testStages_list.each { TEST_STAGE ->
-            schedule_full_run(
-              app_name        :  URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-              branch_name     :  URLEncoder.encode("${params.BRANCH}", "UTF-8"),
-              test_stage      :  "${TEST_STAGE}",
-              token           :  "${env.token}",
-              machine         :  "dev-integration.dev.sealights.co"
-            )
-          }
-
-        }
-      }
-    }
 
     stage('Run Tests') {
       steps {
@@ -164,164 +157,164 @@ pipeline {
       }
     }
 
-    stage('Run TIA Tests 1-FIRST With SeaLights') {
-      steps {
-        script {
-          def RUN_DATA = "full-run";
-          TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
-            run_data           :  RUN_DATA,
-            branch             :  params.BRANCH,
-            app_name           :  params.APP_NAME
-          )
-
-        }
-      }
-    }
-
-    stage('Run Coverage Tests Before Changes') {
-      steps {
-        script {
-          def RUN_DATA = "without-changes";
-          run_api_tests_before_changes(
-            SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
-            run_data           :  RUN_DATA,
-            integration_branch :  params.BRANCH,
-            app_name           :  params.APP_NAME
-          )
-        }
-      }
-    }
-    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
-      steps {
-        script {
-          def RUN_DATA = "full-run";
-          run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
-            run_data            : RUN_DATA,
-            branch              : params.BRANCH,
-            lab_id              : env.LAB_ID,
-            app_name            : params.APP_NAME
-          )
-        }
-      }
-    }
-
-    stage('Changed - Clone Repository') {
-      steps {
-        script {
-          clone_repo(
-            branch: params.CHANGED_BRANCH
-          )
-        }
-      }
-    }
-
-    stage('Changed Build BTQ') {
-      steps {
-        script {
-          def MapUrl = new HashMap()
-          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
-          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
-          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
-          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
-          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
-          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
-
-          build_btq(
-            sl_token                :   env.token,
-            sl_report_branch        :   params.BRANCH,
-            dev_integraion_sl_token :   env.DEV_INTEGRATION_SL_TOKEN,
-            build_name              :   "1-0-${BUILD_NUMBER}-v2",
-            branch                  :   params.CHANGED_BRANCH,
-            mapurl                  :   MapUrl
-          )
-        }
-      }
-    }
-
-
-
-
-    stage('Changed Spin-Up BTQ') {
-      steps {
-        script {
-          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
-
-          SpinUpBoutiqeEnvironment(
-            IDENTIFIER        : IDENTIFIER,
-            branch            : params.BRANCH,
-            git_branch        : params.CHANGED_BRANCH,
-            app_name          : params.APP_NAME,
-            build_branch      : params.BRANCH,
-            java_agent_url    : params.JAVA_AGENT_URL,
-            dotnet_agent_url  : params.DOTNET_AGENT_URL,
-            sl_branch         : params.BRANCH
-          )
-        }
-      }
-    }
-
-    stage('Changed Run Tests') {
-      steps {
-        script {
-          run_tests(
-            Run_all_tests : params.Run_all_tests,
-            branch    : params.BRANCH,
-            test_type : params.TEST_TYPE
-          )
-        }
-      }
-    }
-
-    stage('Run TIA Tests 2-SECOND With SeaLights') {
-      steps {
-        script {
-          def RUN_DATA = "TIA-RUN";
-          TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
-            run_data            : RUN_DATA,
-            branch              : params.BRANCH,
-            app_name            : params.APP_NAME
-          )
-        }
-      }
-    }
-
-    stage('Run Coverage Tests After Changes') {
-      steps {
-        script {
-          def RUN_DATA = "with-changes";
-          run_api_tests_after_changes(
-            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
-            run_data            : RUN_DATA,
-            integration_branch  : params.BRANCH,
-            app_name            : params.APP_NAME
-          )
-        }
-      }
-    }
-
-    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
-      steps {
-        script {
-          def RUN_DATA = "TIA-RUN";
-          run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
-            run_data            : RUN_DATA,
-            branch              : params.BRANCH,
-            lab_id              : env.LAB_ID,
-            app_name            : params.APP_NAME
-          )
-        }
-      }
-    }
+//    stage('Run TIA Tests 1-FIRST With SeaLights') {
+//      steps {
+//        script {
+//          def RUN_DATA = "full-run";
+//          TIA_Page_Tests(
+//            SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
+//            LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
+//            run_data           :  RUN_DATA,
+//            branch             :  params.BRANCH,
+//            app_name           :  params.APP_NAME
+//          )
+//
+//        }
+//      }
+//    }
+//
+//    stage('Run Coverage Tests Before Changes') {
+//      steps {
+//        script {
+//          def RUN_DATA = "without-changes";
+//          run_api_tests_before_changes(
+//            SEALIGHTS_ENV_NAME :  params.SEALIGHTS_ENV_NAME,
+//            LAB_UNDER_TEST     :  params.LAB_UNDER_TEST,
+//            run_data           :  RUN_DATA,
+//            integration_branch :  params.BRANCH,
+//            app_name           :  params.APP_NAME
+//          )
+//        }
+//      }
+//    }
+//    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
+//      steps {
+//        script {
+//          def RUN_DATA = "full-run";
+//          run_TIA_ON_testresult(
+//            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+//            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+//            run_data            : RUN_DATA,
+//            branch              : params.BRANCH,
+//            lab_id              : env.LAB_ID,
+//            app_name            : params.APP_NAME
+//          )
+//        }
+//      }
+//    }
+//
+//    stage('Changed - Clone Repository') {
+//      steps {
+//        script {
+//          clone_repo(
+//            branch: params.CHANGED_BRANCH
+//          )
+//        }
+//      }
+//    }
+//
+//    stage('Changed Build BTQ') {
+//      steps {
+//        script {
+//          def MapUrl = new HashMap()
+//          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
+//          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
+//          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
+//          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
+//          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
+//          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
+//
+//          build_btq(
+//            sl_token                :   env.token,
+//            sl_report_branch        :   params.BRANCH,
+//            dev_integraion_sl_token :   env.DEV_INTEGRATION_SL_TOKEN,
+//            build_name              :   "1-0-${BUILD_NUMBER}-v2",
+//            branch                  :   params.CHANGED_BRANCH,
+//            mapurl                  :   MapUrl
+//          )
+//        }
+//      }
+//    }
+//
+//
+//
+//
+//    stage('Changed Spin-Up BTQ') {
+//      steps {
+//        script {
+//          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+//
+//          SpinUpBoutiqeEnvironment(
+//            IDENTIFIER        : IDENTIFIER,
+//            branch            : params.BRANCH,
+//            git_branch        : params.CHANGED_BRANCH,
+//            app_name          : params.APP_NAME,
+//            build_branch      : params.BRANCH,
+//            java_agent_url    : params.JAVA_AGENT_URL,
+//            dotnet_agent_url  : params.DOTNET_AGENT_URL,
+//            sl_branch         : params.BRANCH
+//          )
+//        }
+//      }
+//    }
+//
+//    stage('Changed Run Tests') {
+//      steps {
+//        script {
+//          run_tests(
+//            Run_all_tests : params.Run_all_tests,
+//            branch    : params.BRANCH,
+//            test_type : params.TEST_TYPE
+//          )
+//        }
+//      }
+//    }
+//
+//    stage('Run TIA Tests 2-SECOND With SeaLights') {
+//      steps {
+//        script {
+//          def RUN_DATA = "TIA-RUN";
+//          TIA_Page_Tests(
+//            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+//            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+//            run_data            : RUN_DATA,
+//            branch              : params.BRANCH,
+//            app_name            : params.APP_NAME
+//          )
+//        }
+//      }
+//    }
+//
+//    stage('Run Coverage Tests After Changes') {
+//      steps {
+//        script {
+//          def RUN_DATA = "with-changes";
+//          run_api_tests_after_changes(
+//            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+//            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+//            run_data            : RUN_DATA,
+//            integration_branch  : params.BRANCH,
+//            app_name            : params.APP_NAME
+//          )
+//        }
+//      }
+//    }
+//
+//    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
+//      steps {
+//        script {
+//          def RUN_DATA = "TIA-RUN";
+//          run_TIA_ON_testresult(
+//            SEALIGHTS_ENV_NAME  : params.SEALIGHTS_ENV_NAME,
+//            LAB_UNDER_TEST      : params.LAB_UNDER_TEST,
+//            run_data            : RUN_DATA,
+//            branch              : params.BRANCH,
+//            lab_id              : env.LAB_ID,
+//            app_name            : params.APP_NAME
+//          )
+//        }
+//      }
+//    }
 
 
   }
