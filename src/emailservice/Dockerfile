@@ -29,5 +29,6 @@ RUN sl-python scan --scm none --token ${SEALIGHTS_TOKEN}
 
 # Add the application
 ENV PORT "8080"
+ENV SL_DEBUG=true
 EXPOSE 8080 
 CMD sl-python run python email_server.py --labid ${SL_LAB_ID} --token ${SL_TOKEN}
