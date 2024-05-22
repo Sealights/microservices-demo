@@ -63,7 +63,7 @@ spec:
             port: 5050
         env:
         - name: SEALIGHTS_LIGHT_MODE
-          value: "TRUE"
+          value: "true"
         - name: SEALIGHTS_COLLECTOR_URL
           value: "{{ .Values.SealightsEnvVars.collector_url }}"
         - name: SL_TOKEN
