@@ -41,16 +41,6 @@ pipeline {
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
   }
   stages {
-    stage('build the latest java version on init container') {
-      steps {
-        script {
-          build(job: "init_build/${params.BRANCH}", parameters: [
-            string(name: 'BRANCH', value: "${params.BRANCH}"),
-            string(name: 'LANG', value: "javainitcontainer"),
-          ])
-        }
-      }
-    }
     stage('Enabling line coverage for agent'){
       steps {
         script {
