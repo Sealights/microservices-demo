@@ -13,6 +13,9 @@
 # limitations under the License.
 
 FROM eclipse-temurin:21@sha256:9d007c093e624bc410f113ee09f5209d3263e0bada7524e4de99eac9fbef06a5 as builder
+ARG SEALIGHTS_TOKEN
+ARG BRANCH
+ARG BUILD_NAME
 
 RUN apt-get update && \
     apt-get install -y unzip && \
@@ -33,10 +36,10 @@ RUN ./gradlew installDist
 RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
 RUN unzip -oq sealights-java-latest.zip
 # Make build session id
-RUN java -jar sl-build-scanner.jar -config -tokenfile ./sltoken.txt -appname "adservice" -branchname "line-coverage-test" -buildname "old-1" -pi "*hipstershop*"
+RUN java -jar sl-build-scanner.jar -config -tokenfile ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${SEALIGHTS_TOKEN} -buildname "${SEALIGHTS_TOKEN}" -pi "*hipstershop*"
 RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
 # Scan the code
-RUN java -jar sl-build-scanner.jar -scan -tokenfile ./sltoken.txt -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
+RUN java -jar sl-build-scanner.jar -scan -tokenfile ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
 
 FROM eclipse-temurin:21-jre-alpine@sha256:b5a1250bb72d804d49471207e2ebb574caffc13ac76f99618fb5ea06af621056
 
@@ -52,4 +55,4 @@ WORKDIR /app
 COPY --from=builder /app .
 
 EXPOSE 9555
-CMD "-javaagent:sl-test-listener.jar -Dsl.branchName={{ .Values.SealightsEnvVars.sl_branch }} -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.appName=adservice -Dsl.buildName={{ .Values.SealightsEnvVars.build_name }} -Dsl.tags=script,container,docker -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }} -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop* -Dsl.workspace=/app/build/install/hipstershop/lib"
+ENTRYPOINT ["/app/build/install/hipstershop/bin/AdService"]
