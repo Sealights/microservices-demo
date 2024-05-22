@@ -121,8 +121,7 @@ pipeline {
              "Robot-Tests",
              "Soapui-Tests",
              "Junit-without-testNG-gradle" ,
-             "Karate-framework-java",
-             "CucumberJS-Tests"]
+             "Karate-framework-java"]
 
           testStages_list.each { TEST_STAGE ->
             schedule_full_run(
