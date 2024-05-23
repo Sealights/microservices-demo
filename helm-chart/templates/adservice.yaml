@@ -29,13 +29,6 @@ spec:
       labels:
         app: {{ .Values.adService.name }}
     spec:
-      initContainers:
-      - name: java-cd-agent
-        image: sealights/javainitcontainer:latest
-        command: ["/bin/sh", "-c", "cp /sl-cd-agent.jar /sealights"]
-        volumeMounts:
-          - mountPath: /sealights
-            name: java-cd-agent-file
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.adService.name }}
       {{- else }}
@@ -58,7 +51,7 @@ spec:
         - containerPort: 9555
         env:
         - name: JAVA_TOOL_OPTIONS
-          value: "-javaagent:/sealights/sl-cd-agent.jar -Dsl.branchName={{ .Values.SealightsEnvVars.sl_branch }} -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.log.toConsole=true -Dsl.appName=adservice -Dsl.buildName={{ .Values.SealightsEnvVars.build_name }} -Dsl.tags=script,container,docker -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }} -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop* -Dsl.workspace=/app/build/install/hipstershop/lib"
+          value: "-javaagent:/app/sl-cd-agent.jar -Dsl.branchName={{ .Values.SealightsEnvVars.sl_branch }} -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.log.toConsole=true -Dsl.appName=adservice -Dsl.buildName={{ .Values.SealightsEnvVars.build_name }} -Dsl.tags=script,container,docker -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }} -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop* -Dsl.workspace=/app/build/install/hipstershop/lib"
         - name: PORT
           value: "9555"
         resources:
@@ -73,12 +66,6 @@ spec:
           periodSeconds: 15
           grpc:
             port: 9555
-        volumeMounts:
-          - mountPath: /sealights
-            name: java-cd-agent-file
-      volumes:
-      - name: java-cd-agent-file
-        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
