@@ -46,7 +46,7 @@ pipeline {
         script {
           try {
             env.api_token = sh(returnStdout: true, script: """curl -X PUT -d '{"email": "integration@sealights.io","password": "SeaLights2019!"}' https://dev-integration.dev.sealights.co/api/v2/auth/token""").trim()
-            echo "${env.api_token}"
+            echo "api token : ${env.api_token}"
             def RESPONSE = sh(returnStdout: true, script: """
                 curl -X PUT \
                 -H "Authorization: Bearer "${env.api_token}"" \
