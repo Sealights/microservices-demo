@@ -389,7 +389,6 @@ def build_btq(Map params){
                 }' \
                 https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${service}/branches/line-coverage
             """).trim()
-
       def SETTING_RESPONSE = (sh(returnStdout: true, script: """
               curl -X PUT \
                 -H "Content-Type: application/json" \
