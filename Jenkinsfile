@@ -379,6 +379,29 @@ def build_btq(Map params){
 
   services_list.each { service ->
     parallelLabs["${service}"] = {
+      def RESPONSE = sh(returnStdout: true, script: """
+                curl -X PUT \
+                -H "Authorization: Bearer "${env.api_token}"" \
+                -H "Content-Type: application/json" \
+                -d '{
+                    "key": "BuildMethodology",
+                    "value": "MethodLines"
+                }' \
+                https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${service}/branches/${params.BRANCH}
+            """).trim()
+
+      def SETTING_RESPONSE = (sh(returnStdout: true, script: """
+              curl -X PUT \
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer "${env.api_token}"" \
+                -d '{
+                  "appName": "${service}",
+                  "coverageThreshold": 10,
+                  "lineThreshold": 5,
+                  "showLineCoverage": true
+                }' \
+                https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+              """)).trim()
       def AGENT_URL = getParamForService(service , params.mapurl)
       build(job: "BTQ-BUILD/${params.branch}", parameters: [string(name: 'SERVICE', value: "${service}"),
                                            string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
