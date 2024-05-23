@@ -79,12 +79,6 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.NUnit == true) {
             sh """
-
-                # Ensure the target directory exists and has proper permissions
-                mkdir -p /app/sealights/agent
-                chmod -R 755 /app/sealights
-
-                unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
                 export machine_dns="${params.MACHINE_DNS}"
                 dotnet /app/sealights/agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
                 sleep 10
