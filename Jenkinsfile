@@ -45,8 +45,11 @@ pipeline {
       steps {
         script {
           try {
+            env.api_token = sh(returnStdout: true, script: """https://dev-integration.dev.sealights.co/api/v2/auth/token""").trim()
+            echo "${env.api_token}"
             def RESPONSE = sh(returnStdout: true, script: """
                 curl -X PUT \
+                -H "Authorization: Bearer "${env.api_token}"" \
                 -H "Content-Type: application/json" \
                 -d '{
                     "key": "BuildMethodology",
@@ -69,17 +72,18 @@ pipeline {
       steps{
         script{
           try {
-            def RESPONSE = sh(returnStdout: true, script: """
+            def RESPONSE = (sh(returnStdout: true, script: """
               curl -X PUT \
-              -H "Content-Type: application/json" \
-              -d '{
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer "${env.api_token}"" \
+                -d '{
                   "appName": "${params.APP_NAME}",
                   "coverageThreshold": 10,
                   "lineThreshold": 5,
                   "showLineCoverage": true
-              }' \
-             https://dev-integration.dev.sealights.co/api/v2/coverage-settings
-            """).trim()
+                }' \
+                https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+              """)).trim()
             if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
               return false
             }
