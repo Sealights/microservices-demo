@@ -45,7 +45,7 @@ pipeline {
       steps {
         script {
           try {
-            env.api_token = sh(returnStdout: true, script: """curl -X PUT -d '{"email": "integration@sealights.io","password": "SeaLights2019!"}' https://dev-integration.dev.sealights.co/api/v2/auth/token""").trim()
+            env.api_token = sh(returnStdout: true, script: """curl -X POST -d {"email": "integration@sealights.io","password": "SeaLights2019!"} -H Content-Type: application/json https://dev-integration.dev.sealights.co/api/v2/auth/token | jq -r .token""").trim()
             echo "api token : ${env.api_token}"
             def RESPONSE = sh(returnStdout: true, script: """
                 curl -X PUT \
