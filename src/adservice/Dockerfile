@@ -12,14 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM eclipse-temurin:21@sha256:9d007c093e624bc410f113ee09f5209d3263e0bada7524e4de99eac9fbef06a5 as builder
-ARG SEALIGHTS_TOKEN
-ARG BRANCH
-ARG BUILD_NAME
-
-RUN apt-get update && \
-    apt-get install -y unzip && \
-    rm -rf /var/lib/apt/lists/*
+FROM eclipse-temurin:19@sha256:f3fbf1ad599d4b5dbdd7ceb55708d10cb9fafb08e094ef91e92aa63b520a232e as builder
 
 WORKDIR /app
 
@@ -32,16 +25,7 @@ COPY . .
 RUN chmod +x gradlew
 RUN ./gradlew installDist
 
-# Install agent
-RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
-RUN unzip -oq sealights-java-latest.zip
-# Make build session id
-RUN java -jar sl-build-scanner.jar -config -tokenfile ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${SEALIGHTS_TOKEN} -buildname "${SEALIGHTS_TOKEN}" -pi "*hipstershop*"
-RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
-# Scan the code
-RUN java -jar sl-build-scanner.jar -scan -tokenfile ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
-
-FROM eclipse-temurin:21-jre-alpine@sha256:b5a1250bb72d804d49471207e2ebb574caffc13ac76f99618fb5ea06af621056
+FROM eclipse-temurin:19.0.1_10-jre-alpine@sha256:fabe27bd9db502d484a11d3f571c2f4ef7bba4a172527084d939935358fb06c4
 
 RUN apk add --no-cache ca-certificates
 
