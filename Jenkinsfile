@@ -45,7 +45,15 @@ pipeline {
       steps {
         script {
           try {
-            def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -H \"Content-Type: application/json\" -d '{\"key\": \"BuildMethodology\", \"value\": \"MethodLines\"}'  https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}" )).trim()
+            def RESPONSE = sh(returnStdout: true, script: """
+                curl -X PUT \
+                -H "Content-Type: application/json" \
+                -d '{
+                    "key": "BuildMethodology",
+                    "value": "MethodLines"
+                }' \
+                https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
+            """).trim()
             if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
               return false
             }
@@ -61,7 +69,17 @@ pipeline {
       steps{
         script{
           try {
-            def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -H \"Content-Type: application/json\" -d '{\"appName\": \"${params.APP_NAME}\", \"coverageThreshold\": 10,  \"lineThreshold\": 5, \"showLineCoverage\": true}' https://dev-integration.dev.sealights.co/api/v2/coverage-settings" )).trim()
+            def RESPONSE = sh(returnStdout: true, script: """
+              curl -X PUT \
+              -H "Content-Type: application/json" \
+              -d '{
+                  "appName": "${params.APP_NAME}",
+                  "coverageThreshold": 10,
+                  "lineThreshold": 5,
+                  "showLineCoverage": true
+              }' \
+             https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+            """).trim()
             if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
               return false
             }
