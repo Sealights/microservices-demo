@@ -43,7 +43,7 @@ RUN chmod +x /usr/local/bin/bash.sh
 RUN /usr/local/bin/bash.sh 4.0.2502
 
 # Make build session id
-RUN java -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${SEALIGHTS_TOKEN} -buildname "${SEALIGHTS_TOKEN}" -pi "*hipstershop*"
+RUN java -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${BRANCH} -buildname "${BUILD_NAME}" -pi "*hipstershop*"
 RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
 # Scan the code
 RUN java -jar sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
