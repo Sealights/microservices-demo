@@ -33,13 +33,20 @@ RUN chmod +x gradlew
 RUN ./gradlew installDist
 
 # Install agent
-RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
-RUN unzip -oq sealights-java-latest.zip
+#RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
+COPY bash.sh /usr/local/bin/
+
+# Make the script executable
+RUN chmod +x /usr/local/bin/bash.sh
+
+# Run the script with the specified version
+RUN /usr/local/bin/bash.sh 4.0.2502
+
 # Make build session id
-RUN java -jar sl-build-scanner.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${SEALIGHTS_TOKEN} -buildname "${SEALIGHTS_TOKEN}" -pi "*hipstershop*"
+RUN java -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${SEALIGHTS_TOKEN} -buildname "${SEALIGHTS_TOKEN}" -pi "*hipstershop*"
 RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
 # Scan the code
-RUN java -jar sl-build-scanner.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
+RUN java -jar sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
 
 FROM eclipse-temurin:21-jre-alpine@sha256:b5a1250bb72d804d49471207e2ebb574caffc13ac76f99618fb5ea06af621056
 
