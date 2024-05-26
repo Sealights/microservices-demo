@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "testcafe": "^3.6.0",
+    "testcafe-reporter-sealights": "^1.0.42"
+  }
+}
