@@ -46,7 +46,7 @@ RUN /usr/local/bin/bash.sh 4.0.2502
 RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2  -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname ${BRANCH} -buildname "${BUILD_NAME}" -pi "*hipstershop*" -scmProvider github -scm git
 RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
 # Scan the code
-RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop*  -jar sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r -scmProvider github -scm git
+RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop*  -jar sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r
 
 FROM eclipse-temurin:21-jre-alpine@sha256:b5a1250bb72d804d49471207e2ebb574caffc13ac76f99618fb5ea06af621056
 
