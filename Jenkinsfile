@@ -84,6 +84,7 @@ pipeline {
                 -H "Authorization: Bearer "${env.api_token}"" \
                 -d '{
                   "appName": "${params.APP_NAME}",
+                  "branchName": "${params.BRANCH}",
                   "coverageThreshold": 10,
                   "lineThreshold": 5,
                   "showLineCoverage": true
@@ -395,6 +396,7 @@ def build_btq(Map params){
                 -H "Authorization: Bearer "${env.api_token}"" \
                 -d '{
                   "appName": "${service}",
+                  "branchName": "${params.branch}",
                   "coverageThreshold": 10,
                   "lineThreshold": 5,
                   "showLineCoverage": true
