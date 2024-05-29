@@ -43,7 +43,7 @@ RUN chmod +x /usr/local/bin/bash.sh
 RUN /usr/local/bin/bash.sh 4.0.2502
 
 # Make build session id
-RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2  -pe "*Grpc*,*Demo*" -pi "*hipstershop*" -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname "line-coverage" -buildname "${BUILD_NAME}" -pi "*hipstershop*" -pe "*Grpc*,*Demo*"
+RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2  -pe "*Grpc*,*Demo*" -pi "*hipstershop*" -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname "line-coverage" -buildname "${BUILD_NAME}"
 
 RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
 # Scan the code
