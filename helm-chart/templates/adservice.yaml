@@ -24,16 +24,11 @@ spec:
       app: {{ .Values.adService.name }}
   template:
     metadata:
+      annotations:
+        ad.datadoghq.com/{{ .Values.adService.name }}.logs: '[{"source":"{{ .Values.SealightsEnvVars.env }}","service":"{{ .Values.adService.name }}","namespace":"default","log_processing_rules":{{ .Values.logProcessingRules | default "[]" }}}]'
       labels:
         app: {{ .Values.adService.name }}
     spec:
-      initContainers:
-      - name: java-cd-agent
-        image: sealights/javainitcontainer:test
-        command: ["/bin/sh", "-c", "cp /sl-cd-agent.jar /sealights"]
-        volumeMounts:
-          - mountPath: /sealights
-            name: java-cd-agent-file
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.adService.name }}
       {{- else }}
@@ -56,7 +51,7 @@ spec:
         - containerPort: 9555
         env:
         - name: JAVA_TOOL_OPTIONS
-          value: "-javaagent:/sealights/sl-cd-agent.jar -Dsl.branchName={{ .Values.SealightsEnvVars.sl_branch }} -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.appName=adservice -Dsl.buildName={{ .Values.SealightsEnvVars.build_name }} -Dsl.tags=script,container,docker -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }} -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop* -Dsl.workspace=/app/build/install/hipstershop/lib"
+          value: "-javaagent:/app/sl-test-listener-4.0.2502.jar -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.branchName={{ .Values.SealightsEnvVars.sl_branch }} -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.log.toConsole=true -Dsl.appName=adservice -Dsl.buildName={{ .Values.SealightsEnvVars.build_name }} -Dsl.tags=script,container,docker -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }} -Dsl.excludes=*Grpc*,*Demo* -Dsl.includes=*hipstershop* -Dsl.workspace=/app/build/install/hipstershop/lib"
         - name: PORT
           value: "9555"
         resources:
@@ -71,12 +66,6 @@ spec:
           periodSeconds: 15
           grpc:
             port: 9555
-        volumeMounts:
-          - mountPath: /sealights
-            name: java-cd-agent-file
-      volumes:
-      - name: java-cd-agent-file
-        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

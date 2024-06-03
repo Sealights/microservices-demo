@@ -12,7 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM eclipse-temurin:21@sha256:952185109e6790588902d524bd43fcf5f478e022847097ef9ae8ef5b82511bbd as builder
+FROM eclipse-temurin:21@sha256:9d007c093e624bc410f113ee09f5209d3263e0bada7524e4de99eac9fbef06a5 as builder
+ARG SEALIGHTS_TOKEN
+ARG BRANCH
+ARG BUILD_NAME
+
+RUN apt-get update && \
+    apt-get install -y unzip && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -25,7 +32,23 @@ COPY . .
 RUN chmod +x gradlew
 RUN ./gradlew installDist
 
-FROM eclipse-temurin:21-jre-alpine@sha256:8535a86d923e1e5ce62c67c53cf7699567ed228b23a7e52cd0c0ad68aafd1cd2
+# Install agent
+#RUN wget -nv https://agents.sealights.co/sealights-java/sealights-java-latest.zip
+COPY bash.sh /usr/local/bin/
+
+# Make the script executable
+RUN chmod +x /usr/local/bin/bash.sh
+
+# Run the script with the specified version
+RUN /usr/local/bin/bash.sh 4.0.2502
+
+# Make build session id
+RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname "line-coverage" -buildname "${BUILD_NAME}" -pi "*hipstershop*" -pe "*Grpc*,*Demo*"
+RUN export SL_BUILD_SESSION_ID=`cat buildSessionId.txt`
+# Scan the code
+RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.log.toConsole=true -Dsl.log.level=info -Dsl.log.enabled=true -jar sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "/app/build/install/hipstershop/lib" -fi "*.jar" -r -scmProvider github -scm git
+
+FROM eclipse-temurin:21-jre-alpine@sha256:b5a1250bb72d804d49471207e2ebb574caffc13ac76f99618fb5ea06af621056
 
 RUN apk add --no-cache ca-certificates
 
