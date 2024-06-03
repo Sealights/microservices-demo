@@ -15,8 +15,17 @@ public class Controller {
 
     @GetMapping("/about")
     public String about() {
-        try{
-            System.out.println(functions.addtwonumbers(4,5));
+        try {
+            int sum = functions.addtwonumbers(4, 5);
+            int difference = functions.subtracttwonumbers(9, 3);
+            int product = functions.multiplytwonumbers(7, 6);
+            double quotient = functions.dividetwonumbers(8, 2);
+
+            System.out.println("Addition: " + sum);
+            System.out.println("Subtraction: " + difference);
+            System.out.println("Multiplication: " + product);
+            System.out.println("Division: " + quotient);
+
             ClassPathResource resource = new ClassPathResource("templates/page.html");
             Path filePath = Paths.get(resource.getURI());
             String fileContent = Files.readString(filePath);
@@ -24,7 +33,9 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
             return "Error reading file";
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return e.getMessage();
         }
-
     }
 }
