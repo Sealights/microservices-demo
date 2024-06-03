@@ -11,6 +11,11 @@ RUN apt-get update && apt-get install -y wget && apt-get install -y zip
 
 WORKDIR /sealights
 
+WORKDIR /app
+COPY . /app
+RUN ./mvnw clean package
+
+
 COPY bash.sh /usr/local/bin/
 
 # Make the script executable
@@ -18,14 +23,7 @@ RUN chmod +x /usr/local/bin/bash.sh
 
 # Run the script with the specified version
 RUN /usr/local/bin/bash.sh 4.0.2502
-
-WORKDIR /app
-COPY . /app
-RUN ./mvnw clean package
-
-
-
-RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "adservice" -branchname "line-coverage" -buildname "${BUILD_NAME}" -pi "sealights.notes.*" -pe "sealights.notes.sealights"
+RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -jar sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "sealightservice" -branchname "${BRANCH}" -buildname "${BUILD_NAME}" -pi "sealights.notes.*" -pe "sealights.notes.sealights"
 RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.log.toConsole=true -Dsl.log.level=info -Dsl.log.enabled=true -jar sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "./target" -fi "*.jar"
 # Expose the port that your Spring Boot application listens on
 

@@ -42,7 +42,7 @@ spec:
         - containerPort: 5732
         env:
         - name: JAVA_TOOL_OPTIONS
-          value: "-javaagent:/sealights/sl-test-listener.jar -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/sealights/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}"
+          value: "-javaagent:/app/sl-test-listener-4.0.2502.jar -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/sealights/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}"
         - name: PORT
           value: "5732"
 ---
