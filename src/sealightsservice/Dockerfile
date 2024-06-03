@@ -28,7 +28,7 @@ RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl
 # Expose the port that your Spring Boot application listens on
 
 FROM openjdk:17-alpine as runtime
-COPY --from=builder /sealights/sl-test-listener.jar /sealights/sl-test-listener.jar
+COPY --from=builder /sealights/sl-test-listener-4.0.2502..jar /sealights/sl-test-listener-4.0.2502.jar
 COPY --from=builder /app/buildSessionId.txt /sealights/buildSessionId.txt
 WORKDIR /app
 COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar
