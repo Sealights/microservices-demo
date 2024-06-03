@@ -20,7 +20,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'line-coverage-2', description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: 'integration-line-coverage-2', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'line-coverage-2', description: 'Branch to clone')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed', description: 'Branch to run changed')
     string(name: 'BUILD_BRANCH', defaultValue: 'line-coverage-2', description: 'Branch to Build images that have the creational LAB_ID (send to wahbi branch to build)')
