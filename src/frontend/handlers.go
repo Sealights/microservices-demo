@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"math/rand"
 	"net"
 	"net/http"
@@ -431,7 +432,23 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 func (fe *frontendServer) sealightsHandler(w http.ResponseWriter, r *http.Request) {
 	microserviceURL := "http://sealightsservice:5732/about"
 
-	http.Redirect(w, r, microserviceURL, http.StatusTemporaryRedirect)
+	resp, err := http.Get(microserviceURL)
+	if err != nil {
+		log.Printf("Failed to get data from sealights: %v", err)
+		http.Error(w, "Failed to get data", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Failed to read response body: %v", err)
+		http.Error(w, "Failed to read data", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
 }
 
 // chooseAd queries for advertisements available and randomly chooses one, if
