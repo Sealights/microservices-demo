@@ -44,11 +44,16 @@ When('A user accesses site assets', async function () {
 });
 
 When('A user checks out with products', async function () {
-    const response = await axios.post(`${BASE_URL}/cart/checkout`, 
+    const response = await axios.post(`${BASE_URL}/cart/checkout`,
         "email=someone%40example.com&street_address=1600+Amphitheatre+Parkway&zip_code=94043&city=Mountain+View&state=CA&country=United+States&credit_card_number=4432-8015-6152-0454&credit_card_expiration_month=1&credit_card_expiration_year=2025&credit_card_cvv=672", {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
     assert.equal(response.status, 200, `Failed to checkout: ${response.status}`);
+});
+
+When('A user accesses the Sealights page', async function () {
+    const response = await axios.get(`${BASE_URL}/sealights`);
+    assert.equal(response.status, 200, "Failed to access the Sealights page");
 });
 
 async function testSession() {

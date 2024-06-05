@@ -60,4 +60,10 @@ describe('Api Tests', function () {
       expect(error.response.status).to.equal(400);
     }
   });
+
+  it('should return 200 for Sealights page', async function () {
+      const response = await session.get('/sealights');
+      expect(response.status).to.equal(200);
+    });
+
 });

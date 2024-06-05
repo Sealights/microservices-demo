@@ -114,4 +114,15 @@ public class LoadTest {
         redirectHttpClient.close();
     }
 
+    @Test
+    public void testSealightsPage() throws IOException {
+        String myEnvVariable = System.getenv("machine_dns");
+        if (myEnvVariable == null) {
+            myEnvVariable = "http://10.2.10.191:8081"; // Set a default URL when machine_dns is not set
+        }
+        HttpGet request = new HttpGet(myEnvVariable + "/sealights");
+        HttpResponse response = httpClient.execute(request);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+    }
+
 }

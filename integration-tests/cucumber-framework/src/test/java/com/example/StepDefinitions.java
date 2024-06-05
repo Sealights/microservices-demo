@@ -147,4 +147,18 @@ public class StepDefinitions {
     public void theCheckoutShouldBeSuccessful() {
         // Assuming if the previous step passes, checkout was successful.
     }
+
+    @When("A user accesses the Sealights page")
+    public void aUserAccessesTheSealightsPage() throws Exception {
+        CloseableHttpResponse response = httpClient.execute(new HttpGet(BASE_URL + "/sealights"));
+        response.close();
+        if (response.getStatusLine().getStatusCode() != 200) {
+            throw new Exception("Failed to access the Sealights page");
+        }
+    }
+
+    @Then("The Sealights page should be accessible")
+    public void theSealightsPageShouldBeAccessible() {
+        // Assuming if the previous step passes, the Sealights page is accessible.
+    }
 }
