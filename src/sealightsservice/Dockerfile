@@ -7,33 +7,30 @@ ARG BUILD_NAME=1.2
 ARG SERVICE_NAME=sealightsservice
 ENV OS_ARCH linux-amd64
 
-RUN apt-get update && apt-get install -y wget && apt-get install -y zip
+RUN apt-get update && apt-get install -y wget zip
 
 WORKDIR /sealights
 
-
 COPY bash.sh /usr/local/bin/
-
-# Make the script executable
 RUN chmod +x /usr/local/bin/bash.sh
-
-# Run the script with the specified version
 RUN /usr/local/bin/bash.sh 4.0.2502
 RUN ls
+
 WORKDIR /app
 COPY . /app
 RUN ./mvnw clean package
 
-RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -jar /sealights/sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "sealightservice" -branchname "${BRANCH}" -buildname "${BUILD_NAME}" -pi "sealights.notes.*" -pe "sealights.notes.sealights"
+# Run the Sealights build scanner configuration
+RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -jar /sealights/sl-build-scanner-4.0.2502.jar -config -token ${SEALIGHTS_TOKEN} -appname "${SERVICE_NAME}" -branchname "${BRANCH}" -buildname "${BUILD_NAME}" -pi "sealights.notes.*" -pe "sealights.notes.sealights"
+
+# Scan the build
 RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl.featuresData.lineCoverageVersion=v2 -Dsl.log.toConsole=true -Dsl.log.level=info -Dsl.log.enabled=true -jar /sealights/sl-build-scanner-4.0.2502.jar -scan -token ${SEALIGHTS_TOKEN} -buildsessionidfile buildSessionId.txt -workspacepath "./target" -fi "*.jar"
-# Expose the port that your Spring Boot application listens on
 
 FROM openjdk:17-alpine as runtime
 COPY --from=builder /sealights/sl-test-listener-4.0.2502.jar /sealights/sl-test-listener-4.0.2502.jar
 COPY --from=builder /app/buildSessionId.txt /sealights/buildSessionId.txt
 WORKDIR /app
-COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar
+COPY --from=builder /app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar
 EXPOSE 5732
 
-# Command to run the Spring Boot application when the container starts
 CMD ["java", "-jar", "/app/sealights-0.0.1-SNAPSHOT.jar"]
