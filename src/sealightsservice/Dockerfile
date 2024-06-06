@@ -18,7 +18,7 @@ COPY bash.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/bash.sh
 
 # Run the script with the specified version
-RUN /usr/local/bin/bash.sh 4.0.2502
+RUN /usr/local/bin/bash.sh 4.0.2506
 RUN ls
 WORKDIR /app
 COPY . /app
@@ -29,7 +29,7 @@ RUN java -Dsl.enableUpgrade=false -Dsl.featuresData.enableLineCoverage=true -Dsl
 # Expose the port that your Spring Boot application listens on
 
 FROM openjdk:17-alpine as runtime
-COPY --from=builder /sealights/sl-test-listener-4.0.2502.jar /sealights/sl-test-listener-4.0.2502.jar
+COPY --from=builder /sealights/sl-test-listener-4.0.2506.jar /sealights/sl-test-listener-4.0.2506.jar
 COPY --from=builder /app/buildSessionId.txt /sealights/buildSessionId.txt
 WORKDIR /app
 COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar
