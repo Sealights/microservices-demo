@@ -16,16 +16,34 @@ public class Controller {
     @GetMapping("/about")
     public String about() {
         try {
-            int sum = functions.addtwonumbers(4, 5);
-            int difference = functions.subtracttwonumbers(9, 3);
-            int product = functions.multiplytwonumbers(7, 6);
-            double quotient = functions.dividetwonumbers(8, 2);
+            // Ensure 10% line coverage for addtwonumbers
+            int sum = functions.addtwonumbers(4, 5); // This should hit one branch
 
+            // Ensure 20% line coverage for subtracttwonumbers
+            int difference = functions.subtracttwonumbers(9, 3); // This should hit one branch
+
+            // Ensure 30% line coverage for multiplytwonumbers
+            int product = functions.multiplytwonumbers(7, 6); // This should hit one branch
+
+            // Ensure 100% line coverage for dividetwonumbers
+            double quotient1 = functions.dividetwonumbers(8, 2); // a > 0, b > 0
+            double quotient2 = functions.dividetwonumbers(0, 2); // a == 0
+            double quotient3;
+            try {
+                quotient3 = functions.dividetwonumbers(8, 0); // b == 0
+            } catch (IllegalArgumentException e) {
+                quotient3 = Double.NaN; // Handling the exception
+            }
+
+            // Print statements to show results
             System.out.println("Addition: " + sum);
             System.out.println("Subtraction: " + difference);
             System.out.println("Multiplication: " + product);
-            System.out.println("Division: " + quotient);
+            System.out.println("Division (a > 0, b > 0): " + quotient1);
+            System.out.println("Division (a == 0): " + quotient2);
+            System.out.println("Division (b == 0): " + (Double.isNaN(quotient3) ? "Exception caught" : quotient3));
 
+            // Reading the HTML file content
             ClassPathResource resource = new ClassPathResource("templates/page.html");
             Path filePath = Paths.get(resource.getURI());
             String fileContent = Files.readString(filePath);
