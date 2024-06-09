@@ -178,7 +178,7 @@ shippingService:
 
 sealightsService:
   create: true
-  name: sealightsservice
+  name: sealightservice
   resources:
     requests:
       cpu: 200m

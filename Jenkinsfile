@@ -347,7 +347,7 @@ def getParamForService(service, mapurl) {
       return [mapurl['PYTHON_AGENT_URL'].toString(),""]
     case ["currencyservice","paymentservice"]:
       return [mapurl['NODE_AGENT_URL'].toString(),""]
-    case "sealightsservice":
+    case "sealightservice":
       return [mapurl['JAVA_AGENT_URL'].toString(),""]
   }
 }
