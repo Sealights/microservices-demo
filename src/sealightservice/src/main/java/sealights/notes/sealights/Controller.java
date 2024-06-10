@@ -35,6 +35,10 @@ public class Controller {
                 quotient3 = Double.NaN; // Handling the exception
             }
 
+            // Ensure 50% line coverage for complexFunction
+            int complexResult1 = functions.complexFunction(5, 3); // This should cover some branches and loops
+            int complexResult2 = functions.complexFunction(2, 4); // This should cover other branches and loops
+
             // Print statements to show results
             System.out.println("Addition: " + sum);
             System.out.println("Subtraction: " + difference);
@@ -42,6 +46,8 @@ public class Controller {
             System.out.println("Division (a > 0, b > 0): " + quotient1);
             System.out.println("Division (a == 0): " + quotient2);
             System.out.println("Division (b == 0): " + (Double.isNaN(quotient3) ? "Exception caught" : quotient3));
+            System.out.println("Complex Function Result 1: " + complexResult1);
+            System.out.println("Complex Function Result 2: " + complexResult2);
 
             // Reading the HTML file content
             ClassPathResource resource = new ClassPathResource("templates/page.html");
