@@ -38,8 +38,6 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email')
     string(name: 'password', defaultValue: "SeaLights2019!", description: 'lab account password')
-
-
   }
   stages {
     stage('Enabling line coverage for agent'){
