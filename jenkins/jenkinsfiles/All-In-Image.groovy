@@ -25,13 +25,6 @@ pipeline {
     machine_dns = "${params.MACHINE_DNS}"
   }
   stages{
-    stage("Init test"){
-      steps{
-        script{
-          git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
-        }
-      }
-    }
     stage('Junit without testNG '){
       steps{
         script {
