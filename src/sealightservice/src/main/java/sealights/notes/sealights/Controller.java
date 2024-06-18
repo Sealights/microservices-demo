@@ -35,13 +35,13 @@ public class Controller {
                 quotient3 = Double.NaN; // Handling the exception
             }
 
-            // Ensure 50% line coverage for complexFunction
-            int complexResult1 = functions.complexFunction(5, 3);
-            int complexResult2 = functions.complexFunction(2, 4);
+            // Ensure 50% line coverage for _80_lins_Complex
+            int complexResult1 = functions._80_lins_Complex(5, 3);
+            int complexResult2 = functions._80_lins_Complex(2, 4);
 
-            // Ensure 50% line coverage for newComplexFunction
-            int newComplexResult1 = functions.newComplexFunction(5, 3);
-            int newComplexResult2 = functions.newComplexFunction(2, 4);
+            // Ensure 50% line coverage for _150_lins_Complex
+            int newComplexResult1 = functions._150_lins_Complex(5, 3);
+            int newComplexResult2 = functions._150_lins_Complex(2, 4);
 
             // Print statements to show results
             System.out.println("Addition: " + sum);
