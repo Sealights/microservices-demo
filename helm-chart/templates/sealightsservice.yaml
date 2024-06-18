@@ -21,7 +21,7 @@ metadata:
 spec:
   initContainers:
   - name: sealights-java-coverage-listener
-    image: busybox:latest
+    image: alpine:latest
     imagePullPolicy: IfNotPresent
     command: ["/bin/sh", "-c"]
     args:
