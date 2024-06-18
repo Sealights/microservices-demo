@@ -90,6 +90,7 @@ pipeline {
 
           def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
           SpinUpBoutiqeEnvironment(
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST ,
             enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
             branch: params.BRANCH,
@@ -251,6 +252,7 @@ pipeline {
           def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
           SpinUpBoutiqeEnvironment(
+            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             IDENTIFIER        : IDENTIFIER,
             branch            : params.BRANCH,
             git_branch        : params.CHANGED_BRANCH,
@@ -401,7 +403,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-integration.dev.sealights.co",
+    machine: "${params.LAB_UNDER_TEST}",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
