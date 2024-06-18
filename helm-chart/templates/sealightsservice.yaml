@@ -19,18 +19,6 @@ metadata:
   name: {{ .Values.sealightsService.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  initContainers:
-  - name: sealights-java-coverage-listener
-    image: alpine:latest
-    imagePullPolicy: IfNotPresent
-    command: ["/bin/sh", "-c"]
-    args:
-      - |
-        wget -nv -O /tmp/sealights-java-agents.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip;
-        unzip -j /tmp/sealights-java-agents.zip sl-test-listener.jar -d /sealights;
-    volumeMounts:
-      - mountPath: /sealights
-        name: sealights-java-agent-file
   selector:
     matchLabels:
       app: {{ .Values.sealightsService.name }}
@@ -47,6 +35,18 @@ spec:
       terminationGracePeriodSeconds: 5
       imagePullSecrets:
         - name: regcred-mgmt
+      initContainers:
+      - name: sealights-java-coverage-listener
+        image: alpine:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            wget -nv -O /tmp/sealights-java-agents.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip;
+            unzip -j /tmp/sealights-java-agents.zip sl-test-listener.jar -d /sealights;
+        volumeMounts:
+          - mountPath: /sealights
+            name: sealights-java-agent-file
       containers:
       - name: server
         image: {{ .Values.images.repository }}/btq-{{ .Values.sealightsService.name }}:{{ .Values.images.tag | default .Chart.AppVersion }}
