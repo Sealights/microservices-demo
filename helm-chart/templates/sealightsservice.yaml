@@ -27,7 +27,6 @@ spec:
     args:
       - |
         wget -nv -O /tmp/sealights-java-agents.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip;
-        mkdir -p /sealights;
         unzip -j /tmp/sealights-java-agents.zip sl-test-listener.jar -d /sealights;
     volumeMounts:
       - mountPath: /sealights
