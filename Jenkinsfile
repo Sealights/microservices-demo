@@ -36,18 +36,22 @@ pipeline {
     string(name: 'PYTHON_AGENT_URL', defaultValue: 'sealights-python-agent', description: 'use different python agent')
     string(name: 'lab', defaultValue: 'dev-integration.dev', description: 'name of the lab/environment for the lab id, default https://dev-integration.dev.sealights.co')
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
+    string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email')
+    string(name: 'password', defaultValue: "SeaLights2019!", description: 'lab account password')
+
+
   }
   stages {
     stage('Enabling line coverage for agent'){
       steps {
         script {
           try {
-            def AUTH_RESPONSE = sh(returnStdout: true, script: '''
+            def AUTH_RESPONSE = sh(returnStdout: true, script: """
               curl -X POST \
-                -d '{"email": "integration@sealights.io", "password": "SeaLights2019!"}' \
+                -d '{"email": "${params.email}", "password": "${params.password}"}' \
                 -H "Content-Type: application/json" \
                 https://dev-integration.dev.sealights.co/api/v2/auth/token
-              ''').trim()
+              """).trim()
             env.api_token = sh(returnStdout: true, script: "echo '${AUTH_RESPONSE}' | jq -r .token").trim()
             echo "api token : ${env.api_token}"
             def RESPONSE = sh(returnStdout: true, script: """
