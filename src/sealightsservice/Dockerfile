@@ -22,8 +22,6 @@ RUN java -jar /sealights/sl-build-scanner.jar -scan -token ${SEALIGHTS_TOKEN} -b
 # Expose the port that your Spring Boot application listens on
 
 FROM openjdk:17-alpine as runtime
-COPY --from=builder /sealights/sl-test-listener.jar /sealights/sl-test-listener.jar
-COPY --from=builder /app/buildSessionId.txt /sealights/buildSessionId.txt
 WORKDIR /app
 COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar 
 EXPOSE 5732

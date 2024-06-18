@@ -19,6 +19,19 @@ metadata:
   name: {{ .Values.sealightsService.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  initContainers:
+  - name: sealights-java-coverage-listener
+    image: busybox:latest
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        wget -nv -O /tmp/sealights-java-agents.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip;
+        mkdir -p /sealights;
+        unzip -j /tmp/sealights-java-agents.zip sl-test-listener.jar -d /sealights;
+    volumeMounts:
+      - mountPath: /sealights
+        name: sealights-java-agent-file
   selector:
     matchLabels:
       app: {{ .Values.sealightsService.name }}
@@ -45,6 +58,12 @@ spec:
           value: "-javaagent:/sealights/sl-test-listener.jar -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/sealights/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}"
         - name: PORT
           value: "5732"
+        volumeMounts:
+        - mountPath: /sealights
+          name: sealights-java-agent-file
+      volumes:
+      - name: sealights-java-agent-file
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
