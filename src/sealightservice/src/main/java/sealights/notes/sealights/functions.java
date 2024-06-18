@@ -42,7 +42,7 @@ public class functions {
         }
     }
     // A function with 80 lines for line coverage testing
-    public static int complexFunction(int a, int b) {
+    public static int _80_lins_Complex(int a, int b) {
         int result = 0;
 
         // Adding dummy operations to expand the function to 80 lines
@@ -195,7 +195,7 @@ public class functions {
         return finalResult; // Line 80
     }
 
-    public static int newComplexFunction(int a, int b) {
+    public static int _150_lins_Complex(int a, int b) {
         int result = 0;
         int temp = 0;
 
