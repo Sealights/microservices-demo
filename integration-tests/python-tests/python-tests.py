@@ -112,6 +112,9 @@ def test_checkout(r=requests):
         response = r.post(BASE_URL + "/cart/checkout", data=data)
         assert response.status_code == 200
 
+def test_icon(r=requests):
+    response = r.get(BASE_URL + "/sealights")
+    assert response.status_code == 200
 
 if __name__ == "__main__":
     pytest.main()
