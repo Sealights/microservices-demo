@@ -17,31 +17,31 @@ public class Controller {
     public String about() {
         try {
             // Ensure 10% line coverage for addtwonumbers
-            int sum = functions.addtwonumbers(4, 5); // This should hit one branch
+            int sum = functions.addtwonumbers(4, 5);
 
             // Ensure 20% line coverage for subtracttwonumbers
-            int difference = functions.subtracttwonumbers(9, 3); // This should hit one branch
+            int difference = functions.subtracttwonumbers(9, 3);
 
             // Ensure 30% line coverage for multiplytwonumbers
-            int product = functions.multiplytwonumbers(7, 6); // This should hit one branch
+            int product = functions.multiplytwonumbers(7, 6);
 
             // Ensure 100% line coverage for dividetwonumbers
-            double quotient1 = functions.dividetwonumbers(8, 2); // a > 0, b > 0
-            double quotient2 = functions.dividetwonumbers(0, 2); // a == 0
+            double quotient1 = functions.dividetwonumbers(8, 2);
+            double quotient2 = functions.dividetwonumbers(0, 2);
             double quotient3;
             try {
-                quotient3 = functions.dividetwonumbers(8, 0); // b == 0
+                quotient3 = functions.dividetwonumbers(8, 0);
             } catch (IllegalArgumentException e) {
                 quotient3 = Double.NaN; // Handling the exception
             }
 
             // Ensure 50% line coverage for complexFunction
-            int complexResult1 = functions.complexFunction(5, 3); // This should cover some branches and loops
-            int complexResult2 = functions.complexFunction(2, 4); // This should cover other branches and loops
+            int complexResult1 = functions.complexFunction(5, 3);
+            int complexResult2 = functions.complexFunction(2, 4);
 
             // Ensure 50% line coverage for newComplexFunction
-            int newComplexResult1 = functions.newComplexFunction(5, 3); // This should cover some branches and loops
-            int newComplexResult2 = functions.newComplexFunction(2, 4); // This should cover other branches and loops
+            int newComplexResult1 = functions.newComplexFunction(5, 3);
+            int newComplexResult2 = functions.newComplexFunction(2, 4);
 
             // Print statements to show results
             System.out.println("Addition: " + sum);
