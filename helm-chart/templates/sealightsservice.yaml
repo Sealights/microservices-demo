@@ -54,7 +54,7 @@ spec:
         - containerPort: 5732
         env:
         - name: JAVA_TOOL_OPTIONS
-          value: "-javaagent:/sealights/sl-test-listener.jar -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/sealights/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}"
+          value: "-javaagent:/sealights/sl-test-listener.jar -Dsl.token={{ .Values.SealightsEnvVars.token }} -Dsl.buildSessionIdFile=/app/buildSessionId.txt -Dsl.labId={{ .Values.SealightsEnvVars.lab_id }}"
         - name: PORT
           value: "5732"
         volumeMounts:
