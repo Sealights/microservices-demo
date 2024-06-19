@@ -23,6 +23,7 @@ RUN java -jar /sealights/sl-build-scanner.jar -scan -token ${SEALIGHTS_TOKEN} -b
 
 FROM openjdk:17-alpine as runtime
 WORKDIR /app
+COPY --from=builder /app/buildSessionId.txt /sealights/buildSessionId.txt
 COPY --from=builder app/target/sealights-0.0.1-SNAPSHOT.jar /app/sealights-0.0.1-SNAPSHOT.jar 
 EXPOSE 5732
 
