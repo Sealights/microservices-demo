@@ -45,6 +45,40 @@ pipeline {
       }
     }
 
+    stage('MS-Tests framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.MS == true) {
+            sh """
+                  echo 'MS-Tests framework starting ..... '
+                  export machine_dns="${params.MACHINE_DNS}"
+                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                  sleep 10
+                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
+                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+               """
+          }
+        }
+      }
+    }
+    stage('N-Unit framework starting') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.NUnit == true) {
+            sh """
+                echo 'N-Unit framework starting ..... '
+                export machine_dns="${params.MACHINE_DNS}"
+                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                sleep 10
+                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
+                sleep 10
+                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+              """
+          }
+        }
+      }
+    }
+
 //    stage('Cucumberjs framework starting') {
 //      steps {
 //        script {
@@ -267,39 +301,7 @@ pipeline {
           }
         }
       }
-      stage('MS-Tests framework') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.MS == true) {
-                sh """
-                  echo 'MS-Tests framework starting ..... '
-                  export machine_dns="${params.MACHINE_DNS}"
-                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-                  sleep 10
-                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
-                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-               """
-            }
-          }
-        }
-      }
-      stage('N-Unit framework starting') {
-        steps {
-          script {
-            if (params.Run_all_tests == true || params.NUnit == true) {
-              sh """
-                echo 'N-Unit framework starting ..... '
-                export machine_dns="${params.MACHINE_DNS}"
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-                sleep 10
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
-                sleep 10
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-              """
-            }
-          }
-        }
-      }
+
 //    stage('robot framework'){
 //      steps{
 //        script{
