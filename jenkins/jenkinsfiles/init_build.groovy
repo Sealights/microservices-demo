@@ -64,7 +64,7 @@ pipeline {
       steps {
         container(name: 'kaniko') {
           script {
-            def CONTEXT = "./initContainers/${params.LANG}"
+            def CONTEXT = "initContainers/${params.LANG}"
             def DP = "${CONTEXT}/Dockerfile"
             def D = "${env.ECR_URI}:latest"
             def DD ="${env.ECR_URI}:${BUILD_NUMBER}"
