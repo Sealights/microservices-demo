@@ -2,9 +2,9 @@ FROM alpine:latest
 
 ARG GITHUB_TOKEN
 ARG DOTNET_LATEST_VERSION
-WORKDIR /app
-RUN mkdir -p ./sealights/logs
-RUN mkdir -p ./sealights/agent
+WORKDIR /sealights
+RUN mkdir -p ./logs
+RUN mkdir -p ./agent
 
 # Install necessary packages
 RUN apk add --no-cache curl jq unzip git github-cli
@@ -19,13 +19,13 @@ RUN export GH_TOKEN=$GITHUB_TOKEN
 
 #RUN gh release download $DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet
 
-RUN gh release download $DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D /app/sealights/agent
+RUN gh release download $DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D /sealights/agent
 
 # Download the latest release asset
 #RUN gh release download -R Sealights/SL.OnPremise.Agents.DotNet --pattern "sealights-dotnet-agent-alpine-self-contained.zip" -D /app/sealights/agent
 
-RUN ls /app/sealights/agent
+RUN ls /sealights/agent
 
 # Unzip the downloaded file
-RUN unzip /app/sealights/agent/sealights-dotnet-agent-alpine-self-contained.zip -d /app/sealights/agent
-RUN chmod -R 777 /app/sealights
+RUN unzip /sealights/agent/sealights-dotnet-agent-alpine-self-contained.zip -d /sealights/agent
+RUN chmod -R 777 /sealights
