@@ -358,7 +358,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID_SPIN = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://${params.lab}.sealights.co",
+    machine: "https://dev-line-coverage-gw.dev.sealights.co/",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
