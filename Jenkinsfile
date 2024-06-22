@@ -43,7 +43,7 @@ pipeline {
     booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
-    choice(name: 'TEST_TYPE', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Choose test type')
+    choice(name: 'TEST_TYPE', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Make your choice of BTQ running')
 
 
   }
