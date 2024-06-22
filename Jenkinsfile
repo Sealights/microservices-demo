@@ -141,6 +141,7 @@ pipeline {
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : params.BRANCH,
             git_branch : params.BUILD_BRANCH,
+            lab : params.lab
           )
         }
       }
@@ -156,6 +157,95 @@ pipeline {
         }
       }
     }
+
+    // stage('Run Api-Tests Before Changes') {
+    //   steps {
+    //     script {
+    //       run_api_tests_before_changes(
+    //         branch: params.BRANCH,
+    //         app_name: params.APP_NAME
+    //       )
+    //     }
+    //   }
+    // }
+
+
+    // stage('Changed - Clone Repository') {
+    //   steps {
+    //     script {
+    //       clone_repo(
+    //         branch: params.CHANGED_BRANCH
+    //       )
+    //     }
+    //   }
+    // }
+
+    // stage('Changed Build BTQ') {
+    //   steps {
+    //     script {
+    //       def MapUrl = new HashMap()
+    //       MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
+    //       MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
+    //       MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
+    //       MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
+    //       MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
+    //       MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
+
+    //       build_btq(
+    //         sl_token: params.SL_TOKEN,
+    //         sl_report_branch: params.BRANCH,
+    //         dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
+    //         build_name: "1-0-${BUILD_NUMBER}-v2",
+    //         branch: params.CHANGED_BRANCH,
+    //         mapurl: MapUrl
+    //       )
+    //     }
+    //   }
+    // }
+
+
+
+    // stage('Changed Spin-Up BTQ') {
+    //   steps {
+    //     script {
+    //       def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+
+    //       SpinUpBoutiqeEnvironment(
+    //         IDENTIFIER : IDENTIFIER,
+    //         branch: params.CHANGED_BRANCH,
+    //         git_branch : params.CHANGED_BRANCH,
+    //         app_name: params.APP_NAME,
+    //         build_branch: params.BRANCH,
+    //         java_agent_url: params.JAVA_AGENT_URL,
+    //         dotnet_agent_url: params.DOTNET_AGENT_URL,
+    //         sl_branch : params.CHANGED_BRANCH
+    //       )
+    //     }
+    //   }
+    // }
+
+    // stage('Changed Run Tests') {
+    //   steps {
+    //     script {
+    //       run_tests(
+    //         branch: params.BRANCH,
+    //         test_type: params.TEST_TYPE
+    //       )
+    //     }
+    //   }
+    // }
+
+
+    // stage('Run API-Tests After Changes') {
+    //   steps {
+    //     script {
+    //       run_api_tests_after_changes(
+    //         branch: params.BRANCH,
+    //         app_name: params.APP_NAME
+    //       )
+    //     }
+    //   }
+    // }
   }
 
   post {
@@ -268,7 +358,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID_SPIN = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-line-coverage-gw.dev.sealights.co",
+    machine: "https://${params.lab}.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
