@@ -27,3 +27,7 @@ Feature: E-commerce Website Test
     Given A product list
     When A user checks out with products
     Then The checkout should be successful
+
+  Scenario: Access Sealights page
+    When A user accesses the Sealights page
+    Then The Sealights page should be accessible

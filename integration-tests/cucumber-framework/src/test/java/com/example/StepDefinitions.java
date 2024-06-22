@@ -232,7 +232,7 @@ public class StepDefinitions {
         }
 
         if (response.getStatusLine().getStatusCode() != 200) {
-            throw new Exception("Failed to checkout cart");
+            throw new Exception("Failed to checkout cart "+ response.getStatusLine().getStatusCode());
         }
     }
 
@@ -241,30 +241,17 @@ public class StepDefinitions {
         // Assuming if the previous step passes, checkout was successful.
     }
 
-    private void handleFailedScenario(Scenario scenario) {
-        String lab_id = System.getenv("lab_id");
-        if (lab_id == null) {
-            lab_id = "integ_ahmadbranch_3a1b_ahmadBTQ"; // Set a default URL when machine_dns is not set
+    @When("A user accesses the Sealights page")
+    public void aUserAccessesTheSealightsPage() throws Exception {
+        CloseableHttpResponse response = httpClient.execute(new HttpGet(BASE_URL + "/sealights"));
+        response.close();
+        if (response.getStatusLine().getStatusCode() != 200) {
+            throw new Exception("Failed to access the Sealights page");
         }
-
-        String log = "failed";
-        System.out.println(scenario.getName() + ": " + log);
-        System.out.println(lab_id);
-        // Perform actions specific to a failed scenario
-        db.insert_row(conn, "cucumber", lab_id, scenario.getName(), log);
     }
 
-    private void handlePassedScenario(Scenario scenario) {
-        String lab_id = System.getenv("lab_id");
-        if (lab_id == null) {
-            lab_id = "integ_ahmadbranch_3a1b_ahmadBTQ"; // Set a default URL when machine_dns is not set
-        }
-
-        String log = "passed";
-        System.out.println(scenario.getName() + ": " + log);
-        System.out.println(lab_id);
-        // Perform actions specific to a passed scenario
-        db.insert_row(conn, "cucumber", lab_id, scenario.getName(), log);
-
+    @Then("The Sealights page should be accessible")
+    public void theSealightsPageShouldBeAccessible() {
+        // Assuming if the previous step passes, the Sealights page is accessible.
     }
 }
