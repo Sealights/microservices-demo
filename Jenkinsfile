@@ -6,11 +6,8 @@ pipeline {
       defaultContainer "shell"
     }
   }
-//  environment {
-//    token = "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}"
-//  }
-
   parameters {
+    choice(name: 'BTQ_RUNNING', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Make your choice of BTQ running')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
@@ -43,9 +40,6 @@ pipeline {
     booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
-    choice(name: 'BTQ_RUNNING', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Make your choice of BTQ running')
-
-
   }
 
   stages {
