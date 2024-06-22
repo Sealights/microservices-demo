@@ -107,12 +107,13 @@ pipeline {
                 }' \
                 https://dev-integration.dev.sealights.co/api/v2/coverage-settings
               """)).trim()
-            if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
-              return false
+              if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
+                return false
+              }
+              return true
+            } catch (err) {
+              error "Failed to Enabling line coverage for coverage apis"
             }
-            return true
-          } catch(err) {
-            error "Failed to Enabling line coverage for coverage apis"
           }
         }
       }
