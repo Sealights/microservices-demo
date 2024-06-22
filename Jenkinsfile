@@ -43,8 +43,8 @@ pipeline {
     booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
-    booleanParam(name: 'ENABLE_LINE_COVERAGE', defaultValue: false, description: 'enable line coverage')
-    booleanParam(name: 'RUN_BTQ', defaultValue: true, description: 'running stable BTQ')
+    choice(name: 'TEST_TYPE', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Choose test type')
+
 
   }
 
@@ -61,7 +61,7 @@ pipeline {
     stage('Enabling line coverage for agent'){
       steps {
         script {
-          if (params.ENABLE_LINE_COVERAGE == true) {
+          if (params.test_type == 'line coverage' || params.test_type == 'BTQ + line coverage') {
             try {
               def AUTH_RESPONSE = sh(returnStdout: true, script: """
               curl -X POST \
@@ -96,7 +96,7 @@ pipeline {
     stage('Enabling line coverage for coverage apis'){
       steps {
         script {
-          if (params.ENABLE_LINE_COVERAGE == true) {
+          if (params.test_type == 'line coverage' || params.test_type == 'BTQ + line coverage') {
             try {
               def RESPONSE = (sh(returnStdout: true, script: """
               curl -X PUT \
@@ -127,7 +127,7 @@ pipeline {
     stage('Build BTQ') {
       steps {
         script {
-          if (params.RUN_BTQ == true && params.ENABLE_LINE_COVERAGE == true) {
+          if (params.test_type == 'line coverage' || params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
             echo "${env.token}"
             def MapUrl = new HashMap()
@@ -154,7 +154,7 @@ pipeline {
     stage('Spin-Up BTQ') {
       steps {
         script {
-          if (params.RUN_BTQ == true && params.ENABLE_LINE_COVERAGE == true) {
+          if (params.test_type == 'line coverage' || params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
             def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
@@ -177,7 +177,7 @@ pipeline {
     stage('Full Run') {
       steps {
         script {
-          if (params.RUN_BTQ == true && params.ENABLE_LINE_COVERAGE == true) {
+          if (params.test_type == 'line coverage' || params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def testStages_list =
               ["Cucmber-framework-java",
                "Jest-tests",
@@ -211,7 +211,7 @@ pipeline {
     stage('Run Tests') {
       steps {
         script {
-          if (params.RUN_BTQ == true && params.ENABLE_LINE_COVERAGE == true) {
+          if (params.test_type == 'line coverage' || params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             run_tests(
               branch: params.BRANCH,
               test_type: params.TEST_TYPE,
@@ -239,7 +239,7 @@ pipeline {
     stage('Run TIA Tests 1-FIRST With SeaLights') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def RUN_DATA = "full-run";
             TIA_Page_Tests(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -257,7 +257,7 @@ pipeline {
     stage('Run Coverage Tests Before Changes') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def RUN_DATA = "without-changes";
             run_api_tests_before_changes(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -273,7 +273,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def RUN_DATA = "full-run";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -291,7 +291,7 @@ pipeline {
     stage('Changed - Clone Repository') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             clone_repo(
               branch: params.CHANGED_BRANCH
             )
@@ -303,7 +303,7 @@ pipeline {
     stage('Changed Build BTQ') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def MapUrl = new HashMap()
             MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
             MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -331,7 +331,7 @@ pipeline {
     stage('Changed Spin-Up BTQ') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def IDENTIFIER = "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
             SpinUpBoutiqeEnvironment(
@@ -352,7 +352,7 @@ pipeline {
     stage('Changed Run Tests') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             run_tests(
               Run_all_tests: params.Run_all_tests,
               branch: params.BRANCH,
@@ -366,7 +366,7 @@ pipeline {
     stage('Run TIA Tests 2-SECOND With SeaLights') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def RUN_DATA = "TIA-RUN";
             TIA_Page_Tests(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -383,7 +383,7 @@ pipeline {
     stage('Run Coverage Tests After Changes') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def RUN_DATA = "with-changes";
             run_api_tests_after_changes(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -400,7 +400,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
       steps {
         script {
-          if (params.RUN_BTQ == true) {
+          if (params.test_type == 'BTQ + line coverage' || params.test_type == 'BTQ') {
             def RUN_DATA = "TIA-RUN";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
