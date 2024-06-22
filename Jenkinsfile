@@ -40,6 +40,8 @@ pipeline {
     booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
+    string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email')
+    string(name: 'password', defaultValue: "SeaLights2019!", description: 'lab account password')
   }
 
   stages {
@@ -105,13 +107,12 @@ pipeline {
                 }' \
                 https://dev-integration.dev.sealights.co/api/v2/coverage-settings
               """)).trim()
-              if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
-                return false
-              }
-              return true
-            } catch (err) {
-              error "Failed to Enabling line coverage for coverage apis"
+            if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
+              return false
             }
+            return true
+          } catch(err) {
+            error "Failed to Enabling line coverage for coverage apis"
           }
         }
       }
