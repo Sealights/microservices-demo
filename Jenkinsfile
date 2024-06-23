@@ -40,8 +40,10 @@ pipeline {
     booleanParam(name: 'Pytest', defaultValue: false, description: 'Run tests using Pytest testing framework')
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
-    string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email')
-    string(name: 'password', defaultValue: "", description: 'lab account password')
+    string(name: 'coverageThreshold', defaultValue: '10', description: 'coverageThreshold (line coverage)')
+    string(name: 'lineThreshold', defaultValue: '5', description: 'lineThreshold (line coverage)')
+    string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email (for api token in the lab)-(line coverage)')
+    string(name: 'password', defaultValue: "", description: 'lab account password (for api token in the lab)-(line coverage)')
   }
 
   stages {
