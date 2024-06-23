@@ -1,4 +1,4 @@
-@Library('main-shared-library') _
+@Library('main-shared-library@abed/nodejs-ci') _
 
 pipeline {
    agent {
@@ -36,7 +36,7 @@ pipeline {
             steps{
                 script{
                     if(params.NODEJS_CI){
-
+                        github.set_github_registries()
                     }
                     sh """
                     cd integration-tests/cypress/
