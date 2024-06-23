@@ -37,7 +37,7 @@ pipeline {
       steps {
         script {
           clone_repo(
-            branch: env.BRANCH
+            branch: env.BRANCH_NAME
           )
         }
       }
@@ -65,11 +65,11 @@ pipeline {
             NPM_REGISTRIES_TOKEN_SEALIGHTS  : env.NPM_REGISTRIES_TOKEN_SEALIGHTS,
             NPM_REGISTRIES_TOKEN_NORMAL     : env.NPM_REGISTRIES_TOKEN_NORMAL,
             GITHUB_SCTOKEN                  : env.GITHUB_SCTOKEN ,
-            sl_report_branch                : env.BRANCH,
+            sl_report_branch                : env.BRANCH_NAME,
             sl_token                        : env.token,
             dev_integraion_sl_token         : env.DEV_INTEGRATION_SL_TOKEN,
             build_name                      : "1-0-${BUILD_NUMBER}",
-            branch                          : env.BRANCH,
+            branch                          : env.BRANCH_NAME,
             mapurl                          : MapUrl
           )
         }
@@ -85,12 +85,12 @@ pipeline {
           SpinUpBoutiqeEnvironment(
             enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
-            branch: env.BRANCH,
+            branch: env.BRANCH_NAME,
             app_name: params.APP_NAME,
             build_branch: params.BUILD_BRANCH,
             java_agent_url: params.JAVA_AGENT_URL,
             dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : env.BRANCH,
+            sl_branch : env.BRANCH_NAME,
             git_branch : params.BUILD_BRANCH
           )
         }
@@ -127,7 +127,7 @@ pipeline {
             Run_all_tests : params.Run_all_tests ,
             Mocha : params.Mocha,
             Cypress : params.Cypress,
-            branch: env.BRANCH,
+            branch: env.BRANCH_NAME,
             test_type: params.TEST_TYPE
           )
 
@@ -143,7 +143,7 @@ pipeline {
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
-            branch: env.BRANCH,
+            branch: env.BRANCH_NAME,
             app_name : params.APP_NAME
           )
 
@@ -159,7 +159,7 @@ pipeline {
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
-            integration_branch : env.BRANCH,
+            integration_branch : env.BRANCH_NAME,
             app_name: params.APP_NAME
           )
         }
@@ -188,7 +188,7 @@ pipeline {
 
           build_btq(
             sl_token: params.SL_TOKEN,
-            sl_report_branch: env.BRANCH,
+            sl_report_branch: env.BRANCH_NAME,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
             build_name: "1-0-${BUILD_NUMBER}-v2",
             branch: params.CHANGED_BRANCH,
@@ -211,7 +211,7 @@ pipeline {
             branch: params.BRANCH,
             git_branch : params.CHANGED_BRANCH,
             app_name: params.APP_NAME,
-            build_branch: env.BRANCH,
+            build_branch: env.BRANCH_NAME,
             java_agent_url: params.JAVA_AGENT_URL,
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : params.BRANCH
@@ -224,7 +224,7 @@ pipeline {
       steps {
         script {
           run_tests(
-            branch: env.BRANCH,
+            branch: env.BRANCH_NAME,
             test_type: params.TEST_TYPE
           )
         }
@@ -239,7 +239,7 @@ pipeline {
             SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
             LAB_UNDER_TEST : params.LAB_UNDER_TEST,
             run_data : RUN_DATA,
-            integration_branch : env.BRANCH,
+            integration_branch : env.BRANCH_NAME,
             app_name: params.APP_NAME
           )
         }
