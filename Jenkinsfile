@@ -41,7 +41,7 @@ pipeline {
     booleanParam(name: 'Karate', defaultValue: false, description: 'Run tests using Karate testing framework (maven)')
     booleanParam(name: 'long_test', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
     string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email')
-    string(name: 'password', defaultValue: "SeaLights2019!", description: 'lab account password')
+    string(name: 'password', defaultValue: "", description: 'lab account password')
   }
 
   stages {
@@ -59,9 +59,10 @@ pipeline {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage') {
             try {
+              env.email = "${params.email}" == "" ? "${secrets.get_secret('mgmt/integ_account', 'us-west-2')}" : "${params.email}"
               def AUTH_RESPONSE = sh(returnStdout: true, script: """
               curl -X POST \
-                -d '{"email": "${params.email}", "password": "${params.password}"}' \
+                -d '{"email": "${env.email}", "password": "${params.password}"}' \
                 -H "Content-Type: application/json" \
                 https://dev-integration.dev.sealights.co/api/v2/auth/token
               """).trim()
