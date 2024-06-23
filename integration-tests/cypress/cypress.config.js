@@ -8,5 +8,11 @@ module.exports = defineConfig({
     async setupNodeEvents(on, config) {
       await registerSealightsTasks(on, config);
      },
+     specPattern: 'cypress/integration/**/*.js', // Ensure this includes your spec files
+     supportFile: 'cypress/support/index.js', // Update if you prefer using index.js
   },
+   component: {
+      specPattern: '**/*.component.js',
+      supportFile: 'cypress/support/component.js', // Example for component testing
+    },
 });
