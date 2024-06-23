@@ -43,18 +43,6 @@ public class Controller {
             int newComplexResult1 = functions._150_lins_Complex(5, 3);
             int newComplexResult2 = functions._150_lins_Complex(2, 4);
 
-            // Ensure line coverage for new functions
-            int result10 = functions.func_10_lines(1, 2); // 10% line coverage
-            int result20 = functions.func_20_lines(1, 2); // 20% line coverage
-            int result30 = functions.func_30_lines(1, 2); // 30% line coverage
-            int result40 = functions.func_40_lines(1, 2); // 40% line coverage
-            int result50 = functions.func_50_lines(1, 2); // 50% line coverage
-            int result60 = functions.func_60_lines(1, 2); // 60% line coverage
-            int result70 = functions.func_70_lines(1, 2); // 70% line coverage
-            int result80 = functions.func_80_lines(1, 2); // 80% line coverage
-            int result90 = functions.func_90_lines(1, 2); // 90% line coverage
-            int result100 = functions.func_100_lines(1, 2); // 100% line coverage
-
             // Print statements to show results
             System.out.println("Addition: " + sum);
             System.out.println("Subtraction: " + difference);
@@ -66,17 +54,6 @@ public class Controller {
             System.out.println("Complex Function Result 2: " + complexResult2);
             System.out.println("New Complex Function Result 1: " + newComplexResult1);
             System.out.println("New Complex Function Result 2: " + newComplexResult2);
-
-            System.out.println("Result 10 lines: " + result10);
-            System.out.println("Result 20 lines: " + result20);
-            System.out.println("Result 30 lines: " + result30);
-            System.out.println("Result 40 lines: " + result40);
-            System.out.println("Result 50 lines: " + result50);
-            System.out.println("Result 60 lines: " + result60);
-            System.out.println("Result 70 lines: " + result70);
-            System.out.println("Result 80 lines: " + result80);
-            System.out.println("Result 90 lines: " + result90);
-            System.out.println("Result 100 lines: " + result100);
 
             // Reading the HTML file content
             ClassPathResource resource = new ClassPathResource("templates/page.html");
