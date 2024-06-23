@@ -427,6 +427,21 @@ pipeline {
         }
       }
     }
+    stage('Testcafe framework') {
+      steps{
+        script{
+            sh """
+                #!/bin/bash
+                echo 'Testcafe framework starting ..... '
+                cd ./integration-tests/testcafe/
+                npm install
+                echo ${env.SL_TOKEN}>sltoken.txt
+                testcafe chrome tests.js --reporter sealights --sl-tokenfile token.txt --sl-testStage 'Testcafe tests' --sl-labId ${params.SL_LABID}
+                sleep ${env.wait_time}
+                """
+        }
+      }
+    }
   }
 }
 
