@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="styleguide.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Poppins:500,400,600,800");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0px;
+  height: 100%;
+  width: 100%;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+  text-decoration: none;
+}
+
+.boutique {
+    background-color: rgba(255, 255, 255, 1);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .boutique .div {
+    background-color: rgba(255, 255, 255, 1);
+    background: linear-gradient(180deg, rgb(0, 86, 134) 0%, rgb(0, 36, 105) 100%);
+    width: 100%;
+    height: 2201px;
+    position: relative;
+  }
+  
+  .boutique .frame {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 1740px;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .boutique .frame-2 {
+    position: relative;
+    width: 100%;
+    height: 793px;
+    margin-left: -47.04px;
+    margin-right: -47.04px;
+  }
+  
+  .boutique .header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 50px;
+    position: absolute;
+    top: 0;
+    background-color: #015d8bbf;
+  }
+  
+  .boutique .group {
+    position: relative;
+    width: 153.34px;
+    height: 58.34px;
+  }
+  
+  .boutique .frame-wrapper {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 24px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  
+  .boutique .frame-3 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  
+  .boutique .go-to-boutique {
+    position: relative;
+    width: fit-content;
+    margin-top: -1px;
+    font-family: "Poppins", Helvetica;
+    font-weight: 500;
+    color: #00e6dc;
+    font-size: 24px;
+    letter-spacing: -0.48px;
+    line-height: 28.8px;
+    white-space: nowrap;
+  }
+  
+  .boutique .element-open-in-new {
+    position: relative;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .boutique .img {
+    position: absolute;
+    width: 100%;
+    height: 286px;
+    top: 508px;
+    left: 0;
+  }
+  
+  .boutique .main-content {
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 158px;
+    padding: 0px 147px 0px 161px;
+    position: absolute;
+    top: 211px;
+  }
+  
+  .boutique .text-frame {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+    flex: 0 0 auto;
+    margin-left: -34px;
+    margin-right: -34px;
+  }
+  
+  .boutique .frame-4 {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  
+  .boutique .sealights-boutique {
+    position: relative;
+    width: 1200px;
+    margin-top: -1px;
+    background: linear-gradient(180deg, rgb(29, 112, 255) 0%, rgb(0, 230, 220) 81.41%);
+    -webkit-background-clip: text !important;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    font-family: "Poppins", Helvetica;
+    font-weight: 800;
+    color: transparent;
+    font-size: 63px;
+    text-align: center;
+    letter-spacing: -1.26px;
+    line-height: 69.9px;
+  }
+  
+  .boutique .div-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    align-items: center;
+    gap: 38px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  
+  .boutique .frame-5 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+    align-self: stretch;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+  
+  .boutique .frame-6 {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    position: relative;
+    align-self: stretch;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+  
+  .boutique .frame-7 {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    flex: 1;
+    flex-grow: 1;
+  }
+  
+  .boutique .text-wrapper {
+    position: relative;
+    flex: 1;
+    margin-top: -1px;
+    font-family: "Poppins", Helvetica;
+    font-weight: 600;
+    color: var(--c-1);
+    font-size: 22px;
+    text-align: center;
+    letter-spacing: -0.44px;
+    line-height: 26.4px;
+  }
+  
+  .boutique .frame-8 {
+    display: flex;
+    flex-direction: column;
+    height: 454px;
+    align-items: center;
+    gap: 30px;
+    padding: 60px 120px;
+    position: relative;
+    align-self: stretch;
+    width: 100%;
+    background: linear-gradient(180deg, rgb(243, 243, 243) 0%, rgb(216, 216, 216) 100%);
+  }
+  
+  .boutique .text-wrapper-2 {
+    position: relative;
+    margin-top: -1px;
+    margin-left: -1px;
+    margin-right: -1px;
+    font-family: "Poppins", Helvetica;
+    font-weight: 600;
+    color: #000000;
+    font-size: 36px;
+    letter-spacing: -0.72px;
+    line-height: normal;
+  }
+  
+  .boutique .p {
+    width: 1007px;
+    top: 142px;
+    left: 112px;
+    font-family: "Poppins", Helvetica;
+    font-weight: 500;
+    color: #000000;
+    font-size: 18px;
+    letter-spacing: -0.36px;
+    line-height: 21.6px;
+  }
+  
+  .boutique .span {
+    letter-spacing: -0.06px;
+  }
+  
+  .boutique .text-wrapper-3 {
+    letter-spacing: -0.06px;
+    text-decoration: underline;
+  }
+  
+  .boutique .frame-9 {
+    display: flex;
+    flex-direction: column;
+    height: 493px;
+    align-items: center;
+    gap: 30px;
+    padding: 60px 120px;
+    position: relative;
+    align-self: stretch;
+    width: 100%;
+    background: linear-gradient(180deg, rgb(243, 243, 243) 0%, rgb(216, 216, 216) 100%);
+  }
+  
+  .boutique .frame-10 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 316px;
+    align-items: center;
+    gap: 30px;
+    padding: 60px 120px;
+    position: absolute;
+    top: 1740px;
+    left: 0;
+    background: linear-gradient(180deg, rgb(243, 243, 243) 0%, rgb(216, 216, 216) 100%);
+  }
+  
+  .boutique .we-re-excited-to {
+    position: absolute;
+    width: 100%;
+    top: 2097px;
+    font-family: "Poppins", Helvetica;
+    font-weight: 400;
+    color: #d2e8ef;
+    font-size: 32px;
+    text-align: center;
+    letter-spacing: -0.64px;
+    line-height: normal;
+  }
+
+ .pl-50 {
+    padding-left: 50px;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+  :root {
+    --c-1: rgba(210, 232, 239, 1);
+  }
+  
+    </style>
+</head>  
+  <body>
+    <div class="boutique">
+      <div class="div">
+        <div class="frame">
+          <div class="frame-2">
+            <header class="header">
+              <img class="group" src="https://c.animaapp.com/Epfnjko7/img/group-1.svg" />
+              <div class="frame-wrapper">
+                <div class="frame-3">
+                  <div class="go-to-boutique">Go To Boutique Project</div>
+                  <img class="element-open-in-new" src="https://c.animaapp.com/Epfnjko7/img/24px---open-in-new-1.svg" />
+                </div>
+              </div>
+            </header>
+            <img class="img" src="https://c.animaapp.com/Epfnjko7/img/group-44.png" />
+            <div class="main-content">
+              <div class="text-frame">
+                <div class="frame-4">
+                  <p class="sealights-boutique">Sealights Boutique Project: <br />Get Started!</p>
+                  <div class="div-wrapper">
+                    <div class="frame-5">
+                      <div class="frame-6">
+                        <div class="frame-7">
+                          <p class="text-wrapper">
+                            Welcome to the Sealights Boutique Project! This project is designed to be your one-stop shop
+                            for learning about Sealights and its powerful features.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<!-------------------------------------------------------------------------------------------------------------------------------------->
+          <div class="frame-8">
+            <div class="text-wrapper-2">What You&#39;ll Get:</div>
+            <ul class="desc-list">
+              <li class="p">
+                Boutique GitHub Repository: Access the codebase for the project, built upon Google&#39;s popular
+                microservices-demo project
+                <a href="https://github.com/microservices-demo" target="_blank" rel="noopener noreferrer">
+                  <span class="text-wrapper-3">(https://github.com/microservices-demo)</span>
+                </a>
+                We&#39;ve integrated Sealights for monitoring and testing, along with customizations and automated
+                testing pipelines using Jenkins.
+              </li>
+              <li class="p">
+                <ul >
+                  Pre-Configured EC2 Instance:
+                    <ul class="pl-50">
+                      <li>Boutique Running (Port 8081):&nbsp;&nbsp;Explore a ready-to-go instance showcasing the boutique
+                        project in action.</li>
+                      <li>Jenkins with Prepared Jobs (Port 8080): Easily rerun key workflows and see how Sealights integrates
+                        with your CI.</li>
+                    </ul>
+                </ul>
+
+              </li>
+              <li class="p">
+                Sealights Account (if needed): We&#39;ll provide a Sealights account if you don&#39;t already
+                have one.
+              </li>
+              <li class="p">
+                Comprehensive Documentation:&nbsp;&nbsp;Dive deep with our detailed documentation (
+                <a
+                  href="https://docs.sealights.io/boutique-project"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><span class="text-wrapper-3"
+                    >https://docs.sealights.io/boutique-project</span
+                  ></a
+                >
+                ), covering everything from microservices and tests to achieving code coverage and configuration using
+                YAML.
+              </li>
+            </ul>
+          </div>
+<!-------------------------------------------------------------------------------------------------------------------------------------->
+          <div class="frame-9">
+            <div class="text-wrapper-2">Getting Started Tips:</div>
+            <ul class="desc-list">
+                <li class="p">
+                  Read the Documentation: We recommend starting with the documentation (or referencing it as you explore)
+                  for a comprehensive understanding of the project.
+                </li>
+                <li class="p">
+                  Need Help? Contact Customer Success:&nbsp;&nbsp;Our friendly customer success team is here to answer your
+                  questions. They&#39;re happy to help, and if it&#39;s a common question, we might even add it to the
+                  documentation for future users!
+                </li>
+                <li class="p">
+                  Experimentation Encouraged: This project is your playground! Feel free to experiment without worrying
+                  about breaking your CI. If something goes wrong, our customer success team can help you fix it, or we can
+                  simply create a fresh EC2 instance for you.
+                </li>
+                <li class="p">
+                  Single-User EC2: This EC2 instance is designed to run one CI process at a time. Running multiple processes
+                  simultaneously can slow things down and potentially cause errors.
+                </li>
+                <li class="p">
+                  Open for Improvement:&nbsp;&nbsp;We value your feedback! If you have ideas, notes, or complaints, or want
+                  to contribute to the project, reach out to customer support or open an issue/pull request on the main
+                  repository (
+                    <a href="https://github.com/Sealights/microservices-demo-template" target="_blank" rel="noopener noreferrer"
+                    ><span class="text-wrapper-3">https://github.com/Sealights/microservices-demo-template</span></a>).
+                </li>
+            </ul>
+          </div>
+<!-------------------------------------------------------------------------------------------------------------------------------------->
+          <div class="frame-10">
+            <div class="text-wrapper-2">Additional Resources:</div>
+            <ul>
+              <li class="p">
+                <span class="span">Sealights Basics: </span>
+                <a
+                  href="https://docs.sealights.io/sealights-basics/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><span class="text-wrapper-3"
+                    >https://docs.sealights.io/sealights-basics/<br /></span
+                ></a>
+              </li>
+              <li class="p">
+                <span class="span">Release Notes (Subscribe for notifications): </span>
+                <a href="https://www.sealights.io/release-notes/" target="_blank" rel="noopener noreferrer"
+                  ><span class="text-wrapper-3">https://www.sealights.io/release-notes/<br /></span
+                ></a>
+              </li>
+              <li class="p">
+                <span class="span">Status Page (Subscribe for Incident Alerts): </span>
+                <a
+                  href="https://status.sealights.io/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><span class="text-wrapper-3">https://status.sealights.io/</span></a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="we-re-excited-to">We&#39;re excited to have you explore the Sealights Boutique Project!</p>
+      </div>
+    </div>
+  </body>
+</html>

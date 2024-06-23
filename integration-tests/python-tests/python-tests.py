@@ -50,6 +50,10 @@ def test_index(r=requests):
     response = r.get(BASE_URL + "/")
     assert response.status_code == 200
 
+def new_service(r=requests):
+    response = r.get(BASE_URL + "/sealights")
+    assert response.status_code == 200
+
 
 def test_set_currency(r=requests):
     for currency in ['EUR', 'USD', 'JPY', 'CAD']:

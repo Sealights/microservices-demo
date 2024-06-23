@@ -34,6 +34,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.23</version> <!-- Use the latest version available -->
+    </dependency>
+
     <!-- Cucumber Dependencies -->
     <dependency>
       <groupId>io.cucumber</groupId>

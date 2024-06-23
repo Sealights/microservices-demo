@@ -148,7 +148,7 @@ def build_btq(Map params){
   //List of all the images name
   env.TOKEN= "${params.sl_token}"
 
-  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
+  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice","sealightservice"]
   //def special_services = ["cartservice"].
   env.BUILD_NAME= "${params.build_name}" == "" ? "${params.branch}-${env.CURRENT_VERSION}" : "${params.build_name}"
 
@@ -181,6 +181,8 @@ def getParamForService(service, mapurl) {
       return [mapurl['PYTHON_AGENT_URL'].toString(),""]
     case ["currencyservice","paymentservice"]:
       return [mapurl['NODE_AGENT_URL'].toString(),""]
+    case "sealightservice":
+      return [mapurl['JAVA_AGENT_URL'].toString(),""]
   }
 }
 

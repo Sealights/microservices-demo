@@ -59,5 +59,14 @@ describe('Api Tests', function () {
     } catch (error) {
       expect(error.response.status).to.equal(400);
     }
+
+  });
+
+  const tests = [];
+  afterEach(function () {
+    tests.push({
+      title: this.currentTest.title, // the title of the test
+      state: this.currentTest.state // 'passes', 'failed' etc...
+    })
   });
 });

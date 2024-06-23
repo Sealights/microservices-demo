@@ -110,18 +110,10 @@ Then('The checkout should be successful', function () {
     // Assuming if the previous step passes, checkout was successful.
 });
 
-async function sendHttpRequest(url) {
-    return new Promise((resolve, reject) => {
-        httpClient.get(url, (response) => {
-            resolve(response);
-        }).on('error', (error) => {
-            reject(error);
-        });
-    });
-}
-
-async function sendHttpPostRequest(url, data) {
-    const postData = JSON.stringify(data);
+When('A user accesses the Sealights page', async function () {
+    const response = await axios.get(`${BASE_URL}/sealights`);
+    assert.equal(response.status, 200, "Failed to access the Sealights page");
+});
 
     const options = {
         hostname: BASE_URL,

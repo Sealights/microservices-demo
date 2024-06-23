@@ -146,5 +146,10 @@ namespace FrontendTests.Tests
                 Assert.AreEqual(200, (int)response.StatusCode);
             }
         }
+         private void TestSealightsPage()
+                {
+                    var response = client.GetAsync("/sealights").Result;
+                    Assert.AreEqual(200, (int)response.StatusCode);
+                }
     }
 }
