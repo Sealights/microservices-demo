@@ -30,6 +30,7 @@ pipeline {
     booleanParam(name: 'Run_all_tests', defaultValue: false, description: 'Checking this box will run all tests even if individual ones are not checked')
     booleanParam(name: 'Cypress', defaultValue: true, description: 'Run tests using Cypress testing framework')
     booleanParam(name: 'Mocha', defaultValue: true, description: 'Run tests using Mocha testing framework')
+    booleanParam(name: 'NODEJS_CI', defaultValue: true, description: 'Use Github package')
   }
 
   stages {
@@ -129,6 +130,7 @@ pipeline {
             Cypress : params.Cypress,
             branch: env.BRANCH_NAME,
             test_type: params.TEST_TYPE
+            NODEJS_CI: params.NODEJS_CI
           )
 
         }
@@ -226,6 +228,7 @@ pipeline {
           run_tests(
             branch: env.BRANCH_NAME,
             test_type: params.TEST_TYPE
+            NODEJS_CI: params.NODEJS_CI
           )
         }
       }
@@ -414,6 +417,7 @@ def run_tests(Map params){
         booleanParam(name: 'Cypress', value: "${params.Cypress}"),
         booleanParam(name: 'Mocha', value: "${params.Mocha}"),
         booleanParam(name: 'Run_all_tests', value: "${params.Run_all_tests}"),
+        booleanParam(name: 'NODEJS_CI', value: "${params.NODEJS_CI}")
       ])
     }
   }

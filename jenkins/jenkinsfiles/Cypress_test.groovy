@@ -22,6 +22,7 @@ pipeline {
         string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
         string(name: 'MACHINE_DNS1', defaultValue: '', description: 'machine dns')
         string(name: 'CYPRESS_VERSION', defaultValue: '', description: 'Please enter the Cypress version to use')
+        booleanParam(name: 'NODEJS_CI', defaultValue: false, description: 'Use Github package')
         
         
     }
@@ -34,6 +35,9 @@ pipeline {
         stage('download NodeJs agent and scanning Cypress tests') {
             steps{
                 script{
+                    if(params.NODEJS_CI){
+
+                    }
                     sh """
                     cd integration-tests/cypress/
                     npm install
@@ -48,6 +52,11 @@ pipeline {
                     if [ -n "${params.CYPRESS_VERSION}" ]; then
                         npm uninstall cypress
                         npx cypress@${params.CYPRESS_VERSION} install
+                    else
+                        if [ ${params.NODEJS_CI} == true ]; then
+                            npm uninstall cypress
+                            npm install @sealights/sealights-cypress-plugin
+                        fi
                     fi
 
                     npx cypress run --spec "cypress/integration/api.spec.js"
