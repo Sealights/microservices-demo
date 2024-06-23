@@ -8,6 +8,7 @@ pipeline {
   }
   parameters {
     choice(name: 'BTQ_RUNNING', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Make your choice of BTQ running')
+    string(name: 'lab', defaultValue: 'dev-integration.dev', description: 'name of the lab/environment for the lab id, default https://dev-integration.dev.sealights.co')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
@@ -166,7 +167,8 @@ pipeline {
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch: params.BRANCH,
-              git_branch: params.BUILD_BRANCH
+              git_branch: params.BUILD_BRANCH ,
+              lab : params.lab
             )
           }
         }
@@ -341,7 +343,8 @@ pipeline {
               build_branch: params.BRANCH,
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
-              sl_branch: params.BRANCH
+              sl_branch: params.BRANCH,
+              lab : params.lab
             )
           }
         }
@@ -493,7 +496,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-integration.dev.sealights.co",
+    machine: "https://${params.lab}.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
