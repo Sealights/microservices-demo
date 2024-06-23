@@ -1,4 +1,5 @@
 package com.example;
+
 import io.cucumber.java.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -10,9 +11,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.junit.BeforeClass;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -50,6 +50,7 @@ public class StepDefinitions {
             e.printStackTrace();
         }
     }
+
     @Before
     public void setUp() {
         httpClient = HttpClients.createDefault();
@@ -69,6 +70,14 @@ public class StepDefinitions {
         }
     }
 
+    private void handleFailedScenario(Scenario scenario) {
+        System.out.println("Scenario failed: " + scenario.getName());
+        // Add more detailed logging or screenshot capturing here if necessary
+    }
+    private void handlePassedScenario(Scenario scenario) {
+        System.out.println("Scenario passed: " + scenario.getName());
+        // Add more detailed logging here if necessary
+    }
     private static final String BASE_URL_DEFAULT = "http://34.245.65.231:8081";
     private static final String BASE_URL = Optional.ofNullable(System.getenv("machine_dns")).orElse(BASE_URL_DEFAULT);
 
@@ -95,14 +104,17 @@ public class StepDefinitions {
 
         // Since we are not using threads, this step can be removed.
     }
+
     @Then("All sessions should complete successfully")
     public void allSessionsShouldCompleteSuccessfully() {
         // Post-execution checks, if any.
     }
+
     @Given("A product list")
     public void aProductList() {
         // Assuming products are already initialized at class level.
     }
+
     @When("A user browses products")
     public void aUserBrowsesProducts() throws Exception {
         // Uncommented code for actual testing
@@ -127,6 +139,7 @@ public class StepDefinitions {
     public void allProductsShouldBeAccessible() {
         // Assuming if the previous step passes, all products are accessible.
     }
+
     private void testSession() throws Exception {
         CloseableHttpResponse response = httpClient.execute(new HttpGet(BASE_URL + "/"));
         response.close();
