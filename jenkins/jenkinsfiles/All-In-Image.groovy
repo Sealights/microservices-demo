@@ -1,3 +1,4 @@
+
 pipeline {
   agent {
     kubernetes {
@@ -44,16 +45,6 @@ pipeline {
         }
       }
     }
-    stage('Cypress framework starting') {
-      steps {
-        script {
-          if (params.Run_all_tests == true || params.Cypress == true) {
-            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
-          }
-        }
-      }
-    }
-
     stage('MS-Tests framework') {
       steps {
         script {
@@ -95,6 +86,15 @@ pipeline {
                 sleep 10
                 dotnet /app/sealights/agent/SL.DotNet.dll endExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
               """
+          }
+        }
+      }
+    }
+    stage('Cypress framework starting') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Cypress == true) {
+            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
           }
         }
       }
