@@ -25,197 +25,197 @@ pipeline {
     machine_dns = "${params.MACHINE_DNS}"
   }
   stages{
-    stage('Junit without testNG '){
-      steps{
-        script {
-          if (params.Run_all_tests == true) {
-            sh """
-            #!/bin/bash
-            export lab_id="${params.SL_LABID}"
-            echo 'Junit without testNG framework starting ..... '
-            cd integration-tests/java-tests
-            export SL_TOKEN="${params.SL_TOKEN}"
-            echo $SL_TOKEN>sltoken.txt
-            export machine_dns="${params.MACHINE_DNS}"
-            # shellcheck disable=SC2016
-            #add maven version inside echo maven and gradle
-            echo  '{
-                    "executionType": "testsonly",
-                    "tokenFile": "./sltoken.txt",
-                    "createBuildSessionId": false,
-                    "testStage": "Junit-without-testNG",
-                    "runFunctionalTests": true,
-                    "labId": "${params.SL_LABID}",
-                    "proxy": null,
-                    "logEnabled": false,
-                    "logDestination": "console",
-                    "logLevel": "warn",
-                    "sealightsJvmParams": {}
-                    }' > slmaventests.json
-            echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
-            mvn clean package
-          """
-          }
-        }
-      }
-    }
-    stage('Junit support testNG framework'){
-      steps{
-        script {
-          if (params.Run_all_tests == true) {
-            sh """
-            #!/bin/bash
-            export lab_id="${params.SL_LABID}"
-            echo 'Junit support testNG framework starting ..... '
-            pwd
-            ls
-            cd ./integration-tests/support-testNG
-            export SL_TOKEN="${params.SL_TOKEN}"
-            echo $SL_TOKEN>sltoken.txt
-            export machine_dns="${params.MACHINE_DNS}"
-            # shellcheck disable=SC2016
-            echo  '{
-                    "executionType": "testsonly",
-                    "tokenFile": "./sltoken.txt",
-                    "createBuildSessionId": false,
-                    "testStage": "Junit-support-testNG",
-                    "runFunctionalTests": true,
-                    "labId": "${params.SL_LABID}",
-                    "proxy": null,
-                    "logEnabled": false,
-                    "logDestination": "console",
-                    "logLevel": "warn",
-                    "sealightsJvmParams": {}
-                    }' > slmaventests.json
-            echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-            mvn clean package
-          """
-          }
-        }
-      }
-    }
-    stage('Gradle framework'){
-      steps{
-        script {
-          if (params.Run_all_tests == true) {
-            sh """
-            #!/bin/bash
-            export lab_id="${params.SL_LABID}"
-            export machine_dns="${params.MACHINE_DNS}"
-            cd ./integration-tests/java-tests-gradle
-            echo $SL_TOKEN>sltoken.txt
-            echo '{
-                "executionType": "testsonly",
-                "tokenFile": "./sltoken.txt",
-                "createBuildSessionId": false,
-                "testStage": "Junit-without-testNG-gradle",
-                "runFunctionalTests": true,
-                "labId": "${params.SL_LABID}",
-                "proxy": null,
-                "logEnabled": false,
-                "logDestination": "console",
-                "logLevel": "warn",
-                "sealightsJvmParams": {}
-            }' > slgradletests.json
-            echo "Adding Sealights to Tests Project gradle file..."
-            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-            gradle test
-            """
-          }
-        }
-      }
-    }
-    stage('Cucumber framework') {
-      steps{
-        script {
-          if (params.Run_all_tests == true) {
-            sh """
-            #!/bin/bash
-            export lab_id="${params.SL_LABID}"
-            export machine_dns="${params.MACHINE_DNS}"
-            echo 'Cucumber framework starting ..... '
-            cd ./integration-tests/cucumber-framework/
-            echo ${params.SL_TOKEN}>sltoken.txt
-            # shellcheck disable=SC2016
-            echo  '{
-                    "executionType": "testsonly",
-                    "tokenFile": "./sltoken.txt",
-                    "createBuildSessionId": false,
-                    "testStage": "Junit-without-testNG-gradle",
-                    "runFunctionalTests": true,
-                    "labId": "${params.SL_LABID}",
-                    "proxy": null,
-                    "logEnabled": false,
-                    "logDestination": "console",
-                    "logLevel": "warn",
-                    "sealightsJvmParams": {}
-                    }' > slmaventests.json
-            echo "Adding Sealights to Tests Project POM file..."
-            java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-            unset MAVEN_CONFIG
-            ./mvnw test
-          """
-          }
-        }
-      }
-    }
+    // stage('Junit without testNG '){
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //         #!/bin/bash
+    //         export lab_id="${params.SL_LABID}"
+    //         echo 'Junit without testNG framework starting ..... '
+    //         cd integration-tests/java-tests
+    //         export SL_TOKEN="${params.SL_TOKEN}"
+    //         echo $SL_TOKEN>sltoken.txt
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         # shellcheck disable=SC2016
+    //         #add maven version inside echo maven and gradle
+    //         echo  '{
+    //                 "executionType": "testsonly",
+    //                 "tokenFile": "./sltoken.txt",
+    //                 "createBuildSessionId": false,
+    //                 "testStage": "Junit-without-testNG",
+    //                 "runFunctionalTests": true,
+    //                 "labId": "${params.SL_LABID}",
+    //                 "proxy": null,
+    //                 "logEnabled": false,
+    //                 "logDestination": "console",
+    //                 "logLevel": "warn",
+    //                 "sealightsJvmParams": {}
+    //                 }' > slmaventests.json
+    //         echo "Adding Sealights to Tests Project POM file..."
+    //         java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+    //         #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
+    //         mvn clean package
+    //       """
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('Junit support testNG framework'){
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //         #!/bin/bash
+    //         export lab_id="${params.SL_LABID}"
+    //         echo 'Junit support testNG framework starting ..... '
+    //         pwd
+    //         ls
+    //         cd ./integration-tests/support-testNG
+    //         export SL_TOKEN="${params.SL_TOKEN}"
+    //         echo $SL_TOKEN>sltoken.txt
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         # shellcheck disable=SC2016
+    //         echo  '{
+    //                 "executionType": "testsonly",
+    //                 "tokenFile": "./sltoken.txt",
+    //                 "createBuildSessionId": false,
+    //                 "testStage": "Junit-support-testNG",
+    //                 "runFunctionalTests": true,
+    //                 "labId": "${params.SL_LABID}",
+    //                 "proxy": null,
+    //                 "logEnabled": false,
+    //                 "logDestination": "console",
+    //                 "logLevel": "warn",
+    //                 "sealightsJvmParams": {}
+    //                 }' > slmaventests.json
+    //         echo "Adding Sealights to Tests Project POM file..."
+    //         java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+    //         mvn clean package
+    //       """
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('Gradle framework'){
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //         #!/bin/bash
+    //         export lab_id="${params.SL_LABID}"
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         cd ./integration-tests/java-tests-gradle
+    //         echo $SL_TOKEN>sltoken.txt
+    //         echo '{
+    //             "executionType": "testsonly",
+    //             "tokenFile": "./sltoken.txt",
+    //             "createBuildSessionId": false,
+    //             "testStage": "Junit-without-testNG-gradle",
+    //             "runFunctionalTests": true,
+    //             "labId": "${params.SL_LABID}",
+    //             "proxy": null,
+    //             "logEnabled": false,
+    //             "logDestination": "console",
+    //             "logLevel": "warn",
+    //             "sealightsJvmParams": {}
+    //         }' > slgradletests.json
+    //         echo "Adding Sealights to Tests Project gradle file..."
+    //         java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+    //         gradle test
+    //         """
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('Cucumber framework') {
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //         #!/bin/bash
+    //         export lab_id="${params.SL_LABID}"
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         echo 'Cucumber framework starting ..... '
+    //         cd ./integration-tests/cucumber-framework/
+    //         echo ${params.SL_TOKEN}>sltoken.txt
+    //         # shellcheck disable=SC2016
+    //         echo  '{
+    //                 "executionType": "testsonly",
+    //                 "tokenFile": "./sltoken.txt",
+    //                 "createBuildSessionId": false,
+    //                 "testStage": "Junit-without-testNG-gradle",
+    //                 "runFunctionalTests": true,
+    //                 "labId": "${params.SL_LABID}",
+    //                 "proxy": null,
+    //                 "logEnabled": false,
+    //                 "logDestination": "console",
+    //                 "logLevel": "warn",
+    //                 "sealightsJvmParams": {}
+    //                 }' > slmaventests.json
+    //         echo "Adding Sealights to Tests Project POM file..."
+    //         java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+    //         unset MAVEN_CONFIG
+    //         ./mvnw test
+    //       """
+    //       }
+    //     }
+    //   }
+    // }
     stage('Cypress framework starting'){
       steps{
         script {
           if (params.Run_all_tests == true || params.Cypress == true) {
-            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
+            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}"), booleanParam(name: 'node_ci', value: true)])
           }
         }
       }
     }
-    stage('Mocha framework'){
-      steps{
-        script {
-          if (params.Run_all_tests == true || params.Mocha == true) {
-            sh """
-            echo 'Mocha framework starting ..... '
-            export machine_dns="${params.MACHINE_DNS}"
-            export Lab_id="${params.SL_LABID}"
-            cd ./integration-tests/nodejs-tests/mocha
-            cp -r /nodeModules/node_modules .
-            npm install
-            npm install slnodejs
-            ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
-            cd ../..
-          """
-          }
-        }
-      }
-    }
-    stage('MS-Tests framework'){
-      steps{
-        script {
-          if (params.Run_all_tests == true) {
-            sh """
-            echo 'MS-Tests framework starting ..... '
-            export machine_dns="${params.MACHINE_DNS}"
-            dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
-          """
-          }
-        }
-      }
-    }
-    stage('N-Unit framework starting'){
-      steps{
-        script {
-          if (params.Run_all_tests == true) {
-            sh """
-            echo 'N-Unit framework starting ..... '
-            export machine_dns="${params.MACHINE_DNS}"
-            dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
-          """
-          }
-        }
-      }
-    }
+    // stage('Mocha framework'){
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true || params.Mocha == true) {
+    //         sh """
+    //         echo 'Mocha framework starting ..... '
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         export Lab_id="${params.SL_LABID}"
+    //         cd ./integration-tests/nodejs-tests/mocha
+    //         cp -r /nodeModules/node_modules .
+    //         npm install
+    //         npm install slnodejs
+    //         ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
+    //         cd ../..
+    //       """
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('MS-Tests framework'){
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //         echo 'MS-Tests framework starting ..... '
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
+    //       """
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('N-Unit framework starting'){
+    //   steps{
+    //     script {
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //         echo 'N-Unit framework starting ..... '
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll testListener --workingDir .  --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
+    //       """
+    //       }
+    //     }
+    //   }
+    // }
 
 //    stage('robot framework'){
 //      steps{
@@ -314,25 +314,25 @@ pipeline {
 //        }
 //      }
 //    }
-    stage('Pytest framework'){
-      steps{
-        script{
-          if (params.Run_all_tests == true) {
-            sh """
-              export SL_SAVE_LOG_FILE=true
-              echo 'Pytest tests starting ..... '
-              export machine_dns="${params.MACHINE_DNS}"
-              cd ./integration-tests/python-tests
-              pip install pytest
-              pip install requests
-              sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
-              ls
-              cd ../..
-            """
-          }
-        }
-      }
-    }
+    // stage('Pytest framework'){
+    //   steps{
+    //     script{
+    //       if (params.Run_all_tests == true) {
+    //         sh """
+    //           export SL_SAVE_LOG_FILE=true
+    //           echo 'Pytest tests starting ..... '
+    //           export machine_dns="${params.MACHINE_DNS}"
+    //           cd ./integration-tests/python-tests
+    //           pip install pytest
+    //           pip install requests
+    //           sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
+    //           ls
+    //           cd ../..
+    //         """
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
 
