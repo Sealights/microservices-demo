@@ -47,10 +47,15 @@ pipeline {
         stage('download NodeJs agent and scanning Cypress tests') {
             steps{
                 script{
+                    github.set_github_registries()
                     sh """
                     cd integration-tests/cypress/
+                    if [ "${params.node_ci}" = true ]; then
+                        npm install @sealights/sealights-cypress-plugin --registry=https://npm.pkg.github.com
+                    else
+                        npm install sealights-cypress-plugin
+                    fi
                     npm install 
-                    npm install sealights-cypress-plugin
                     export NODE_DEBUG=sl
                     export CYPRESS_SL_ENABLE_REMOTE_AGENT=false
                     export CYPRESS_SL_TEST_STAGE="Cypress-Test-Stage"
@@ -58,13 +63,6 @@ pipeline {
                     export CYPRESS_machine_dns="${params.MACHINE_DNS1}" 
                     export CYPRESS_SL_LAB_ID="${params.SL_LABID}"
                     export CYPRESS_SL_TOKEN="${params.SL_TOKEN}"
-                    npm uninstall cypress
-
-                    if [ -n "${params.CYPRESS_VERSION}" ]; then
-                        npx cypress@"${params.CYPRESS_VERSION}" install
-                    else
-                        npx cypress install
-                    fi
 
                     npx cypress run --spec "cypress/integration/api.spec.js"
 
