@@ -68,13 +68,16 @@ pipeline {
                 # Ensure the target directory exists and has proper permissions
                 mkdir -p /app/sealights/agent
                 chmod -R 755 /app/sealights
-                  echo 'MS-Tests framework starting ..... '
-                  export machine_dns="${params.MACHINE_DNS}"
-                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-                  sleep 10
-                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
-                  dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
-               """
+
+                unzip ./sealights/agent/sealights-dotnet-agent-linux-self-contained.zip -d /app/sealights/agent
+
+                echo 'MS-Tests framework starting ..... '
+                export machine_dns="${params.MACHINE_DNS}"
+                dotnet /app/sealights/agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                sleep 10
+                dotnet /app/sealights/agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/MS-Tests/"
+                dotnet /app/sealights/agent/SL.DotNet.dll endExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+            """
           }
         }
       }
