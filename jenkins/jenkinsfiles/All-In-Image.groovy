@@ -1,3 +1,4 @@
+@Library('main-shared-library@node_plugins_ci') _
 
 pipeline {
   agent {

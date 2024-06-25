@@ -1,4 +1,4 @@
-@Library('main-shared-library') _
+@Library('main-shared-library@node_plugins_ci') _
 pipeline {
   agent {
     kubernetes {
