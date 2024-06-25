@@ -253,7 +253,7 @@ pipeline {
         }
       }
     }
-
+  }
   post {
     success {
       script {
@@ -281,7 +281,6 @@ pipeline {
       }
     }
   }
-}
 }
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
