@@ -435,8 +435,8 @@ pipeline {
                 echo 'Testcafe framework starting ..... '
                 cd ./integration-tests/testcafe/
                 npm install
-                echo ${env.SL_TOKEN}>sltoken.txt
-                testcafe chrome tests.js --reporter sealights --sl-tokenfile token.txt --sl-testStage 'Testcafe tests' --sl-labId ${params.SL_LABID}
+
+                npx testcafe 'chromium:headless --no-sandbox' tests.js --reporter sealights --sl-toke ${env.SL_TOKEN} --sl-testStage 'Testcafe tests' --sl-labId ${params.SL_LABID}
                 sleep ${env.wait_time}
                 """
         }
