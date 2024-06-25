@@ -24,13 +24,6 @@ pipeline {
     wait_time = "20"
   }
   stages{
-    stage("Init test"){
-      steps{
-        script{
-          git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
-        }
-      }
-    }
     // stage('Cypress framework starting'){
     //   steps{
     //     script{
