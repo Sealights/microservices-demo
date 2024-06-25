@@ -154,7 +154,6 @@ pipeline {
           }
         }
       }
-    }
 
     stage('Run Coverage Tests Before Changes') {
       steps {
@@ -204,10 +203,6 @@ pipeline {
           }
         }
       }
-    }
-
-
-
 
     stage('Changed Spin-Up BTQ') {
       steps {
@@ -260,8 +255,6 @@ pipeline {
       }
     }
 
-  }
-
   post {
     success {
       script {
@@ -289,7 +282,7 @@ pipeline {
       }
     }
   }
-}
+  }
 
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
