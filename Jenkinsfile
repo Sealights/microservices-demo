@@ -49,15 +49,6 @@ pipeline {
   }
 
   stages {
-    stage('Clone Repository') {
-      steps {
-        script {
-          clone_repo(
-            branch: params.BRANCH
-          )
-        }
-      }
-    }
     stage('Enabling line coverage for agent'){
       steps {
         script {
