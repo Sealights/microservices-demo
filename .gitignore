@@ -18,3 +18,5 @@ pkg/
 *.tfvars
 release/wi-kubernetes-manifests.yaml
 node_modules
+package-lock.json
+*.mp4

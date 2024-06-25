@@ -80,20 +80,23 @@ pipeline {
     stage('Spin-Up BTQ') {
       steps {
         script {
-          env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
+          if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+            env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
-          def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
-          SpinUpBoutiqeEnvironment(
-            enable_dd : params.enable_dd ,
-            IDENTIFIER : IDENTIFIER,
-            branch: params.BRANCH,
-            app_name: params.APP_NAME,
-            build_branch: params.BUILD_BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.BRANCH,
-            git_branch : params.BUILD_BRANCH
-          )
+            def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
+            SpinUpBoutiqeEnvironment(
+              enable_dd: params.enable_dd,
+              IDENTIFIER: IDENTIFIER,
+              branch: params.BRANCH,
+              app_name: params.APP_NAME,
+              build_branch: params.BUILD_BRANCH,
+              java_agent_url: params.JAVA_AGENT_URL,
+              dotnet_agent_url: params.DOTNET_AGENT_URL,
+              sl_branch: params.BRANCH,
+              git_branch: params.BUILD_BRANCH ,
+              lab : params.lab
+            )
+          }
         }
       }
     }
@@ -107,16 +110,16 @@ pipeline {
              "Mocha-tests"
              ]
 
-          testStages_list.each { TEST_STAGE ->
-            schedule_full_run(
-              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
-              test_stage: "${TEST_STAGE}",
-              token: "${params.SL_TOKEN}",
-              machine: "dev-integration.dev.sealights.co"
-            )
+            testStages_list.each { TEST_STAGE ->
+              schedule_full_run(
+                app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
+                branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+                test_stage: "${TEST_STAGE}",
+                token: "${env.token}",
+                machine: "dev-integration.dev.sealights.co"
+              )
+            }
           }
-
         }
       }
     }
@@ -148,6 +151,7 @@ pipeline {
             app_name : params.APP_NAME
           )
 
+          }
         }
       }
     }
@@ -169,9 +173,11 @@ pipeline {
     stage('Changed - Clone Repository') {
       steps {
         script {
-          clone_repo(
-            branch: params.CHANGED_BRANCH
-          )
+          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+            clone_repo(
+              branch: params.CHANGED_BRANCH
+            )
+          }
         }
       }
     }
@@ -187,14 +193,15 @@ pipeline {
           MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
-          build_btq(
-            sl_token: params.SL_TOKEN,
-            sl_report_branch: params.BRANCH,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}-v2",
-            branch: params.CHANGED_BRANCH,
-            mapurl: MapUrl
-          )
+            build_btq(
+              sl_token: env.token,
+              sl_report_branch: params.BRANCH,
+              dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
+              build_name: "1-0-${BUILD_NUMBER}-v2",
+              branch: params.CHANGED_BRANCH,
+              mapurl: MapUrl
+            )
+          }
         }
       }
     }
@@ -205,18 +212,21 @@ pipeline {
     stage('Changed Spin-Up BTQ') {
       steps {
         script {
-          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+            def IDENTIFIER = "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
-          SpinUpBoutiqeEnvironment(
-            IDENTIFIER : IDENTIFIER,
-            branch: params.BRANCH,
-            git_branch : params.CHANGED_BRANCH,
-            app_name: params.APP_NAME,
-            build_branch: params.BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.BRANCH
-          )
+            SpinUpBoutiqeEnvironment(
+              IDENTIFIER: IDENTIFIER,
+              branch: params.BRANCH,
+              git_branch: params.CHANGED_BRANCH,
+              app_name: params.APP_NAME,
+              build_branch: params.BRANCH,
+              java_agent_url: params.JAVA_AGENT_URL,
+              dotnet_agent_url: params.DOTNET_AGENT_URL,
+              sl_branch: params.BRANCH,
+              lab : params.lab
+            )
+          }
         }
       }
     }
@@ -224,10 +234,13 @@ pipeline {
     stage('Changed Run Tests') {
       steps {
         script {
-          run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
-          )
+          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+            run_tests(
+              Run_all_tests: params.Run_all_tests,
+              branch: params.BRANCH,
+              test_type: params.TEST_TYPE
+            )
+          }
         }
       }
     }
@@ -246,7 +259,6 @@ pipeline {
         }
       }
     }
-
 
   }
 
@@ -279,16 +291,6 @@ pipeline {
   }
 }
 
-def get_secret (SecretID, Region, Profile="") {
-  if (Profile != "") {
-    Profile = "--profile ${Profile}"
-  }
-  String secret_key = "${SecretID.split('/')[-1]}" as String
-  def secret_value = (sh(returnStdout: true, script: "aws secretsmanager get-secret-value --secret-id ${SecretID} --region ${Region} ${Profile}| jq -r '.SecretString' | jq -r '.${secret_key}'")).trim()
-  return secret_value
-}
-
-
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
@@ -296,7 +298,7 @@ def build_btq(Map params){
   //List of all the images name
   env.TOKEN= "${params.sl_token}"
 
-  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
+  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice","sealightservice"]
   //def special_services = ["cartservice"].
   env.BUILD_NAME= "${params.build_name}" == "" ? "${params.branch}-${env.CURRENT_VERSION}" : "${params.build_name}"
 
@@ -332,6 +334,8 @@ def getParamForService(service, mapurl) {
       return [mapurl['PYTHON_AGENT_URL'].toString(),""]
     case ["currencyservice","paymentservice"]:
       return [mapurl['NODE_AGENT_URL'].toString(),""]
+    case "sealightservice":
+      return [mapurl['JAVA_AGENT_URL'].toString(),""]
   }
 }
 
@@ -339,7 +343,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://dev-integration.dev.sealights.co",
+    machine: "https://${params.lab}.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
@@ -563,9 +567,3 @@ def schedule_full_run(Map params) {
     error "Failed to schedule full-run"
   }
 }
-
-
-
-
-
-
