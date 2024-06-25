@@ -59,6 +59,15 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.MS == true) {
             sh """
+                mkdir -p ./sealights/agent
+                ls
+
+                DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
+                gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
+
+                # Ensure the target directory exists and has proper permissions
+                mkdir -p /app/sealights/agent
+                chmod -R 755 /app/sealights
                   echo 'MS-Tests framework starting ..... '
                   export machine_dns="${params.MACHINE_DNS}"
                   dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "MS-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
@@ -77,11 +86,11 @@ pipeline {
             sh """
                 echo 'N-Unit framework starting ..... '
                 export machine_dns="${params.MACHINE_DNS}"
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                dotnet /app/sealights/agent/SL.DotNet.dll startExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
                 sleep 10
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
+                dotnet /app/sealights/agent/SL.DotNet.dll run --workingDir . --instrumentationMode tests --target dotnet   --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN} --targetArgs "test ./integration-tests/dotnet-tests/NUnit-Tests/"
                 sleep 10
-                dotnet /sealights/sl-dotnet-agent/SL.DotNet.dll endExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
+                dotnet /app/sealights/agent/SL.DotNet.dll endExecution --testStage "NUnit-Tests" --labId ${params.SL_LABID} --token ${params.SL_TOKEN}
               """
           }
         }
