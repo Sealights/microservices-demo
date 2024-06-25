@@ -122,7 +122,6 @@ pipeline {
           }
         }
       }
-    }
 
     stage('Run Tests') {
       steps {
@@ -415,7 +414,7 @@ def run_tests(Map params){
       ])
     }
   }
-
+}
 
 }
 
