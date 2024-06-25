@@ -416,7 +416,6 @@ def run_tests(Map params){
   }
 }
 
-}
 
 def success_btq(Map params){
   build(job: 'TearDownBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"), string(name: 'IDENTIFIER', value: "${params.IDENTIFIER}")])
