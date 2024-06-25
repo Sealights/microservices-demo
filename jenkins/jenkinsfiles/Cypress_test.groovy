@@ -31,6 +31,9 @@ pipeline {
         buildDiscarder logRotator(numToKeepStr: '20')
         timestamps()
     }
+    environment {
+        GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    }
     
     
     
