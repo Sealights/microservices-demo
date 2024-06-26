@@ -51,7 +51,7 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.MS == true) {
             sh """
-                export GH_TOKEN= "${secrets.get_secret('mgmt/github_token', 'us-west-2')}"
+                #export GH_TOKEN= "${secrets.get_secret('mgmt/github_token', 'us-west-2')}"
                 mkdir -p ./sealights/agent
                 ls
 
