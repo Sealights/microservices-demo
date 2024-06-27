@@ -42,7 +42,7 @@ RUN wget -U "slcli" -q -O slcli.tar.gz \
 ENV SEALIGHTS_FORCE_MODE="2"
 RUN ./slcli config init --lang go --token ${SEALIGHTS_TOKEN}
 RUN ./slcli config create-bsid --app ${SERVICE_NAME} --branch ${BRANCH} --build ${BUILD_NAME}
-RUN ./slcli scan --bsid buildSessionId.txt --path-to-scanner ./slgoagent --workspacepath ./ --scm none --packages-excluded "github.com/GoogleCloudPlatform/microservices-demo/src/shippingservice/genproto"
+RUN ./slcli scan --bsid buildSessionId.txt --path-to-scanner ./slgoagent --workspacepath ./ --scm none --collector-url http://dev-integration-collector.dev.sealights.co/api --light-mode true --packages-excluded "github.com/GoogleCloudPlatform/microservices-demo/src/shippingservice/genproto"
 
 # Skaffold passes in debug-oriented compiler flags
 ARG SKAFFOLD_GO_GCFLAGS
