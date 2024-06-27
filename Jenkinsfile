@@ -54,8 +54,8 @@ pipeline {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage') {
             try {
-              env.email = "${params.email}" == "" ? "${secrets.get_secret('mgmt/integ_account', 'us-west-2')}" : "${params.email}"
-              env.password = "${params.password}" == "" ? "${secrets.get_secret('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
+              env.email = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
+              env.password = "${params.password}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
               def AUTH_RESPONSE = sh(returnStdout: true, script: """
               curl -X POST \
                 -d '{"email": "${env.email}", "password": "${env.password}"}' \
