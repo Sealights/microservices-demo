@@ -15,7 +15,11 @@
 FROM node:20.5.0-alpine@sha256:11087abe911baf2fd7e34192f4598bf7e438239e9914f5b7ecda5fb5a7b1a2dd as base
 
 FROM base as builder
-
+ARG ENABLE_NODE_CI=false
+ARG AGENT_URL
+ARG GITHUB_SCTOKEN
+ARG NPM_REGISTRIES_TOKEN_NORMAL
+ARG NPM_REGISTRIES_TOKEN_SEALIGHTS
 ARG SEALIGHTS_TOKEN
 ARG BRANCH
 ARG BUILD_NAME=0.4.3
@@ -32,11 +36,39 @@ WORKDIR /usr/src/app
 #COPY package*.json ./
 COPY . .
 RUN npm install --only=production
-RUN npm i ${AGENT_URL}
-RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+
+# Optionally set them as environment variables if you need them at runtime
+ENV NPM_REGISTRIES_TOKEN_NORMAL=$NPM_REGISTRIES_TOKEN_NORMAL \
+    NPM_REGISTRIES_TOKEN_SEALIGHTS=$NPM_REGISTRIES_TOKEN_SEALIGHTS \
+    GITHUB_SCTOKEN=$GITHUB_SCTOKEN
+
+# Create an .npmrc
+#RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+#    echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+#    echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
+#if the ENABLE_NODE_CI is true, then add the sealights registry to the .npmrc
+RUN if [ "$ENABLE_NODE_CI" = "true" ]; then \
+        echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+        echo "email=devops@sealights.io" >> .npmrc && \
+        echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc; \
+    fi
 
 
-RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN echo ${AGENT_URL}
+
+RUN npm install ${AGENT_URL}
+
+RUN cat package.json
+
+RUN ls ./node_modules/.bin
+
+RUN test -d ./node_modules/slnodejs && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
+
+RUN  npx slnodejs config --token ${SEALIGHTS_TOKEN} --appname "paymentservice" --branch ${BRANCH} --build ${BUILD_NAME}
+
+
+RUN npx slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 
 FROM base
 
@@ -52,4 +84,4 @@ ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 EXPOSE 50051
 
-CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
+CMD  npx slnodejs-internal run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js

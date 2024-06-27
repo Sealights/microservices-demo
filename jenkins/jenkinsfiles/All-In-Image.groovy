@@ -12,6 +12,7 @@ pipeline {
   }
 
   parameters {
+    choice(name: 'TECHNOLOGY', choices: ['All','dotnet','node'], description: 'Make your choice of BTQ running')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
@@ -49,9 +50,8 @@ pipeline {
     stage('MS-Tests framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.MS == true) {
+          if (params.Run_all_tests == true || params.MS == true || params.TECHNOLOGY == 'dotnet') {
             sh """
-                #export GH_TOKEN= "${secrets.get_secret('mgmt/github_token', 'us-west-2')}"
                 mkdir -p ./sealights/agent
                 ls
 
@@ -78,7 +78,7 @@ pipeline {
     stage('N-Unit framework starting') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.NUnit == true) {
+          if (params.Run_all_tests == true || params.NUnit == true || params.TECHNOLOGY == 'dotnet') {
             sh """
                 echo 'N-Unit framework starting ..... '
                 export machine_dns="${params.MACHINE_DNS}"
@@ -95,7 +95,7 @@ pipeline {
     stage('Cypress framework starting') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Cypress == true) {
+          if (params.Run_all_tests == true || params.Cypress == true || params.TECHNOLOGY == 'node') {
             build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
           }
         }
@@ -105,7 +105,7 @@ pipeline {
     stage('Cucumberjs framework starting') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Cucumberjs == true) {
+          if (params.Run_all_tests == true || params.Cucumberjs == true || params.TECHNOLOGY == 'node') {
             sh """
                   echo 'Cucumberjs framework starting ..... '
                   cd integration-tests/Cucumber-js
@@ -131,7 +131,7 @@ pipeline {
     stage('Karate framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Karate == true) {
+          if (params.Run_all_tests == true || params.Karate == true || params.TECHNOLOGY == 'java') {
             sh """
               #!/bin/bash
               echo 'Karate framework starting ..... '
@@ -162,7 +162,7 @@ pipeline {
     stage('Junit without testNG ') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Junit_without_testNG == true) {
+          if (params.Run_all_tests == true || params.Junit_without_testNG == true || params.TECHNOLOGY == 'java') {
             sh """
             #!/bin/bash
             export lab_id="${params.SL_LABID}"
@@ -198,7 +198,7 @@ pipeline {
     stage('Junit support testNG framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Junit_with_testNG == true) {
+          if (params.Run_all_tests == true || params.Junit_with_testNG == true || params.TECHNOLOGY == 'java') {
             sh """
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
@@ -234,7 +234,7 @@ pipeline {
     stage('Gradle framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Junit_without_testNG == true) {
+          if (params.Run_all_tests == true || params.Junit_without_testNG == true || params.TECHNOLOGY == 'java') {
             sh """
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
@@ -265,7 +265,7 @@ pipeline {
     stage('Cucumber framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Cucumber == true) {
+          if (params.Run_all_tests == true || params.Cucumber == true || params.TECHNOLOGY == 'java') {
             sh """
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
@@ -300,7 +300,7 @@ pipeline {
     stage('Mocha framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Mocha == true) {
+          if (params.Run_all_tests == true || params.Mocha == true || params.TECHNOLOGY == 'node') {
             sh """
                 echo 'Mocha framework starting ..... '
                 export machine_dns="${params.MACHINE_DNS}"

@@ -207,6 +207,7 @@ pipeline {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             run_tests(
+              technology : params.BTQ_RUNNING_TECHNOLOGY,
               branch: params.BRANCH,
               test_type: params.TEST_TYPE,
               Run_all_tests: params.Run_all_tests,
@@ -236,6 +237,7 @@ pipeline {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             def RUN_DATA = "full-run";
             TIA_Page_Tests(
+              technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
               run_data: RUN_DATA,
@@ -254,6 +256,7 @@ pipeline {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             def RUN_DATA = "without-changes";
             run_api_tests_before_changes(
+              technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
               run_data: RUN_DATA,
@@ -267,7 +270,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
       steps {
         script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
             def RUN_DATA = "full-run";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -349,6 +352,7 @@ pipeline {
         script {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             run_tests(
+              technology : params.BTQ_RUNNING_TECHNOLOGY,
               Run_all_tests: params.Run_all_tests,
               branch: params.BRANCH,
               test_type: params.TEST_TYPE
@@ -364,6 +368,7 @@ pipeline {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             def RUN_DATA = "TIA-RUN";
             TIA_Page_Tests(
+              technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
               run_data: RUN_DATA,
@@ -381,6 +386,7 @@ pipeline {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             def RUN_DATA = "with-changes";
             run_api_tests_after_changes(
+              technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
               run_data: RUN_DATA,
@@ -395,7 +401,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
       steps {
         script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
             def RUN_DATA = "TIA-RUN";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -558,6 +564,7 @@ def run_tests(Map params){
     } else {
       sleep time: 150, unit: 'SECONDS'
       build(job: "All-In-One/${params.branch}", parameters: [
+        string(name: 'TECHNOLOGY', value: "${params.technology}"),
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
@@ -600,6 +607,7 @@ def failure_btq(Map params){
 def run_api_tests_before_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "StableApiTests", parameters: [
+      string(name: 'TECHNOLOGY', value: "${params.technology}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
       string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),

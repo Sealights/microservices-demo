@@ -18,6 +18,7 @@ pipeline {
   }
 
   parameters {
+    choice(name: 'TECHNOLOGY', choices: ['All','dotnet','node'], description: 'Make your choice of BTQ running')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'app name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')

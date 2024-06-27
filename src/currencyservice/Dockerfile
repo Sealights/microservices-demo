@@ -6,6 +6,10 @@ ARG SEALIGHTS_TOKEN
 ARG BUILD_NAME
 ARG AGENT_URL
 ARG BRANCH
+ARG GITHUB_SCTOKEN
+ARG NPM_REGISTRIES_TOKEN_NORMAL
+ARG NPM_REGISTRIES_TOKEN_SEALIGHTS
+ARG ENABLE_NODE_CI=false
 
 # Some packages (e.g. @google-cloud/profiler) require additional
 # deps for post-install scripts
@@ -20,7 +24,27 @@ COPY package*.json ./
 RUN npm install --only=production
 
 
-RUN npm i ${AGENT_URL}
+#RUN echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRIES_TOKEN_NORMAL}" >> .npmrc && \
+ #   echo "//nex.sealights.co:8081/repository/:_authToken=${NPM_REGISTRIES_TOKEN_SEALIGHTS}" >> .npmrc && \
+  #  echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc
+
+
+RUN if [ "$ENABLE_NODE_CI" = "true" ]; then \
+        echo "@sealights:registry=https://npm.pkg.github.com" >> .npmrc && \
+        echo "email=devops@sealights.io" >> .npmrc && \
+        echo "//npm.pkg.github.com/:_authToken=${GITHUB_SCTOKEN}" >>  .npmrc; \
+    fi
+
+RUN echo ${AGENT_URL}
+
+RUN npm install ${AGENT_URL}
+
+RUN cat package.json
+
+RUN ls ./node_modules/.bin
+
+RUN test -d ./node_modules/slnodejs && echo "Directory 'slnodejs-canary' exists in node_modules." || echo "Directory 'slnodejs-canary' does not exist in node_modules."
+
 
 FROM base
 
@@ -31,11 +55,12 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY . .
 
 #run comfig
-RUN  ./node_modules/.bin/slnodejs config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
+RUN  npx slnodejs config --token ${SEALIGHTS_TOKEN} --appname "currencyservice" --branch ${BRANCH} --build ${BUILD_NAME}
 #sl-scan
-RUN ./node_modules/.bin/slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
+RUN npx slnodejs scan --token ${SEALIGHTS_TOKEN} --buildsessionidfile buildSessionId --workspacepath "." --scm none --es6Modules
 ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 
+
 EXPOSE 7000
-CMD  ./node_modules/.bin/slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js
+CMD  npx slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . server.js

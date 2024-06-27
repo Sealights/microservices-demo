@@ -16,6 +16,7 @@ pipeline {
     }
   }
   parameters {
+    choice(name: 'TECHNOLOGY', choices: ['All','dotnet','node'], description: 'Make your choice of BTQ running')
     string(name: 'BRANCH', defaultValue: 'BTQ-TIA', description: 'Branch to clone')
     string(name: 'INTEGRAION_BRANCH', defaultValue: 'ahmad-branch', description: 'integration branch Branche')
     string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'app name')
@@ -37,9 +38,10 @@ pipeline {
     }
     stage('download NodeJs agent and scanning Mocha tests supported') {
       steps{
-        script{
-          tools.set_npm_registries()
-          sh """
+        script {
+          if (params.TECHNOLOGY == 'node' || params.TECHNOLOGY == 'dotnet') {
+            tools.set_npm_registries()
+            sh """
             export RUN_DATA="${params.RUN_DATA}"
             export APP_NAME="${params.APP_NAME}"
             export BRANCH_NAME="${params.INTEGRAION_BRANCH}"
@@ -52,14 +54,17 @@ pipeline {
             ./node_modules/.bin/tsc
             ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/supported-TIA-spec.js --no-timeouts
           """
+          }
         }
       }
     }
     stage('download NodeJs agent and scanning Mocha tests unsupported frameworks') {
       steps{
-        script{
-          tools.set_npm_registries()
-          sh """
+        script {
+          if (params.TECHNOLOGY != 'node' || params.TECHNOLOGY != 'dotnet') {
+
+            tools.set_npm_registries()
+            sh """
             export RUN_DATA="${params.RUN_DATA}"
             export APP_NAME="${params.APP_NAME}"
             export BRANCH_NAME="${params.INTEGRAION_BRANCH}"
@@ -70,6 +75,7 @@ pipeline {
             ./node_modules/.bin/tsc
             ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/unsupported-TIA-spec.js --no-timeouts
           """
+          }
         }
       }
     }

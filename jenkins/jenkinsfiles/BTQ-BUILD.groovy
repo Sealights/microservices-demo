@@ -12,6 +12,7 @@ pipeline{
     timestamps()
   }
   parameters {
+    choice(name: 'TECHNOLOGY', choices: ['All','dotnet','node'], description: 'Make your choice of BTQ running')
     string(name: 'TAG', defaultValue: '1.2.2', description: 'latest tag')
     string(name: 'BRANCH', defaultValue: 'main', description: 'default branch')
     string(name: 'SL_REPORT_BRANCH', defaultValue: 'main', description: 'default branch')
@@ -47,6 +48,7 @@ pipeline{
           stage("Build Docker ${params.SERVICE} Image") {
             container(name: 'kaniko'){
               script {
+                def ENABLE_NODE_CI = params.TECHNOLOGY == 'node' ? true : false
                 def CONTEXT = params.SERVICE == "cartservice" ? "./src/${params.SERVICE}/src" : "./src/${params.SERVICE}"
                 def DP = "${CONTEXT}/Dockerfile"
                 def D = "${env.ECR_URI}:${params.TAG}"
@@ -54,6 +56,9 @@ pipeline{
                 def BUILD_NAME = params.BUILD_NAME
                 def SL_TOKEN = params.SL_TOKEN
                 def AGENT_URL = params.AGENT_URL
+                def GITHUB_SCTOKEN = params.GITHUB_SCTOKEN
+                def NPM_REGISTRIES_TOKEN_NORMAL = params.NPM_REGISTRIES_TOKEN_NORMAL
+                def NPM_REGISTRIES_TOKEN_SEALIGHTS = params.NPM_REGISTRIES_TOKEN_SEALIGHTS
                 def AGENT_URL_SLCI = params.AGENT_URL_SLCI
 
                 sh """
@@ -61,10 +66,14 @@ pipeline{
                     --context ${CONTEXT} \
                     --dockerfile ${DP} \
                     --destination ${D} \
+                    --build-arg ENABLE_NODE_CI=${ENABLE_NODE_CI} \
                     --build-arg BRANCH=${BRANCH} \
                     --build-arg BUILD_NAME=${BUILD_NAME} \
                     --build-arg SEALIGHTS_TOKEN=${SL_TOKEN} \
                     --build-arg AGENT_URL=${AGENT_URL} \
+                    --build-arg GITHUB_SCTOKEN=${GITHUB_SCTOKEN} \
+                    --build-arg NPM_REGISTRIES_TOKEN_SEALIGHTS=${NPM_REGISTRIES_TOKEN_SEALIGHTS} \
+                    --build-arg NPM_REGISTRIES_TOKEN_NORMAL=${NPM_REGISTRIES_TOKEN_NORMAL} \
                     --build-arg AGENT_URL_SLCI=${AGENT_URL_SLCI}
                 """
               }
