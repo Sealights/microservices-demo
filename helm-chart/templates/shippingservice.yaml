@@ -58,10 +58,6 @@ spec:
         env:
         - name: SEALIGHTS_LOG_LEVEL
           value: "debug"
-        - name: SEALIGHTS_LIGHT_MODE
-          value: "true"
-        - name: SEALIGHTS_COLLECTOR_URL
-          value: "{{ .Values.SealightsEnvVars.collector_url }}"
         - name: SL_TOKEN
           value: "{{ .Values.SealightsEnvVars.token }}"
         - name: SL_LAB_ID
