@@ -148,9 +148,15 @@ namespace FrontendTests.Tests
                     new KeyValuePair<string, string>("credit_card_expiration_year", "2039"),
                     new KeyValuePair<string, string>("credit_card_cvv", "672")
                 });
+
                 var response = client.PostAsync("/cart/checkout", formData).Result;
                 Assert.AreEqual(200, (int)response.StatusCode);
             }
         }
+         private void TestSealightsPage()
+                {
+                    var response = client.GetAsync("/sealights").Result;
+                    Assert.AreEqual(200, (int)response.StatusCode);
+                }
     }
 }

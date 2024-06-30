@@ -94,6 +94,8 @@ spec:
             value: "{{ .Values.checkoutService.name }}:5050"
           - name: AD_SERVICE_ADDR
             value: "{{ .Values.adService.name }}:9555"
+          - name: SEALIGHTS_SERVICE_ADDR
+            value: "{{ .Values.sealightsService.name }}:5732"
           - name: ENV_PLATFORM
             value: {{ .Values.frontend.platform | quote }}
           {{- if .Values.opentelemetryCollector.create }}

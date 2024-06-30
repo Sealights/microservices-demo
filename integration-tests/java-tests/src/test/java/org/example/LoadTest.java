@@ -73,6 +73,14 @@ public class LoadTest {
     }
 
     @Test
+    public void testSealightsPage() throws IOException {
+        String myEnvVariable = System.getenv("machine_dns");
+        HttpGet request = new HttpGet(myEnvVariable + "/sealights");
+        HttpResponse response = httpClient.execute(request);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+    }
+
+    @Test
     public void testBrowseProduct() throws Exception {
         Thread.sleep(15000);
         String myEnvVariable = System.getenv("machine_dns");

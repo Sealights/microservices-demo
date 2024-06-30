@@ -41,14 +41,18 @@ describe('Api Tests', () => {
   });
 
  it('should return 200 for invalid request data', () => {
-
-   cy.apiRequest('POST', '/setCurrency', { invalid_key: 'invalid_value' }, { failOnStatusCode: false }).then(response => {
+  cy.wait(15000);
+   cy.request({method: 'POST', url: Cypress.env('machine_dns') + '/setCurrency', body: { invalid_key: 'invalid_value' }, failOnStatusCode: false }).then(response => {
      cy.wrap(response.status).should('equal', 200);
    });
-   cy.wait(15000);
  });
-});
 
-// Run the tests automatically in Cypress:
-// npm install cypress --save-dev
-// npx cypress run --spec "cypress/integration/api.spec.js"
+ it('should return 200 for Sealights page', () => {
+     cy.wait(15000);
+     cy.request('GET', Cypress.env('machine_dns') + '/sealights').then(response => {
+       cy.wrap(response.status).should('equal', 200);
+     });
+   });
+
+
+});
