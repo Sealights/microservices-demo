@@ -12,10 +12,10 @@ pipeline {
     NPM_REGISTRIES_TOKEN_SEALIGHTS = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').sealights}"
   }
   parameters {
-    string(name: 'APP_NAME', defaultValue: "${ENV.BRANCH_NAME}", description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: "${env.BRANCH_NAME}", description: 'name of the app (integration build)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (slnodejs)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
-    string(name: 'BUILD_BRANCH', defaultValue: "${ENV.BRANCH_NAME}", description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'BUILD_BRANCH', defaultValue: "${env.BRANCH_NAME}", description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
     string(name: 'BUILD_NAME', defaultValue: '', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
