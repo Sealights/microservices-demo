@@ -1,4 +1,4 @@
-
+@Library('main-shared-library') _
 pipeline {
   agent {
     kubernetes {
@@ -6,16 +6,18 @@ pipeline {
       defaultContainer "shell"
     }
   }
-
-
+  environment {
+    GITHUB_SCTOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
+    NPM_REGISTRIES_TOKEN_NORMAL = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').normal}"
+    NPM_REGISTRIES_TOKEN_SEALIGHTS = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').sealights}"
+  }
   parameters {
-    string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
-    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'APP_NAME', defaultValue: "${env.BRANCH_NAME}", description: 'name of the app (integration build)')
+    string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (slnodejs)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
-    string(name: 'BUILD_BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
-    string(name: 'SL_TOKEN', defaultValue: 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL0RFVi1pbnRlZ3JhdGlvbi5hdXRoLnNlYWxpZ2h0cy5pby8iLCJqd3RpZCI6IkRFVi1pbnRlZ3JhdGlvbixuZWVkVG9SZW1vdmUsQVBJR1ctZDQ3YTRjYzAtOWM0MC00ZWIxLTg2NzYtMTA3NzMyOTk5YTA5LDE2OTg1OTU5ODUwOTYiLCJzdWJqZWN0IjoiaW50ZWdyYXRpb25AYWdlbnQiLCJhdWRpZW5jZSI6WyJhZ2VudHMiXSwieC1zbC1yb2xlIjoiYWdlbnQiLCJ4LXNsLXNlcnZlciI6Imh0dHBzOi8vZGV2LWludGVncmF0aW9uLmRldi5zZWFsaWdodHMuY28vYXBpIiwic2xfaW1wZXJfc3ViamVjdCI6IiIsImlhdCI6MTY5ODU5NTk4NX0.Zluo-1ixxNHU3QflitHZJAD3mGzDLUv2ntje-ENd_sIIfAV7t5-1AjZz5qScK9-3pKaamv3398GzlVcwWunNqpug0DfF2uCKHDb_pTBnQdbIOfLdh-d5fXHoXgSrNCSBXRsgjkuA0Sdit1jFlc198OE2FVawkLhf6MtX-6NHncV6EEyZ833i4DRvLt58IQRrDH0q6eGoG_i4ea2iwC-3TNhVskxigxCRIh2ZamNjqasXk3fJchoawKUlYKKPLyYaoPXtyWY1bCdR7UMyUmewUIJy9XBXjy7GcXNuouqu0638vjceY-IDWI6jyrAzBetAfybvDe8eVdT19cLSDP5Q_1MeVUbhfzFjkv4bUEy7kBd2ghtoMTSBAkaoRXD687MxRKanYTyrRbOOW1fXzGk-dtiWLSKAvAFsJrjibEf3EdnD8ewMvtbZWGVfn35gWffB41USTGqkkEY7sSpsEgW4nLATvYQv_nZY2bIBY2zaYi6Kklk3L2vp8i3zelZHm3dJ_IxZYDfJEp-TW0JgOdbhDgV6OjVxgW4YkGYYc58vuBpA6rIluU3OdBp9Vcr3_recnZLA3V6QtLyowOXwRgHOHaI9RSDJ5h1LG81N0nkOmrGbBiTW8vKI3taFrtu163cD0NFguYUjiZus-5gkQ1TU0bEsD3XIxh-4rTR0C2fmqXI', description: 'sl-token')
-    string(name: 'BUILD_NAME', defaultValue: 'ahmad-1', description: 'build name')
+    string(name: 'BUILD_BRANCH', defaultValue: "${env.BRANCH_NAME}", description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
+    string(name: 'SL_TOKEN', defaultValue: '', description: 'sl-token')
+    string(name: 'BUILD_NAME', defaultValue: '', description: 'build name')
     string(name: 'JAVA_AGENT_URL', defaultValue: 'https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent_alpine.tar.gz', description: 'use different java agent')
     string(name: 'DOTNET_AGENT_URL', defaultValue: 'https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz', description: 'use different dotnet agent')
     string(name: 'NODE_AGENT_URL', defaultValue: '@sealights/slnodejs', description: 'use different node agent')
@@ -25,6 +27,10 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
+    booleanParam(name: 'Run_all_tests', defaultValue: false, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Cypress', defaultValue: true, description: 'Run tests using Cypress testing framework')
+    booleanParam(name: 'Mocha', defaultValue: true, description: 'Run tests using Mocha testing framework')
+    booleanParam(name: 'NODEJS_CI', defaultValue: true, description: 'Use Github package')
   }
 
   stages {
@@ -37,12 +43,17 @@ pipeline {
         }
       }
     }
-
-
     //Build parallel images
     stage('Build BTQ') {
       steps {
         script {
+          env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
+          echo "${env.token}"
+          sh"""
+          echo GITHUB_SCTOKEN:  "${env.GITHUB_SCTOKEN}"
+          echo NPM_REGISTRIES_TOKEN_SEALIGHTS: "${env.NPM_REGISTRIES_TOKEN_SEALIGHTS}"
+          echo NPM_REGISTRIES_TOKEN_NORMAL: "${env.NPM_REGISTRIES_TOKEN_NORMAL}"
+          """
           def MapUrl = new HashMap()
           MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
           MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
@@ -52,12 +63,15 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
-            sl_report_branch: params.BRANCH,
-            sl_token: params.SL_TOKEN,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}",
-            branch: params.BRANCH,
-            mapurl: MapUrl
+            NPM_REGISTRIES_TOKEN_SEALIGHTS  : env.NPM_REGISTRIES_TOKEN_SEALIGHTS,
+            NPM_REGISTRIES_TOKEN_NORMAL     : env.NPM_REGISTRIES_TOKEN_NORMAL,
+            GITHUB_SCTOKEN                  : env.GITHUB_SCTOKEN ,
+            sl_report_branch                : env.BRANCH_NAME,
+            sl_token                        : env.token,
+            dev_integraion_sl_token         : env.DEV_INTEGRATION_SL_TOKEN,
+            build_name                      : "1-0-${BUILD_NUMBER}",
+            branch                          : env.BRANCH_NAME,
+            mapurl                          : MapUrl
           )
         }
       }
@@ -66,19 +80,18 @@ pipeline {
     stage('Spin-Up BTQ') {
       steps {
         script {
-          if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
+          env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
           def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
           SpinUpBoutiqeEnvironment(
             enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
-            branch: params.BRANCH,
+            branch: env.BRANCH_NAME,
             app_name: params.APP_NAME,
             build_branch: params.BUILD_BRANCH,
             java_agent_url: params.JAVA_AGENT_URL,
             dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.BRANCH,
+            sl_branch : env.BRANCH_NAME,
             git_branch : params.BUILD_BRANCH
           )
         }
@@ -89,30 +102,21 @@ pipeline {
       steps {
         script {
           def testStages_list =
-            ["Cucmber-framework-java",
-             "Jest-tests",
-             "Junit-support-testNG",
+            [
              "Cypress-Test-Stage",
-             "Junit-without-testNG",
-             "Mocha-tests",
-             "MS-Tests",
-             "NUnit-Tests",
-             "Postman-tests",
-             "Pytest-tests",
-             "Robot-Tests",
-             "Soapui-Tests",
-             "Junit-without-testNG-gradle"]
+             "Mocha-tests"
+             ]
 
-            testStages_list.each { TEST_STAGE ->
-              schedule_full_run(
-                app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-                branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
-                test_stage: "${TEST_STAGE}",
-                token: "${env.token}",
-                machine: "dev-integration.dev.sealights.co"
-              )
-            }
+          testStages_list.each { TEST_STAGE ->
+            schedule_full_run(
+              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
+              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+              test_stage: "${TEST_STAGE}",
+              token: "${params.SL_TOKEN}",
+              machine: "dev-integration.dev.sealights.co"
+            )
           }
+
         }
       }
     }
@@ -121,172 +125,17 @@ pipeline {
       steps {
         script {
           run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
+            Run_all_tests : params.Run_all_tests ,
+            Mocha : params.Mocha,
+            Cypress : params.Cypress,
+            branch: env.BRANCH_NAME,
+            test_type: params.TEST_TYPE,
+            NODEJS_CI: params.NODEJS_CI
           )
 
         }
       }
     }
-
-    stage('Run TIA Tests 1-FIRST With SeaLights') {
-      steps {
-        script {
-          def RUN_DATA = "full-run";
-          TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch: params.BRANCH,
-            app_name : params.APP_NAME
-          )
-
-        }
-      }
-    }
-
-    stage('Run Coverage Tests Before Changes') {
-      steps {
-        script {
-          def RUN_DATA = "without-changes";
-          run_api_tests_before_changes(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            integration_branch : params.BRANCH,
-            app_name: params.APP_NAME
-          )
-        }
-      }
-    }
-    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
-      steps {
-        script {
-          def RUN_DATA = "full-run";
-          run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch : params.BRANCH,
-            lab_id : env.LAB_ID,
-            app_name : params.APP_NAME
-          )
-        }
-      }
-    }
-
-    stage('Changed - Clone Repository') {
-      steps {
-        script {
-          clone_repo(
-            branch: params.CHANGED_BRANCH
-          )
-        }
-      }
-    }
-
-    stage('Changed Build BTQ') {
-      steps {
-        script {
-          def MapUrl = new HashMap()
-          MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
-          MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
-          MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
-          MapUrl.put('GO_AGENT_URL', "${params.GO_AGENT_URL}")
-          MapUrl.put('GO_SLCI_AGENT_URL', "${params.GO_SLCI_AGENT_URL}")
-          MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
-
-          build_btq(
-            sl_token: params.SL_TOKEN,
-            sl_report_branch: params.BRANCH,
-            dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
-            build_name: "1-0-${BUILD_NUMBER}-v2",
-            branch: params.CHANGED_BRANCH,
-            mapurl: MapUrl
-          )
-        }
-      }
-    }
-
-
-
-
-    stage('Changed Spin-Up BTQ') {
-      steps {
-        script {
-          def IDENTIFIER= "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
-
-          SpinUpBoutiqeEnvironment(
-            IDENTIFIER : IDENTIFIER,
-            branch: params.BRANCH,
-            git_branch : params.CHANGED_BRANCH,
-            app_name: params.APP_NAME,
-            build_branch: params.BRANCH,
-            java_agent_url: params.JAVA_AGENT_URL,
-            dotnet_agent_url: params.DOTNET_AGENT_URL,
-            sl_branch : params.BRANCH
-          )
-        }
-      }
-    }
-
-    stage('Changed Run Tests') {
-      steps {
-        script {
-          run_tests(
-            branch: params.BRANCH,
-            test_type: params.TEST_TYPE
-          )
-        }
-      }
-    }
-
-    stage('Run TIA Tests 2-SECOND With SeaLights') {
-      steps {
-        script {
-          def RUN_DATA = "TIA-RUN";
-          TIA_Page_Tests(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch: params.BRANCH,
-            app_name : params.APP_NAME
-          )
-        }
-      }
-    }
-
-    stage('Run Coverage Tests After Changes') {
-      steps {
-        script {
-          def RUN_DATA = "with-changes";
-          run_api_tests_after_changes(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            integration_branch : params.BRANCH,
-            app_name: params.APP_NAME
-          )
-        }
-      }
-    }
-
-    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
-      steps {
-        script {
-          def RUN_DATA = "TIA-RUN";
-          run_TIA_ON_testresult(
-            SEALIGHTS_ENV_NAME : params.SEALIGHTS_ENV_NAME,
-            LAB_UNDER_TEST : params.LAB_UNDER_TEST,
-            run_data : RUN_DATA,
-            branch : params.BRANCH,
-            lab_id : env.LAB_ID,
-            app_name : params.APP_NAME
-          )
-        }
-      }
-    }
-
 
   }
 
@@ -319,6 +168,16 @@ pipeline {
   }
 }
 
+def get_secret (SecretID, Region, Profile="") {
+  if (Profile != "") {
+    Profile = "--profile ${Profile}"
+  }
+  String secret_key = "${SecretID.split('/')[-1]}" as String
+  def secret_value = (sh(returnStdout: true, script: "aws secretsmanager get-secret-value --secret-id ${SecretID} --region ${Region} ${Profile}| jq -r '.SecretString' | jq -r '.${secret_key}'")).trim()
+  return secret_value
+}
+
+
 def build_btq(Map params){
   env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
@@ -326,19 +185,22 @@ def build_btq(Map params){
   //List of all the images name
   env.TOKEN= "${params.sl_token}"
 
-  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice","sealightservice"]
+  def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
   //def special_services = ["cartservice"].
   env.BUILD_NAME= "${params.build_name}" == "" ? "${params.branch}-${env.CURRENT_VERSION}" : "${params.build_name}"
 
   services_list.each { service ->
     parallelLabs["${service}"] = {
       def AGENT_URL = getParamForService(service , params.mapurl)
-      build(job: 'BTQ-BUILD', parameters: [string(name: 'SERVICE', value: "${service}"),
+      build(job: "BTQ-BUILD/${params.branch}", parameters: [string(name: 'SERVICE', value: "${service}"),
                                            string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
                                            string(name:'SL_REPORT_BRANCH' , value:"${params.sl_report_branch}"),
                                            string(name:'BRANCH' , value:"${params.branch}"),
                                            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
                                            string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
+                                           string(name:'GITHUB_SCTOKEN' , value:"${params.GITHUB_SCTOKEN}"),
+                                           string(name:'NPM_REGISTRIES_TOKEN_NORMAL' , value:"${params.NPM_REGISTRIES_TOKEN_NORMAL}"),
+                                           string(name:'NPM_REGISTRIES_TOKEN_SEALIGHTS' , value:"${params.NPM_REGISTRIES_TOKEN_SEALIGHTS}"),
                                            string(name:'AGENT_URL' , value:AGENT_URL[0]),
                                            string(name:'AGENT_URL_SLCI' , value:AGENT_URL[1])])
     }
@@ -359,8 +221,6 @@ def getParamForService(service, mapurl) {
       return [mapurl['PYTHON_AGENT_URL'].toString(),""]
     case ["currencyservice","paymentservice"]:
       return [mapurl['NODE_AGENT_URL'].toString(),""]
-    case "sealightservice":
-      return [mapurl['JAVA_AGENT_URL'].toString(),""]
   }
 }
 
@@ -368,7 +228,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://${params.lab}.sealights.co",
+    machine: "https://dev-integration.dev.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
@@ -440,7 +300,11 @@ def run_tests(Map params){
         string(name: 'BRANCH', value: "${params.branch}"),
         string(name: 'SL_LABID', value: "${env.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
-        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}")
+        string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}"),
+        booleanParam(name: 'Cypress', value: "${params.Cypress}"),
+        booleanParam(name: 'Mocha', value: "${params.Mocha}"),
+        booleanParam(name: 'Run_all_tests', value: "${params.Run_all_tests}"),
+        booleanParam(name: 'NODEJS_CI', value: "${params.NODEJS_CI}")
       ])
     }
   }
@@ -458,65 +322,6 @@ def failure_btq(Map params){
   sh "aws ec2 --region eu-west-1 stop-instances --instance-ids ${env_instance_id}"
   slackSend channel: "#btq-ci", tokenCredentialId: "slack_sldevops", color: "danger", message: "BTQ-CI build ${env.CURRENT_VERSION} for branch ${BRANCH_NAME} finished with status ${currentBuild.currentResult} (<${env.BUILD_URL}|Open>) and TearDownBoutiqeEnvironment"
 }
-
-
-
-def run_api_tests_before_changes(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "StableApiTests", parameters: [
-      string(name: 'RUN_DATA', value: "${params.run_data}"),
-      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
-      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
-      string(name: 'BRANCH', value: "BTQ-TIA"),
-      string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
-}
-
-def run_TIA_ON_testresult(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "TIA-Test-result", parameters: [
-      string(name: 'BRANCH', value: "BTQ-TIA"),
-      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
-      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
-      string(name: 'RUN_DATA', value: "${params.run_data}"),
-      string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
-      string(name: 'LAB_ID', value: "${params.lab_id}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
-}
-
-
-
-
-def run_api_tests_after_changes(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "ApiTests", parameters: [
-      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
-      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
-      string(name: 'RUN_DATA', value: "${params.run_data}"),
-      string(name: 'BRANCH', value: "BTQ-TIA"),
-      string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
-}
-
-def TIA_Page_Tests(Map params){
-  catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "TIA-Page-Tests", parameters: [
-      string(name: 'BRANCH', value: "BTQ-TIA"),
-      string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
-      string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
-      string(name: 'RUN_DATA', value: "${params.run_data}"),
-      string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
-    ])
-  }
-}
-
 
 
 def clone_repo(Map params){
