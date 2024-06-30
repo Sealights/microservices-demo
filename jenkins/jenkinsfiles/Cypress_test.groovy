@@ -55,7 +55,7 @@ pipeline {
                     else
                         if [ ${params.NODEJS_CI} == true ]; then
                             npm uninstall cypress
-                            npm install @sealights/sealights-cypress-plugin
+                            npm install sealights-cypress-plugin
                         fi
                     fi
 
