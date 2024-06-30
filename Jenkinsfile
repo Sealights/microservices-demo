@@ -129,7 +129,7 @@ pipeline {
             Mocha : params.Mocha,
             Cypress : params.Cypress,
             branch: env.BRANCH_NAME,
-            test_type: params.TEST_TYPE
+            test_type: params.TEST_TYPE,
             NODEJS_CI: params.NODEJS_CI
           )
 
