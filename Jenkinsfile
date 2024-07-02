@@ -48,7 +48,7 @@ pipeline {
               curl -X POST \
                 -d '{"email": "${params.email}", "password": "${params.password}"}' \
                 -H "Content-Type: application/json" \
-                https://dev-integration.dev.sealights.co/api/v2/auth/token
+                https://${params.lab}.sealights.co/api/v2/auth/token
               """).trim()
             env.api_token = sh(returnStdout: true, script: "echo '${AUTH_RESPONSE}' | jq -r .token").trim()
             echo "api token : ${env.api_token}"
@@ -60,7 +60,7 @@ pipeline {
                     "key": "BuildMethodology",
                     "value": "MethodLines"
                 }' \
-                https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
+                https://${params.lab}.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
             """).trim()
             if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
               return false
@@ -88,7 +88,7 @@ pipeline {
                   "lineThreshold": "${params.lineThreshold}",
                   "showLineCoverage": true
                 }' \
-                https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+                https://${params.lab}.sealights.co/api/v2/coverage-settings
               """)).trim()
             if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
               return false
@@ -113,6 +113,7 @@ pipeline {
           MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
           build_btq(
+            lab : params.lab ,
             sl_report_branch: params.BRANCH,
             sl_token: params.SL_TOKEN,
             dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
@@ -307,7 +308,7 @@ def build_btq(Map params){
                     "key": "BuildMethodology",
                     "value": "MethodLines"
                 }' \
-                https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${service}/branches/line-coverage-2
+                https://${params.lab}.sealights.co/api/v1/settings/build-preferences/apps/${service}/branches/line-coverage-2
             """).trim()
       def SETTING_RESPONSE = (sh(returnStdout: true, script: """
               curl -X PUT \
@@ -320,7 +321,7 @@ def build_btq(Map params){
                   "lineThreshold": "${params.lineThreshold}",
                   "showLineCoverage": true
                 }' \
-                https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+                https://${params.lab}.sealights.co/api/v2/coverage-settings
               """)).trim()
       def AGENT_URL = getParamForService(service , params.mapurl)
       build(job: "BTQ-BUILD/${params.branch}", parameters: [string(name: 'SERVICE', value: "${service}"),
