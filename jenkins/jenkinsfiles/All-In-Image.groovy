@@ -1,3 +1,5 @@
+@Library('main-shared-library@abed/nodejs-ci') _
+
 pipeline {
   agent {
     kubernetes {
@@ -52,9 +54,6 @@ pipeline {
             export MACHINE_DNS="${params.MACHINE_DNS}"
             cd ./integration-tests/postman-tests/
             cp -r /nodeModules/node_modules .
-            npm i slnodejs
-            npm install newman
-            npm install newman-reporter-xunit
             if [ "${params.NODEJS_CI}" = "true" ]; then
               npm install @sealights/sealights-newman-runner@canary || {
                   echo "Failed to install @sealights/sealights-newman-runner"
