@@ -230,7 +230,7 @@ def SpinUpBoutiqeEnvironment(Map params){
     token: "${env.TOKEN}",
     machine: "https://dev-integration.dev.sealights.co",
     app: "${params.app_name}",
-    branch: "${params.build_branch}",
+    branch: "${params.BUILD_BRANCH}",
     test_env: "${params.IDENTIFIER}",
     lab_alias: "${params.IDENTIFIER}",
     cdOnly: true,
