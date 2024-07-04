@@ -25,6 +25,15 @@ pipeline {
     machine_dns = "${params.MACHINE_DNS}"
   }
   stages{
+    stage('Setup'){
+      steps{
+        script {
+            if (params.NODEJS_CI) {
+                github.set_github_registries()
+            }
+        }
+      }
+    }
     stage('Cypress framework starting'){
       steps{
         script {
@@ -46,10 +55,13 @@ pipeline {
             npm i slnodejs
             npm install newman
             npm install newman-reporter-xunit
-            ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
-            npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
-            ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
-            ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
+            if [ "${params.NODEJS_CI}" = "true" ]; then
+              npm install @sealights/sealights-newman-runner@canary || {
+                  echo "Failed to install @sealights/sealights-newman-runner"
+                  exit 1
+              }
+            fi
+            npx sealights-newman-runner ... --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
             cd ../..
           """
           }
