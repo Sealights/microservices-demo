@@ -12,7 +12,7 @@ pipeline {
     NPM_REGISTRIES_TOKEN_SEALIGHTS = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').sealights}"
   }
   parameters {
-    string(name: 'APP_NAME', defaultValue: "${env.BRANCH_NAME}", description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: "NodejsCI-Boutique", description: 'name of the app (integration build)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (slnodejs)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
     string(name: 'BUILD_BRANCH', defaultValue: "${env.BRANCH_NAME}", description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
