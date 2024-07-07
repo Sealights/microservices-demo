@@ -35,15 +35,6 @@ pipeline {
   }
 
   stages {
-    stage('Clone Repository') {
-      steps {
-        script {
-          clone_repo(
-            branch: env.BRANCH_NAME
-          )
-        }
-      }
-    }
     //Build parallel images
     stage('Build BTQ') {
       steps {
