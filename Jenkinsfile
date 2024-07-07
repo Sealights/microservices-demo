@@ -82,7 +82,7 @@ pipeline {
       steps {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
-          def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
+          def IDENTIFIER = "${params.BUILD_BRANCH}-${env.CURRENT_VERSION}"
           env.LAB_ID = create_lab_id(
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
@@ -119,7 +119,7 @@ pipeline {
           testStages_list.each { TEST_STAGE ->
             schedule_full_run(
               app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-              branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
+              branch_name: URLEncoder.encode("${params.BUILD_BRANCH}", "UTF-8"),
               test_stage: "${TEST_STAGE}",
               token: "${params.SL_TOKEN}",
               machine: "dev-integration.dev.sealights.co"
@@ -140,6 +140,7 @@ pipeline {
             branch: env.BRANCH_NAME,
             test_type: params.TEST_TYPE,
             NODEJS_CI: params.NODEJS_CI
+            LAB_ID: env.LAB_ID
           )
 
         }
@@ -152,7 +153,7 @@ pipeline {
     success {
       script {
         success_btq(
-          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
+          IDENTIFIER : "${params.BUILD_BRANCH}-${env.CURRENT_VERSION}"
         )
         success_btq(
           IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
@@ -167,7 +168,7 @@ pipeline {
           role_name : "CD-TF-Role"
         ])
         failure_btq(
-          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
+          IDENTIFIER : "${params.BUILD_BRANCH}-${env.CURRENT_VERSION}"
         )
         failure_btq(
           IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
@@ -196,15 +197,15 @@ def build_btq(Map params){
 
   def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
   //def special_services = ["cartservice"].
-  env.BUILD_NAME= "${params.build_name}" == "" ? "${params.branch}-${env.CURRENT_VERSION}" : "${params.build_name}"
+  env.BUILD_NAME= "${params.build_name}" == "" ? "${params.BUILD_BRANCH}-${env.CURRENT_VERSION}" : "${params.build_name}"
 
   services_list.each { service ->
     parallelLabs["${service}"] = {
       def AGENT_URL = getParamForService(service , params.mapurl)
-      build(job: "BTQ-BUILD/${params.branch}", parameters: [string(name: 'SERVICE', value: "${service}"),
+      build(job: "BTQ-BUILD/${params.BUILD_BRANCH}", parameters: [string(name: 'SERVICE', value: "${service}"),
                                            string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
                                            string(name:'SL_REPORT_BRANCH' , value:"${params.sl_report_branch}"),
-                                           string(name:'BRANCH' , value:"${params.branch}"),
+                                           string(name:'BRANCH' , value:"${params.BUILD_BRANCH}"),
                                            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
                                            string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
                                            string(name:'GITHUB_SCTOKEN' , value:"${params.GITHUB_SCTOKEN}"),
@@ -263,7 +264,7 @@ def run_tests(Map params){
 
     jobs_list.each { job ->
       parallelLabs["${job}"] = {
-        build(job: "${job}", parameters: [string(name: 'BRANCH', value: "${params.branch}"), string(name: 'SL_LABID', value: "${env.LAB_ID}"), string(name: 'SL_TOKEN', value: "${env.TOKEN}"), string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")])
+        build(job: "${job}", parameters: [string(name: 'BRANCH', value: "${params.BUILD_BRANCH}"), string(name: 'SL_LABID', value: "${env.LAB_ID}"), string(name: 'SL_TOKEN', value: "${env.TOKEN}"), string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")])
       }
     }
     parallel parallelLabs
@@ -288,7 +289,7 @@ def run_tests(Map params){
 
       jobs_list.each { job ->
         build(job: "${job}", parameters: [
-          string(name: 'BRANCH', value: "${params.branch}"),
+          string(name: 'BRANCH', value: "${params.BUILD_BRANCH}"),
           string(name: 'SL_LABID', value: "${env.LAB_ID}"),
           string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
           string(name: 'MACHINE_DNS1', value: "${env.MACHINE_DNS}")
@@ -297,9 +298,9 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      build(job: "All-In-One/${params.branch}", parameters: [
-        string(name: 'BRANCH', value: "${params.branch}"),
-        string(name: 'SL_LABID', value: "${env.LAB_ID}"),
+      build(job: "All-In-One/${params.BUILD_BRANCH}", parameters: [
+        string(name: 'BRANCH', value: "${params.BUILD_BRANCH}"),
+        string(name: 'SL_LABID', value: "${params.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
         string(name: 'MACHINE_DNS', value: "${env.MACHINE_DNS}"),
         booleanParam(name: 'Cypress', value: "${params.Cypress}"),
@@ -327,7 +328,7 @@ def failure_btq(Map params){
 
 def clone_repo(Map params){
   // Clone the repository with the specified branch
-  git branch: params.branch, url: 'https://github.com/Sealights/microservices-demo.git'
+  git branch: params.BUILD_BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
 }
 
 def set_assume_role(Map params) {
@@ -357,12 +358,12 @@ def create_lab_id(Map params) {
     if (params.isPR){
       lab_id = (sh(returnStdout: true, script:"""
             #!/bin/sh -e +x
-            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids/pull-request" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.branch}", "testEnv": "${params.test_env}", "targetBranch": "${params.target_branch}", "isHidden": true }' | jq -r '.data.labId'
+            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids/pull-request" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.BUILD_BRANCH}", "testEnv": "${params.test_env}", "targetBranch": "${params.target_branch}", "isHidden": true }' | jq -r '.data.labId'
            """)).trim()
     } else {
       lab_id = (sh(returnStdout: true, script:"""
             #!/bin/sh -e +x
-            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.branch}", "testEnv": "${params.test_env}", "labAlias": "${params.lab_alias}", "isHidden": true ${cdOnlyString}}' | jq -r '.data.labId'
+            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.BUILD_BRANCH}", "testEnv": "${params.test_env}", "labAlias": "${params.lab_alias}", "isHidden": true ${cdOnlyString}}' | jq -r '.data.labId'
            """)).trim()
     }
     echo "LAB ID: ${lab_id}"
@@ -391,7 +392,7 @@ def convert_to_map(mapAsString) {
 
 def schedule_full_run(Map params) {
   try {
-    def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -w \"%{http_code}\" https://${params.machine}/sl-api/v1/tia/apps/${params.app_name}/branches/${params.branch_name}/testStages/${params.test_stage}/full-run -H \"Authorization: Bearer ${params.token}\" -H \"Content-Type: application/json\" -d \'{\"enable\": true}\'")).trim()
+    def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -w \"%{http_code}\" https://${params.machine}/sl-api/v1/tia/apps/${params.app_name}/branches/${params.BUILD_BRANCH_name}/testStages/${params.test_stage}/full-run -H \"Authorization: Bearer ${params.token}\" -H \"Content-Type: application/json\" -d \'{\"enable\": true}\'")).trim()
     if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
       return false
     }
