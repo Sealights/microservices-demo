@@ -98,29 +98,6 @@ pipeline {
       }
     }
 
-    stage('Full Run') {
-      steps {
-        script {
-          def testStages_list =
-            [
-             "Cypress-Test-Stage",
-             "Mocha-tests"
-             ]
-
-          testStages_list.each { TEST_STAGE ->
-            schedule_full_run(
-              app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
-              branch_name: URLEncoder.encode("${params.BUILD_BRANCH}", "UTF-8"),
-              test_stage: "${TEST_STAGE}",
-              token: "${params.SL_TOKEN}",
-              machine: "dev-integration.dev.sealights.co"
-            )
-          }
-
-        }
-      }
-    }
-
     stage('Run Tests') {
       steps {
         script {
@@ -316,12 +293,6 @@ def failure_btq(Map params){
   slackSend channel: "#btq-ci", tokenCredentialId: "slack_sldevops", color: "danger", message: "BTQ-CI build ${env.CURRENT_VERSION} for branch ${BRANCH_NAME} finished with status ${currentBuild.currentResult} (<${env.BUILD_URL}|Open>) and TearDownBoutiqeEnvironment"
 }
 
-
-def clone_repo(Map params){
-  // Clone the repository with the specified branch
-  git branch: params.BUILD_BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
-}
-
 def set_assume_role(Map params) {
   params.set_globaly = params.set_globaly == null ? true : params.set_globaly
   def credential_map = sh (returnStdout: true, script: """
@@ -349,12 +320,12 @@ def create_lab_id(Map params) {
     if (params.isPR){
       lab_id = (sh(returnStdout: true, script:"""
             #!/bin/sh -e +x
-            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids/pull-request" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.BUILD_BRANCH}", "testEnv": "${params.test_env}", "targetBranch": "${params.target_branch}", "isHidden": true }' | jq -r '.data.labId'
+            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids/pull-request" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.branch}", "testEnv": "${params.test_env}", "targetBranch": "${params.target_branch}", "isHidden": true }' | jq -r '.data.labId'
            """)).trim()
     } else {
       lab_id = (sh(returnStdout: true, script:"""
             #!/bin/sh -e +x
-            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.BUILD_BRANCH}", "testEnv": "${params.test_env}", "labAlias": "${params.lab_alias}", "isHidden": true ${cdOnlyString}}' | jq -r '.data.labId'
+            curl -X POST "${params.machine}/sl-api/v1/agent-apis/lab-ids" -H "Authorization: Bearer ${params.token}" -H "Content-Type: application/json" -d '{ "appName": "${params.app}", "branchName": "${params.branch}", "testEnv": "${params.test_env}", "labAlias": "${params.lab_alias}", "isHidden": true ${cdOnlyString}}' | jq -r '.data.labId'
            """)).trim()
     }
     echo "LAB ID: ${lab_id}"
@@ -379,16 +350,4 @@ def convert_to_map(mapAsString) {
         [(pair.first()): "${pair.last()}"]
       }
   return map
-}
-
-def schedule_full_run(Map params) {
-  try {
-    def RESPONSE = (sh(returnStdout: true, script: "curl -X PUT -w \"%{http_code}\" https://${params.machine}/sl-api/v1/tia/apps/${params.app_name}/branches/${params.BUILD_BRANCH_name}/testStages/${params.test_stage}/full-run -H \"Authorization: Bearer ${params.token}\" -H \"Content-Type: application/json\" -d \'{\"enable\": true}\'")).trim()
-    if ( "${RESPONSE}" != "200" && "${RESPONSE}" != "201" ) {
-      return false
-    }
-    return true
-  } catch(err) {
-    error "Failed to schedule full-run"
-  }
 }
