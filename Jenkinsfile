@@ -269,7 +269,7 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      build(job: "All-In-One/${params.BUILD_BRANCH}", parameters: [
+      build(job: "All-In-One/${env.BRANCH_NAME}", parameters: [
         string(name: 'BRANCH', value: "${params.BUILD_BRANCH}"),
         string(name: 'SL_LABID', value: "${params.LAB_ID}"),
         string(name: 'SL_TOKEN', value: "${env.TOKEN}"),
