@@ -74,7 +74,7 @@ pipeline {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
           def IDENTIFIER = "${env.BRANCH_NAME}-${env.CURRENT_VERSION}"
-          env.LAB_ID = create_lab_id(
+          env.lab = create_lab_id(
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
             app: "${params.APP_NAME}",
@@ -83,7 +83,7 @@ pipeline {
             lab_alias: "${IDENTIFIER}",
             cdOnly: true,
           )
-          echo "LAB_ID: ${env.LAB_ID}"
+          echo "LAB_ID: ${env.lab}"
           SpinUpBoutiqeEnvironment(
             enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
@@ -94,7 +94,7 @@ pipeline {
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : env.BRANCH_NAME,
             git_branch : params.BUILD_BRANCH,
-            lab_id: env.LAB_ID
+            lab_id: env.lab
           )
         }
       }
@@ -110,7 +110,7 @@ pipeline {
             branch: env.BRANCH_NAME,
             test_type: params.TEST_TYPE,
             NODEJS_CI: params.NODEJS_CI,
-            LAB_ID: env.LAB_ID
+            LAB_ID: env.lab
           )
 
         }
