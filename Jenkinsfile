@@ -188,15 +188,15 @@ def build_btq(Map params){
 
   def services_list = ["adservice","cartservice","checkoutservice", "currencyservice","emailservice","frontend","paymentservice","productcatalogservice","recommendationservice","shippingservice"]
   //def special_services = ["cartservice"].
-  env.BUILD_NAME= "${params.build_name}" == "" ? "${params.BUILD_BRANCH}-${env.CURRENT_VERSION}" : "${params.build_name}"
+  env.BUILD_NAME= "${params.build_name}" == "" ? "${params.branch}-${env.CURRENT_VERSION}" : "${params.build_name}"
 
   services_list.each { service ->
     parallelLabs["${service}"] = {
       def AGENT_URL = getParamForService(service , params.mapurl)
-      build(job: "BTQ-BUILD/${params.BUILD_BRANCH}", parameters: [string(name: 'SERVICE', value: "${service}"),
+      build(job: "BTQ-BUILD/${params.branch}", parameters: [string(name: 'SERVICE', value: "${service}"),
                                            string(name:'TAG' , value:"${env.CURRENT_VERSION}"),
                                            string(name:'SL_REPORT_BRANCH' , value:"${params.sl_report_branch}"),
-                                           string(name:'BRANCH' , value:"${params.BUILD_BRANCH}"),
+                                           string(name:'BRANCH' , value:"${params.branch}"),
                                            string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
                                            string(name:'SL_TOKEN' , value:"${env.TOKEN}"),
                                            string(name:'GITHUB_SCTOKEN' , value:"${params.GITHUB_SCTOKEN}"),
