@@ -93,7 +93,7 @@ pipeline {
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : env.BRANCH_NAME,
             git_branch : params.BUILD_BRANCH,
-            BTQ_LAB_ID: env.LAB_ID
+            lab_id: env.LAB_ID
           )
         }
       }
@@ -210,7 +210,7 @@ def SpinUpBoutiqeEnvironment(Map params){
                                                       string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
                                                       ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
                                                       string(name:'GIT_BRANCH' , value:"${params.git_branch}"),
-                                                      string(name:'BTQ_LAB_ID' , value:"${params.BTQ_LAB_ID}"),
+                                                      string(name:'BTQ_LAB_ID' , value:"${params.lab_id}"),
                                                       string(name:'INSTALL_DD' , value:"${params.enable_dd}"),
                                                       string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
                                                       string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
