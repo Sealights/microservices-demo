@@ -82,12 +82,12 @@ pipeline {
       steps {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
-          def IDENTIFIER = "${params.BUILD_BRANCH}-${env.CURRENT_VERSION}"
+          def IDENTIFIER = "${env.BRANCH_NAME}-${env.CURRENT_VERSION}"
           env.LAB_ID = create_lab_id(
             token: "${env.TOKEN}",
             machine: "https://dev-integration.dev.sealights.co",
             app: "${params.APP_NAME}",
-            branch: "${params.BUILD_BRANCH}",
+            branch: "${env.BRANCH_NAME}",
             test_env: "${IDENTIFIER}",
             lab_alias: "${IDENTIFIER}",
             cdOnly: true,
@@ -97,7 +97,7 @@ pipeline {
             IDENTIFIER : IDENTIFIER,
             branch: env.BRANCH_NAME,
             app_name: params.APP_NAME,
-            build_branch: params.BUILD_BRANCH,
+            build_branch: env.BRANCH_NAME,
             java_agent_url: params.JAVA_AGENT_URL,
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : env.BRANCH_NAME,
