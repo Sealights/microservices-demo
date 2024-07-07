@@ -83,6 +83,7 @@ pipeline {
             lab_alias: "${IDENTIFIER}",
             cdOnly: true,
           )
+          echo "LAB_ID: ${env.LAB_ID}"
           SpinUpBoutiqeEnvironment(
             enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
@@ -205,6 +206,7 @@ def getParamForService(service, mapurl) {
 
 def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
+  echo "internal lab_id is ${params.LAB_ID}"
 
   build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"),
                                                       string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
