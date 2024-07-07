@@ -13,7 +13,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
+    string(name: 'BRANCH', defaultValue: "${env.BRANCH_NAME}", description: 'Branch to clone (ahmad-branch)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
     string(name: 'SL_LABID', defaultValue: '', description: 'Lab_id')
     string(name: 'MACHINE_DNS', defaultValue: 'http://10.2.11.97:8081', description: 'machine dns')
@@ -40,7 +40,7 @@ pipeline {
       steps{
         script {
           if (params.Run_all_tests == true || params.Cypress == true) {
-            build(job: "Cypress_test/${env.BRANCH}", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}"),booleanParam(name: 'NODEJS_CI', value: true)])
+            build(job: "Cypress_test/${env.BRANCH_NAME}", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}"),booleanParam(name: 'NODEJS_CI', value: true)])
           }
         }
       }
