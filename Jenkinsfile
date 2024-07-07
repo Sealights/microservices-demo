@@ -10,6 +10,7 @@ pipeline {
     GITHUB_SCTOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
     NPM_REGISTRIES_TOKEN_NORMAL = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').normal}"
     NPM_REGISTRIES_TOKEN_SEALIGHTS = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').sealights}"
+    LAB_ID=""
   }
   parameters {
     string(name: 'APP_NAME', defaultValue: "NodejsCI-Boutique", description: 'name of the app (integration build)')
@@ -81,8 +82,16 @@ pipeline {
       steps {
         script {
           env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
-
           def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
+          env.LAB_ID = create_lab_id(
+            token: "${env.TOKEN}",
+            machine: "https://dev-integration.dev.sealights.co",
+            app: "${params.APP_NAME}",
+            branch: "${params.BUILD_BRANCH}",
+            test_env: "${IDENTIFIER}",
+            lab_alias: "${IDENTIFIER}",
+            cdOnly: true,
+          )
           SpinUpBoutiqeEnvironment(
             enable_dd : params.enable_dd ,
             IDENTIFIER : IDENTIFIER,
@@ -92,7 +101,7 @@ pipeline {
             java_agent_url: params.JAVA_AGENT_URL,
             dotnet_agent_url: params.DOTNET_AGENT_URL,
             sl_branch : env.BRANCH_NAME,
-            git_branch : params.BUILD_BRANCH
+            git_branch : params.BUILD_BRANCH,
           )
         }
       }
@@ -226,15 +235,7 @@ def getParamForService(service, mapurl) {
 
 def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
-  env.LAB_ID = create_lab_id(
-    token: "${env.TOKEN}",
-    machine: "https://dev-integration.dev.sealights.co",
-    app: "${params.app_name}",
-    branch: "${params.BUILD_BRANCH}",
-    test_env: "${params.IDENTIFIER}",
-    lab_alias: "${params.IDENTIFIER}",
-    cdOnly: true,
-  )
+
   build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"),
                                                       string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
                                                       ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
