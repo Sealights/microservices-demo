@@ -36,6 +36,27 @@ pipeline {
         }
       }
     }
+    stage('Cucumberjs framework starting'){
+      steps{
+        script{
+            sh """
+                  echo 'Cucumberjs framework starting ..... '
+                  cd integration-tests/Cucumber-js
+                  echo ${env.SL_TOKEN}>sltoken.txt
+                  npm install @cucumber/cucumber axios sealights-cucumber-plugin
+                  export SL_PACKAGE=\$(node -p "require.resolve('sealights-cucumber-plugin')")
+                  export machine_dns="${env.MACHINE_DNS}"
+                  echo '{
+                    "tokenfile": "sltoken.txt",
+                    "labid": "${params.SL_LABID}",
+                    "testStage": "Cucumber Tests"
+                    }' > sl.conf
+                  node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
+                  sleep ${env.wait_time}
+                  """
+        }
+      }
+    }
     stage('Cypress framework starting'){
       steps{
         script {
