@@ -44,6 +44,12 @@ pipeline {
                   cd integration-tests/Cucumber-js
                   echo ${env.SL_TOKEN}>sltoken.txt
                   npm install @cucumber/cucumber axios sealights-cucumber-plugin
+                  if [ "${params.NODEJS_CI}" = "true" ]; then
+                    npm install @sealights/sealights-cucumber-plugin@canary || {
+                        echo "Failed to install @sealights/sealights-cucumber-plugin"
+                        exit 1
+                    }
+                  fi
                   export SL_PACKAGE=\$(node -p "require.resolve('sealights-cucumber-plugin')")
                   export machine_dns="${env.MACHINE_DNS}"
                   echo '{
