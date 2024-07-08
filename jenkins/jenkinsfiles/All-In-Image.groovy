@@ -55,12 +55,12 @@ pipeline {
             cd ./integration-tests/postman-tests/
             cp -r /nodeModules/node_modules .
             if [ "${params.NODEJS_CI}" = "true" ]; then
-              npm install @sealights/sealights-newman-runner@canary || {
-                  echo "Failed to install @sealights/sealights-newman-runner"
+              npm install @sealights/sealights-newman-wrapper@canary || {
+                  echo "Failed to install @sealights/sealights-newman-wrapper"
                   exit 1
               }
             fi
-            npx sealights-newman-runner ... --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
+            npx sealights-newman-wrapper ... --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
             cd ../..
           """
           }
