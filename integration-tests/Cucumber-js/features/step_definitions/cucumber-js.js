@@ -51,11 +51,6 @@ When('A user checks out with products', async function () {
     assert.equal(response.status, 200, `Failed to checkout: ${response.status}`);
 });
 
-When('A user accesses the Sealights page', async function () {
-    const response = await axios.get(`${BASE_URL}/sealights`);
-    assert.equal(response.status, 200, "Failed to access the Sealights page");
-});
-
 async function testSession() {
     const response = await axios.get(`${BASE_URL}/`);
     assert.equal(response.status, 200, "Failed to load the homepage");

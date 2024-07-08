@@ -42,7 +42,7 @@ pipeline {
             sh """
                   echo 'Cucumberjs framework starting ..... '
                   cd integration-tests/Cucumber-js
-                  echo ${env.SL_TOKEN}>sltoken.txt
+                  echo ${params.SL_TOKEN}>sltoken.txt
                   npm install @cucumber/cucumber axios sealights-cucumber-plugin
                   if [ "${params.NODEJS_CI}" = "true" ]; then
                     npm install @sealights/sealights-cucumber-plugin@canary || {
@@ -56,7 +56,7 @@ pipeline {
                     "tokenfile": "sltoken.txt",
                     "labid": "${params.SL_LABID}",
                     "testStage": "Cucumber Tests"
-                    }' > sl.conf
+                  }' > sl.conf
                   node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
                   sleep ${env.wait_time}
                   """
