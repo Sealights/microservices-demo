@@ -48,8 +48,8 @@ pipeline {
     stage('Postman framework'){
       steps{
         script {
-            if (params.Run_all_tests == true) {
-              sh """
+            if (true) {
+            sh """
             echo 'Postman framework starting ..... '
             export MACHINE_DNS="${params.MACHINE_DNS}"
             cd ./integration-tests/postman-tests/
