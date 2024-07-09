@@ -46,6 +46,7 @@
 
 <body>
     <header>
+
         {{ if $.frontendMessage }}
         <div class="navbar">
             <div class="container d-flex justify-content-center">
@@ -54,6 +55,11 @@
         </div>
         {{ end }}
         <div class="navbar sub-navbar">
+            <div>
+                <a href="/sealights" class="navbar-brand d-flex align-items-left">
+                    <img src="/static/icons/sealights.png" alt="" class="top-left-logo-cymbal" />
+                </a>
+            </div>
             <div class="container d-flex justify-content-between">
                 <a href="/" class="navbar-brand d-flex align-items-center">
                     {{ if $.is_cymbal_brand }}

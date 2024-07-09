@@ -1,43 +1,33 @@
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 FROM python:3.10.8-slim@sha256:49749648f4426b31b20fca55ad854caa55ff59dc604f2f76b57d814e0a47c181 as base
-
 FROM base as builder
 
+ARG SEALIGHTS_TOKEN
+ARG BRANCH
+ARG BUILD_NAME
+ARG AGENT_URL
+#Don't forget to add git
 RUN apt-get -qq update \
     && apt-get install -y --no-install-recommends \
-        wget g++ \
+        wget g++ git \
     && rm -rf /var/lib/apt/lists/*
 
 # get packages
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install ${AGENT_URL}
 
-FROM base
+FROM builder
 # Enable unbuffered logging
 ENV PYTHONUNBUFFERED=1
-# Enable Profiler
 ENV ENABLE_PROFILER=1
 
-WORKDIR /email_server
-
-# Grab packages from builder
 COPY --from=builder /usr/local/lib/python3.10/ /usr/local/lib/python3.10/
-
-# Add the application
+WORKDIR /email_server
 COPY . .
-
+RUN sl-python config --appname emailservice --branchname ${BRANCH} --buildname ${BUILD_NAME} --workspacepath ./ --token ${SEALIGHTS_TOKEN} --exclude "*grpc*"
+RUN sl-python scan --scm none --token ${SEALIGHTS_TOKEN}
+ENV SL_DEBUG=true
+# Add the application
+ENV PORT "8080"
 EXPOSE 8080
-ENTRYPOINT [ "python", "email_server.py" ]
+CMD sl-python run python email_server.py --labid ${SL_LAB_ID} --token ${SL_TOKEN}

@@ -42,6 +42,8 @@ spec:
         seccompProfile:
           type: {{ .Values.seccompProfile.type }}
         {{- end }}
+      imagePullSecrets:
+        - name: regcred-mgmt
       containers:
       - name: server
         securityContext:
@@ -51,7 +53,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: ahmad12abed/productcatalogservice:1.1.3
+        image: {{ .Values.images.repository }}/btq-{{ .Values.productCatalogService.name }}:{{ .Values.images.tag | default .Chart.AppVersion }}
         ports:
         - containerPort: 3550
         env:

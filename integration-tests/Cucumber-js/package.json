@@ -1,0 +1,19 @@
+{
+  "name": "cucumber-js_test",
+  "version": "10.0.0",
+  "description": "",
+  "main": "features/step_definitions/cucumber-js.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.3.2",
+    "axios": "^1.6.8"
+  },
+  "dependencies": {
+    "sealights-cucumber-plugin": "^2.0.60"
+  }
+}

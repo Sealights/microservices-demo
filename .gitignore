@@ -1,14 +1,13 @@
-bin/
 pkg/
 .DS_Store
+.idea/
 *.pyc
 *.swp
+.lib/
 *.tfstate
 *.tfstate*
-*~
 .vscode/
 .vs/
-.idea
 .skaffold-*.yaml
 .kubernetes-manifests-*/
 .project
@@ -18,3 +17,7 @@ pkg/
 .terraform.lock.hcl
 *.tfvars
 release/wi-kubernetes-manifests.yaml
+node_modules
+package-lock.json
+*.mp4
+.idea
