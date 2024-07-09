@@ -43,7 +43,7 @@ pipeline {
     stage("Init test") {
       steps {
         script {
-            if (params.NODEJS_CI) {
+            if (params.TECHNOLOGY == 'node') {
                 github.set_github_registries()
             }
         }
