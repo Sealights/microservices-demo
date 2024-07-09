@@ -43,7 +43,9 @@ pipeline {
     stage("Init test") {
       steps {
         script {
-          git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
+            if (params.NODEJS_CI) {
+                github.set_github_registries()
+            }
         }
       }
     }
@@ -96,7 +98,7 @@ pipeline {
       steps {
         script {
           if (params.Run_all_tests == true || params.Cypress == true || params.TECHNOLOGY == 'node') {
-            build(job: "BTQ-nodejs-tests-Cypress-framework", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}")])
+            build(job: "Cypress_test/${env.BRANCH_NAME}", parameters: [string(name: 'BRANCH', value: "${params.BRANCH}"), string(name: 'SL_LABID', value: "${params.SL_LABID}"), string(name: 'SL_TOKEN', value: "${params.SL_TOKEN}"), string(name: 'MACHINE_DNS1', value: "${params.MACHINE_DNS}"),booleanParam(name: 'NODEJS_CI', value: (params.TECHNOLOGY == 'node'))])
           }
         }
       }
@@ -107,22 +109,28 @@ pipeline {
         script {
           if (params.Run_all_tests == true || params.Cucumberjs == true || params.TECHNOLOGY == 'node') {
             sh """
-                  echo 'Cucumberjs framework starting ..... '
-                  cd integration-tests/Cucumber-js
-                  echo ${env.SL_TOKEN}>sltoken.txt
-                  npm install @cucumber/cucumber axios sealights-cucumber-plugin
-                  export SL_PACKAGE=\$(node -p "require.resolve('sealights-cucumber-plugin')")
-                  export machine_dns="${env.MACHINE_DNS}"
-                  echo '{
-                    "tokenfile": "sltoken.txt",
-                    "labid": "${params.SL_LABID}",
-                    "testStage": "CucumberJS-Tests"
-                    }' > sl.conf
-                  ./node_modules/.bin/slnodejs start --tokenfile ./sltoken.txt --labid ${params.SL_LABID} --teststage "CucumberJS-Tests"
-                  node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
-                  ./node_modules/.bin/slnodejs end --tokenfile ./sltoken.txt --labid ${params.SL_LABID}
-                  sleep 10
-                  """
+              echo 'Cucumberjs framework starting ..... '
+              cd integration-tests/Cucumber-js
+              echo ${params.SL_TOKEN}>sltoken.txt
+              npm install @cucumber/cucumber axios sealights-cucumber-plugin
+              if [ "${params.TECHNOLOGY}" = 'node' ]; then
+                npm install @sealights/sealights-cucumber-plugin@canary || {
+                    echo "Failed to install @sealights/sealights-cucumber-plugin"
+                    exit 1
+                }
+              fi
+              export SL_PACKAGE=\$(node -p "require.resolve('sealights-cucumber-plugin')")
+              export machine_dns="${env.MACHINE_DNS}"
+              echo '{
+                "tokenfile": "sltoken.txt",
+                "labid": "${params.SL_LABID}",
+                "testStage": "Cucumber Tests"
+              }' > sl.conf
+              ./node_modules/.bin/slnodejs start --tokenfile ./sltoken.txt --labid ${params.SL_LABID} --teststage "Cucumber Tests"
+              node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
+              ./node_modules/.bin/slnodejs end --tokenfile ./sltoken.txt --labid ${params.SL_LABID}
+              sleep 10
+            """
           }
         }
       }
@@ -306,9 +314,11 @@ pipeline {
                 export machine_dns="${params.MACHINE_DNS}"
                 export Lab_id="${params.SL_LABID}"
                 cd ./integration-tests/nodejs-tests/mocha
-                cp -r /nodeModules/node_modules .
                 npm install
-                npm install slnodejs
+                npm install @sealights/slnodejs@canary || {
+                    echo "Failed to install @sealights/slnodejs"
+                    exit 1
+                }
                 ./node_modules/.bin/slnodejs mocha --token "${params.SL_TOKEN}" --labid "${params.SL_LABID}" --teststage 'Mocha-tests'  --useslnode2 -- ./test/test.js --recursive --testTimeout=30000
                 cd ../..
               """
@@ -337,21 +347,21 @@ pipeline {
     stage('Postman framework') {
       steps {
         script {
-          if (params.Run_all_tests == true || params.Postman == true) {
+          if (params.Run_all_tests == true || params.Postman == true || params.TECHNOLOGY == 'node') {
             sh """
-                echo 'Postman framework starting ..... '
-                export MACHINE_DNS="${params.MACHINE_DNS}"
-                cd ./integration-tests/postman-tests/
-                cp -r /nodeModules/node_modules .
-                npm i slnodejs
-                npm install newman
-                npm install newman-reporter-xunit
-                ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman-tests"
-                npx newman run sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}" -r xunit --reporter-xunit-export './result.xml' --suppress-exit-code
-                ./node_modules/.bin/slnodejs uploadReports --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --reportFile './result.xml'
-                ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
-                cd ../..
-              """
+              echo 'Postman framework starting ..... '
+              export MACHINE_DNS="${params.MACHINE_DNS}"
+              cd ./integration-tests/postman-tests/
+              cp -r /nodeModules/node_modules .
+              if [ "${params.TECHNOLOGY}" = 'node' ]; then
+                npm install @sealights/sealights-newman-wrapper@canary || {
+                    echo "Failed to install @sealights/sealights-newman-wrapper"
+                    exit 1
+                }
+              fi
+              npx sealights-newman-wrapper ... --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
+              cd ../..
+          """
           }
         }
       }
