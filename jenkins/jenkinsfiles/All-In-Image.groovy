@@ -60,7 +60,7 @@ pipeline {
                   ./node_modules/.bin/slnodejs start --tokenfile ./sltoken.txt --labid ${params.SL_LABID} --teststage "Cucumber Tests"
                   node_modules/.bin/cucumber-js ./features --require \$SL_PACKAGE --require 'features/**/*.@(js|cjs|mjs)'
                   ./node_modules/.bin/slnodejs end --tokenfile ./sltoken.txt --labid ${params.SL_LABID}
-                  sleep ${env.wait_time}
+                  sleep 10
                   """
         }
       }
