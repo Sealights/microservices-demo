@@ -10,7 +10,7 @@ pipeline {
     choice(name: 'BTQ_RUNNING', choices: ['BTQ','line coverage', 'BTQ + line coverage'], description: 'Make your choice of BTQ running')
     choice(name: 'BTQ_RUNNING_TECHNOLOGY', choices: ['All','dotnet','node'], description: 'Make your choice of BTQ running')
     string(name: 'lab', defaultValue: 'dev-integration.dev', description: 'name of the lab/environment for the lab id, default https://dev-integration.dev.sealights.co')
-    string(name: 'APP_NAME', defaultValue: 'ahmad-BTQ', description: 'name of the app (integration build)')
+    string(name: 'APP_NAME', defaultValue: 'slnodejs-plugins-btq', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'ahmad-branch', description: 'Branch to clone (ahmad-branch)')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (ahmad-branch)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
