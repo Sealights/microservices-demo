@@ -315,7 +315,7 @@ pipeline {
                 export Lab_id="${params.SL_LABID}"
                 cd ./integration-tests/nodejs-tests/mocha
                 npm install
-                npm install @sealights/slnodejs@canary || {
+                npm install @sealights/slnodejs || {
                     echo "Failed to install @sealights/slnodejs"
                     exit 1
                 }
