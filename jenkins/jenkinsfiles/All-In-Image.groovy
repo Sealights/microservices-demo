@@ -351,8 +351,8 @@ pipeline {
             sh """
               echo 'Postman framework starting ..... '
               export MACHINE_DNS="${params.MACHINE_DNS}"
-              cd ./integration-tests/postman-tests/
-              cp -r /nodeModules/node_modules .
+              cd ./integration-tests/postman-tests
+              npm install
               if [ "${params.TECHNOLOGY}" = 'node' ]; then
                 npm install @sealights/sealights-newman-wrapper@canary || {
                     echo "Failed to install @sealights/sealights-newman-wrapper"
