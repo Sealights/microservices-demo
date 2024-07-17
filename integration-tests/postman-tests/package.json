@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "sealights-newman-wrapper": "^2.0.74"
+  }
+}
