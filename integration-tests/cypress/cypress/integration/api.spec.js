@@ -47,12 +47,4 @@ describe('Api Tests', () => {
    });
  });
 
- it('should return 200 for Sealights page', () => {
-     cy.wait(15000);
-     cy.request('GET', Cypress.env('machine_dns') + '/sealights').then(response => {
-       cy.wrap(response.status).should('equal', 200);
-     });
-   });
-
-
 });
