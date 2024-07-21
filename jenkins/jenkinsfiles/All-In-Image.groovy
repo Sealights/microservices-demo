@@ -66,7 +66,7 @@ pipeline {
               fi
               ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman tests"
               sleep 10
-              npx sealights-newman-wrapper --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
+              npx sealights-newman-wrapper --sl-token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
               ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
               cd ../..
           """
@@ -286,7 +286,7 @@ pipeline {
                 }' > slgradletests.json
                 echo "Adding Sealights to Tests Project gradle file..."
                 java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-                gradle test
+                ./gradlew test
             """
           }
         }
