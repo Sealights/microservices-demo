@@ -14,6 +14,3 @@ Feature: API tests
 
   Scenario: Checkout with products
     When A user checks out with products
-
-  Scenario: Access Sealights page
-    When A user accesses the Sealights page
