@@ -57,7 +57,7 @@ pipeline {
               echo 'Postman framework starting ..... '
               export MACHINE_DNS="${params.MACHINE_DNS}"
               cd ./integration-tests/postman-tests
-              npm install
+              npm install -s
               if [ "${params.TECHNOLOGY}" = 'node' ]; then
                 npm install @sealights/sealights-newman-wrapper@canary || {
                     echo "Failed to install @sealights/sealights-newman-wrapper"
@@ -80,7 +80,6 @@ pipeline {
           if (params.Run_all_tests == true || params.MS == true || params.TECHNOLOGY == 'dotnet') {
             sh """
                 mkdir -p ./sealights/agent
-                ls
 
                 DOTNET_LATEST_VERSION=\$(gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName')
                 gh release download \$DOTNET_LATEST_VERSION --repo sealights/SL.OnPremise.Agents.DotNet -D ./sealights/agent
@@ -137,9 +136,9 @@ pipeline {
               echo 'Cucumberjs framework starting ..... '
               cd integration-tests/Cucumber-js
               echo ${params.SL_TOKEN}>sltoken.txt
-              npm install @cucumber/cucumber axios sealights-cucumber-plugin
+              npm install -s @cucumber/cucumber axios sealights-cucumber-plugin
               if [ "${params.TECHNOLOGY}" = 'node' ]; then
-                npm install @sealights/sealights-cucumber-plugin@canary || {
+                npm install -s @sealights/sealights-cucumber-plugin@canary || {
                     echo "Failed to install @sealights/sealights-cucumber-plugin"
                     exit 1
                 }
@@ -222,7 +221,7 @@ pipeline {
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
             #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
-            mvn clean package
+            mvn -q clean package
           """
           }
         }
@@ -236,8 +235,6 @@ pipeline {
                 #!/bin/bash
                 export lab_id="${params.SL_LABID}"
                 echo 'Junit support testNG framework starting ..... '
-                pwd
-                ls
                 cd ./integration-tests/support-testNG
                 export SL_TOKEN="${params.SL_TOKEN}"
                 echo $SL_TOKEN>sltoken.txt
@@ -258,7 +255,7 @@ pipeline {
                         }' > slmaventests.json
                 echo "Adding Sealights to Tests Project POM file..."
                 java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-                mvn clean package
+                mvn -q clean package
               """
           }
         }
@@ -323,7 +320,7 @@ pipeline {
                 echo "Adding Sealights to Tests Project POM file..."
                 java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
                 unset MAVEN_CONFIG
-                ./mvnw test
+                ./mvnw -q test
               """
           }
         }
@@ -339,7 +336,7 @@ pipeline {
                 export machine_dns="${params.MACHINE_DNS}"
                 export Lab_id="${params.SL_LABID}"
                 cd ./integration-tests/nodejs-tests/mocha
-                npm install
+                npm install -s
                 npm install @sealights/slnodejs || {
                     echo "Failed to install @sealights/slnodejs"
                     exit 1
@@ -439,10 +436,8 @@ pipeline {
             echo 'Pytest tests starting ..... '
             export machine_dns="${params.MACHINE_DNS}"
             cd ./integration-tests/python-tests
-            pip install pytest
-            pip install requests
+            pip install pytest requests -q
             sl-python pytest --teststage "Pytest-tests"  --labid ${params.SL_LABID} --token ${params.SL_TOKEN} python-tests.py
-            ls
             cd ../..
           """
           }
