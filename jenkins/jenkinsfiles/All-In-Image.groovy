@@ -49,6 +49,31 @@ pipeline {
         }
       }
     }
+    stage('Postman framework') {
+      steps {
+        script {
+          if (params.Run_all_tests == true || params.Postman == true || params.TECHNOLOGY == 'node') {
+            sh """
+              echo 'Postman framework starting ..... '
+              export MACHINE_DNS="${params.MACHINE_DNS}"
+              cd ./integration-tests/postman-tests
+              npm install
+              if [ "${params.TECHNOLOGY}" = 'node' ]; then
+                npm install @sealights/sealights-newman-wrapper@canary || {
+                    echo "Failed to install @sealights/sealights-newman-wrapper"
+                    exit 1
+                }
+              fi
+              ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman tests"
+              sleep 10
+              npx sealights-newman-wrapper --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
+              ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
+              cd ../..
+          """
+          }
+        }
+      }
+    }
     stage('MS-Tests framework') {
       steps {
         script {
@@ -344,31 +369,7 @@ pipeline {
 //        }
 //      }
 //    }
-    stage('Postman framework') {
-      steps {
-        script {
-          if (params.Run_all_tests == true || params.Postman == true || params.TECHNOLOGY == 'node') {
-            sh """
-              echo 'Postman framework starting ..... '
-              export MACHINE_DNS="${params.MACHINE_DNS}"
-              cd ./integration-tests/postman-tests
-              npm install
-              if [ "${params.TECHNOLOGY}" = 'node' ]; then
-                npm install @sealights/sealights-newman-wrapper@canary || {
-                    echo "Failed to install @sealights/sealights-newman-wrapper"
-                    exit 1
-                }
-              fi
-              ./node_modules/.bin/slnodejs start --labid ${params.SL_LABID} --token ${params.SL_TOKEN} --teststage "postman tests"
-              sleep 10
-              npx sealights-newman-wrapper --token ${params.SL_TOKEN} --sl-labid ${params.SL_LABID} --sl-testStage "postman-tests" -c sealights-excersise.postman_collection.json --env-var machine_dns="${params.MACHINE_DNS}"
-              ./node_modules/.bin/slnodejs end --labid ${params.SL_LABID} --token ${params.SL_TOKEN}
-              cd ../..
-          """
-          }
-        }
-      }
-    }
+
 //    stage('Jest framework'){
 //      steps{
 //        script{
