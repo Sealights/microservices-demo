@@ -1,4 +1,4 @@
-@Library('main-shared-library@abed/nodejs-ci') _
+@Library('main-shared-library') _
 
 pipeline {
     agent {
