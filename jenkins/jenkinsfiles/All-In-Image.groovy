@@ -10,7 +10,6 @@ pipeline {
     buildDiscarder logRotator(numToKeepStr: '30')
     timestamps()
   }
-
   parameters {
     string(name: 'BRANCH', defaultValue: 'slnodejs', description: 'Branch to clone (ahmad-branch)')
     string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')

@@ -6,6 +6,7 @@ pipeline {
       defaultContainer "shell"
     }
   }
+
   environment {
     GITHUB_SCTOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
     NPM_REGISTRIES_TOKEN_NORMAL = "${secrets.get_secret_map('mgmt/npmrc_tokens', 'us-west-2').normal}"
