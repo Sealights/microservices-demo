@@ -32,6 +32,7 @@ pipeline {
     booleanParam(name: 'Run_all_tests', defaultValue: false, description: 'Checking this box will run all tests even if individual ones are not checked')
     booleanParam(name: 'Cypress', defaultValue: true, description: 'Run tests using Cypress testing framework')
     booleanParam(name: 'Mocha', defaultValue: true, description: 'Run tests using Mocha testing framework')
+    choice(name: 'BTQ_RUNNING', choices: ['BTQ', 'line coverage', 'BTQ + line coverage'], description: 'Choose BTQ running')
   }
 
   stages {
