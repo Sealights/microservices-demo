@@ -84,4 +84,4 @@ ENV NODE_DEBUG=sl
 ENV SL_LOG_LEVEL=debug
 EXPOSE 50051
 
-CMD  npx slnodejs-internal run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
+CMD  npx slnodejs run --token "${SL_TOKEN}" --buildsessionidfile buildSessionId --labid "${SL_LAB_ID}" --workspacepath . index.js
