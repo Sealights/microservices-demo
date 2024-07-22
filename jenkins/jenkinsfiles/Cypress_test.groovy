@@ -1,4 +1,4 @@
-@Library('main-shared-library@abed/nodejs-ci') _
+@Library('main-shared-library') _
 
 pipeline {
    agent {
@@ -16,7 +16,7 @@ pipeline {
             defaultContainer 'shell'
         }
     }
-    
+
     parameters {
         string(name: 'BRANCH', defaultValue: 'slnodejs', description: 'Branch to clone (ahmad-branch)')
         string(name: 'SL_TOKEN', defaultValue: '', description: 'SL_TOKEN')
@@ -24,8 +24,8 @@ pipeline {
         string(name: 'MACHINE_DNS1', defaultValue: '', description: 'machine dns')
         string(name: 'CYPRESS_VERSION', defaultValue: '', description: 'Please enter the Cypress version to use')
         booleanParam(name: 'node_ci', defaultValue: false, description: 'Download package from github packages')
-        
-        
+
+
     }
     options{
         buildDiscarder logRotator(numToKeepStr: '20')
@@ -34,19 +34,19 @@ pipeline {
     environment {
         GH_TOKEN = secrets.get_secret('mgmt/github_token', 'us-west-2')
     }
-    
-    
-    
+
+
+
     stages{
         stage("Init test"){
             steps{
                 script{
-                git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'   
+                git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
                 }
             }
         }
-        
-        
+
+
         stage('download NodeJs agent and scanning Cypress tests') {
             steps{
                 script{
@@ -58,12 +58,12 @@ pipeline {
                     else
                         npm install sealights-cypress-plugin
                     fi
-                    npm install 
+                    npm install
                     export NODE_DEBUG=sl
                     export CYPRESS_SL_ENABLE_REMOTE_AGENT=false
                     export CYPRESS_SL_TEST_STAGE="Cypress-Test-Stage"
-                    export MACHINE_DNS="${params.MACHINE_DNS1}" 
-                    export CYPRESS_machine_dns="${params.MACHINE_DNS1}" 
+                    export MACHINE_DNS="${params.MACHINE_DNS1}"
+                    export CYPRESS_machine_dns="${params.MACHINE_DNS1}"
                     export CYPRESS_SL_LAB_ID="${params.SL_LABID}"
                     export CYPRESS_SL_TOKEN="${params.SL_TOKEN}"
 
@@ -74,5 +74,5 @@ pipeline {
             }
         }
     }
-    
+
 }
