@@ -33,6 +33,7 @@ pipeline {
       steps{
         script{
           git credentialsId:'sldevopsd', branch: params.BRANCH, url:'git@github.com:Sealights/SL.BackendApiTests.git'
+          tools.set_npm_registries()
           sh"""
             export RUN_DATA="${params.RUN_DATA}"
             export APP_NAME="${params.APP_NAME}"
@@ -51,7 +52,6 @@ pipeline {
     stage('Run tests'){ 
       steps{
         script {
-          tools.set_npm_registries()
           if (params.TECHNOLOGY == 'node' || params.TECHNOLOGY == 'dotnet') {
             sh "./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/supported-TIA-spec.js --no-timeouts"
           }else{
