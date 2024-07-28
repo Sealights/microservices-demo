@@ -34,7 +34,15 @@ spec:
       initContainers:
       - name: dotnet-cd-agent
         image: sealights/dotnetinitcontainer:latest
-        command: ["/bin/sh", "-c", "cp -r /app/sealights /"]
+        command:
+          - /bin/sh
+          - -c
+          - |
+            echo "Downloading and extracting Sealights agent...";
+            wget -nv -O /sealights/sealights-dotnet-agent-alpine.tar.gz https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz;
+            mkdir -p /sealights/agent;
+            tar -xzf /sealights/sealights-dotnet-agent-alpine.tar.gz -C /sealights/agent;
+            rm /sealights/sealights-dotnet-agent-alpine.tar.gz;
         volumeMounts:
           - mountPath: /sealights
             name: dotnet-cd-agent-file
