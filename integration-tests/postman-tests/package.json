@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@sealights/sealights-newman-wrapper": "^2.0.13-alpha.1",
     "sealights-newman-wrapper": "^2.0.74",
     "slnodejs": "^6.1.798"
   }
