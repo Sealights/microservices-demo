@@ -220,7 +220,6 @@ pipeline {
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch: params.BRANCH,
-              lab : IDENTIFIER
             )
           }
         }
@@ -336,7 +335,7 @@ def SpinUpBoutiqeEnvironment(Map params){
   env.MACHINE_DNS = "http://dev-${params.IDENTIFIER}.dev.sealights.co:8081"
   env.LAB_ID = create_lab_id(
     token: "${env.TOKEN}",
-    machine: "https://${params.lab}.sealights.co",
+    machine: "https://dev-${params.IDENTIFIER}.sealights.co",
     app: "${params.app_name}",
     branch: "${params.build_branch}",
     test_env: "${params.IDENTIFIER}",
