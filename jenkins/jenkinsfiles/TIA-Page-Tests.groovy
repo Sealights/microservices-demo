@@ -41,12 +41,14 @@ pipeline {
             export EXTERNAL_CUSTOMER_ID="integration"
             export EXTERNAL_USER_EMAIL="integration@sealights.io"
             export EXTERNAL_USER_PASSWORD="SeaLights2019!"
+            npm install chai chai-deep-equal-in-any-order --save-dev
+            npm install
             ./node_modules/.bin/tsc
           """
         }
       }
     }
-    stage('download NodeJs agent and scanning Mocha tests') {
+    stage('Run tests'){ 
       steps{
         script {
           tools.set_npm_registries()
@@ -57,6 +59,5 @@ pipeline {
           }
         }
       }
-    }
   }
 }
