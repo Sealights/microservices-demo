@@ -33,48 +33,27 @@ pipeline {
       steps{
         script{
           git credentialsId:'sldevopsd', branch: params.BRANCH, url:'git@github.com:Sealights/SL.BackendApiTests.git'
+          sh"""
+            export RUN_DATA="${params.RUN_DATA}"
+            export APP_NAME="${params.APP_NAME}"
+            export BRANCH_NAME="${params.INTEGRAION_BRANCH}"
+            echo {"\\"server"\\":  "\\"${params.LAB_UNDER_TEST}"\\", "\\"env"\\":  "\\"${params.SEALIGHTS_ENV_NAME}"\\"} >server.json
+            export EXTERNAL_CUSTOMER_ID="integration"
+            export EXTERNAL_USER_EMAIL="integration@sealights.io"
+            export EXTERNAL_USER_PASSWORD="SeaLights2019!"
+            ./node_modules/.bin/tsc
+          """
         }
       }
     }
-    stage('download NodeJs agent and scanning Mocha tests supported') {
+    stage('download NodeJs agent and scanning Mocha tests') {
       steps{
         script {
+          tools.set_npm_registries()
           if (params.TECHNOLOGY == 'node' || params.TECHNOLOGY == 'dotnet') {
-            tools.set_npm_registries()
-            sh """
-            export RUN_DATA="${params.RUN_DATA}"
-            export APP_NAME="${params.APP_NAME}"
-            export BRANCH_NAME="${params.INTEGRAION_BRANCH}"
-            echo {"\\"server"\\":  "\\"${params.LAB_UNDER_TEST}"\\", "\\"env"\\":  "\\"${params.SEALIGHTS_ENV_NAME}"\\"} >server.json
-            export EXTERNAL_CUSTOMER_ID="integration"
-            export EXTERNAL_USER_EMAIL="integration@sealights.io"
-            export EXTERNAL_USER_PASSWORD="SeaLights2019!"
-            npm install chai chai-deep-equal-in-any-order --save-dev
-            npm install
-            ./node_modules/.bin/tsc
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/supported-TIA-spec.js --no-timeouts
-          """
-          }
-        }
-      }
-    }
-    stage('download NodeJs agent and scanning Mocha tests unsupported frameworks') {
-      steps{
-        script {
-          if (params.TECHNOLOGY != 'node' || params.TECHNOLOGY != 'dotnet') {
-
-            tools.set_npm_registries()
-            sh """
-            export RUN_DATA="${params.RUN_DATA}"
-            export APP_NAME="${params.APP_NAME}"
-            export BRANCH_NAME="${params.INTEGRAION_BRANCH}"
-            echo {"\\"server"\\":  "\\"${params.LAB_UNDER_TEST}"\\", "\\"env"\\":  "\\"${params.SEALIGHTS_ENV_NAME}"\\"} >server.json
-            export EXTERNAL_CUSTOMER_ID="integration"
-            export EXTERNAL_USER_EMAIL="integration@sealights.io"
-            export EXTERNAL_USER_PASSWORD="SeaLights2019!"
-            ./node_modules/.bin/tsc
-            ./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/unsupported-TIA-spec.js --no-timeouts
-          """
+            sh "./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/supported-TIA-spec.js --no-timeouts"
+          }else{
+            sh "./node_modules/mocha/bin/_mocha tsOutputs/BTQ/TIA-Tests/unsupported-TIA-spec.js --no-timeouts"
           }
         }
       }
