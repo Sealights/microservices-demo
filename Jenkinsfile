@@ -15,6 +15,7 @@ pipeline {
   parameters {
     string(name: 'APP_NAME', defaultValue: 'slnodejs', description: 'name of the app (integration build)')
     string(name: 'BRANCH', defaultValue: 'slnodejs', description: 'Branch to clone (slnodejs)')
+    string(name: 'lab', defaultValue: 'dev-integration.dev', description: 'name of the lab/environment for the lab id, default https://dev-integration.dev.sealights.co')
     string(name: 'CHANGED_BRANCH', defaultValue: 'changed1', description: 'Branch to clone (slnodejs)')
     booleanParam(name: 'enable_dd', defaultValue: false, description: 'This parameter is used for enable Datadog agent')
     string(name: 'BUILD_BRANCH', defaultValue: 'slnodejs', description: 'Branch to Build images that have the creational LAB_ID (send to ahmad branch to build)')
