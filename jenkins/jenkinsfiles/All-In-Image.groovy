@@ -55,7 +55,7 @@ pipeline {
 
             echo "Adding Sealights to Tests Project gradle file..."
             java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-            gradle test
+            gradle test --no-daemon
 
 
             sleep ${wait_time}
