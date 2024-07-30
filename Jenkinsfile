@@ -643,7 +643,8 @@ def run_api_tests_after_changes(Map params){
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'BRANCH', value: "BTQ-TIA"),
       string(name: 'INTEGRATION_BRANCH', value: "${params.integration_branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
+      string(name: 'APP_NAME', value: "${params.app_name}"),
+      string(name: 'TECHNOLOGY', value: "${params.technology}")
     ])
   }
 }
@@ -656,7 +657,8 @@ def TIA_Page_Tests(Map params){
       string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'INTEGRAION_BRANCH', value: "${params.branch}"),
-      string(name: 'APP_NAME', value: "${params.app_name}")
+      string(name: 'APP_NAME', value: "${params.app_name}"),
+      string(name: 'TECHNOLOGY', value: "${params.technology}")
     ])
   }
 }
