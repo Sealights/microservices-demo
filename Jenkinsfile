@@ -235,7 +235,7 @@ pipeline {
       steps {
         script {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            def RUN_DATA = "full-run";
+            def RUN_DATA = "full-run-node";
             TIA_Page_Tests(
               technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
@@ -271,7 +271,7 @@ pipeline {
       steps {
         script {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
-            def RUN_DATA = "full-run";
+            def RUN_DATA = "full-run-node";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
