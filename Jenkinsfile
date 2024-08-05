@@ -71,7 +71,7 @@ pipeline {
       stage('Sealights Preparation') {
         steps {
           script {
-            env.email = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
+            env.username = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
             env.password = "${params.password}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
             def connectivity_test_limit = 100
             env.NEW_AGENT_TOKEN = sealights.create_agent_token("${env.labgw}", "BTQ-Token", 'eu-west-1', "${env.username}", "${env.password}", connectivity_test_limit)
