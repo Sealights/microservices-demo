@@ -178,6 +178,12 @@ pipeline {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
+            // Dynamically construct the lab identifier and machine URL
+            env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api"
+            env.MACHINE_URL = "dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co"
+
+            echo "Spinning up BTQ with machine URL: ${env.MACHINE_URL}"
+
             def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
             SpinUpBoutiqeEnvironment(
               enable_dd: params.enable_dd,
@@ -188,8 +194,8 @@ pipeline {
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch: params.BRANCH,
-              git_branch: params.BUILD_BRANCH ,
-              lab : "dev-${env.LAB_IDENTIFIER}"
+              git_branch: params.BUILD_BRANCH,
+              lab: "dev-${env.LAB_IDENTIFIER}"
             )
           }
         }
