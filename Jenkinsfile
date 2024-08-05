@@ -49,6 +49,35 @@ pipeline {
   }
 
   stages {
+  stage('SpinUpEnvironment For Lambda layer Tests'){
+        steps {
+          script {
+            env.LAB_IDENTIFIER = "integ-BTQ-${BUILD_NUMBER}-api"
+            env.labDNS = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
+            env.labgw = "dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co"
+            env.fullabgw = "https://${env.labgw}"
+            env.SEALIGHTS_ENV_NAME = "dev-${env.LAB_IDENTIFIER}-gw"
+            def INSTANCE_TYPE = "c5a.4xlarge"
+            def INSTANCE_NAME = "EUW-ALLINONE-DEV-$env.LAB_IDENTIFIER"
+            def AWS_Region = "eu-west-1"
+            def existingInstanceId = sh(script: """aws ec2 describe-instances --region $AWS_Region --filters "Name=tag:Name,Values=$INSTANCE_NAME" "Name=instance-type,Values=$INSTANCE_TYPE" --query "Reservations[*].Instances[*].InstanceId" --output text""", returnStdout: true).trim()
+            echo "$existingInstanceId"
+            if ("$existingInstanceId" == '') {
+              build(job: 'SpinUpEnvironment', propagate: true, parameters: [string(name: 'ENV_TYPE', value: "DEV"), string(name: 'IDENTIFIER', value: "${env.LAB_IDENTIFIER}"), string(name: 'CUSTOM_EC2_INSTANCE_TYPE', value: "${INSTANCE_TYPE}"), booleanParam(name: 'RUNNING_CI', value: true), string(name: 'LAB_ID', value: "no_lab_id")])
+            }
+          }
+        }
+      }
+      stage('Sealights Preparation') {
+        steps {
+          script {
+            env.email = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
+            env.password = "${params.password}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
+            def connectivity_test_limit = 100
+            env.NEW_AGENT_TOKEN = sealights.create_agent_token("${env.labgw}", "BTQ-Token", 'eu-west-1', ${env.username}, ${env.password}, connectivity_test_limit)
+          }
+        }
+      }
     stage('Enabling line coverage for agent'){
       steps {
         script {
