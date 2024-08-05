@@ -184,7 +184,7 @@ pipeline {
 
             echo "Spinning up BTQ with machine URL: ${env.MACHINE_URL}"
 
-            def IDENTIFIER = "${params.BRANCH}-${env.CURRENT_VERSION}"
+            def IDENTIFIER = "integ-btq-${env.CURRENT_VERSION}"
             SpinUpBoutiqeEnvironment(
               enable_dd: params.enable_dd,
               IDENTIFIER: IDENTIFIER,
