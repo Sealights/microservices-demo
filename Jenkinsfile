@@ -531,8 +531,8 @@ def SpinUpBoutiqeEnvironment(Map params){
     cdOnly: true,
   )
   build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"),
-        string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
-        ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
+        string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}"),
+        string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
         string(name:'GIT_BRANCH' , value:"${params.git_branch}"),
         string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),
         string(name:'INSTALL_DD' , value:"${params.enable_dd}"),
