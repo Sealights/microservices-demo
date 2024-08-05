@@ -89,7 +89,7 @@ pipeline {
               curl -X POST \
                 -d '{"email": "${env.email}", "password": "${env.password}"}' \
                 -H "Content-Type: application/json" \
-                https://dev-integration.dev.sealights.co/api/v2/auth/token
+                "${env.fullabgw}"/api/v2/auth/token
               """).trim()
               env.api_token = sh(returnStdout: true, script: "echo '${AUTH_RESPONSE}' | jq -r .token").trim()
               echo "api token : ${env.api_token}"
@@ -101,7 +101,7 @@ pipeline {
                     "key": "BuildMethodology",
                     "value": "MethodLines"
                 }' \
-                https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
+                "${env.fullabgw}"/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
             """).trim()
               if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
                 return false
@@ -131,7 +131,7 @@ pipeline {
                   "lineThreshold": "${params.lineThreshold}",
                   "showLineCoverage": true
                 }' \
-                https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+                "${env.fullabgw}"/api/v2/coverage-settings
               """)).trim()
               if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
                 return false
@@ -222,7 +222,7 @@ pipeline {
                 branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
                 test_stage: "${TEST_STAGE}",
                 token: "${env.token}",
-                machine: "dev-integration.dev.sealights.co"
+                machine: "${env.labgw}"
               )
             }
           }
