@@ -151,7 +151,7 @@ pipeline {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
 //            env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
 //            echo "${env.token}"
-//            def MapUrl = new HashMap()
+           def MapUrl = new HashMap()
             MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
             MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
             MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
