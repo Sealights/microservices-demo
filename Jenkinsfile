@@ -49,18 +49,46 @@ pipeline {
   }
 
   stages {
+    stage('SpinUpEnvironment For Lambda layer Tests'){
+      steps {
+        script {
+          env.LAB_IDENTIFIER = "integ-BTQ-${BUILD_NUMBER}-api"
+          env.labDNS = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
+          env.labgw = "dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co"
+          env.fullabgw = "https://${env.labgw}"
+          env.SEALIGHTS_ENV_NAME = "dev-${env.LAB_IDENTIFIER}-gw"
+          def INSTANCE_TYPE = "c5a.4xlarge"
+          def INSTANCE_NAME = "EUW-ALLINONE-DEV-$env.LAB_IDENTIFIER"
+          def AWS_Region = "eu-west-1"
+          def existingInstanceId = sh(script: """aws ec2 describe-instances --region $AWS_Region --filters "Name=tag:Name,Values=$INSTANCE_NAME" "Name=instance-type,Values=$INSTANCE_TYPE" --query "Reservations[*].Instances[*].InstanceId" --output text""", returnStdout: true).trim()
+          echo "$existingInstanceId"
+          if ("$existingInstanceId" == '') {
+            build(job: 'SpinUpEnvironment', propagate: true, parameters: [string(name: 'ENV_TYPE', value: "DEV"), string(name: 'IDENTIFIER', value: "${env.LAB_IDENTIFIER}"), string(name: 'CUSTOM_EC2_INSTANCE_TYPE', value: "${INSTANCE_TYPE}"), booleanParam(name: 'RUNNING_CI', value: true), string(name: 'LAB_ID', value: "no_lab_id")])
+          }
+        }
+      }
+    }
+    stage('Sealights Preparation') {
+      steps {
+        script {
+          env.email = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
+          env.password = "${params.password}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
+          def connectivity_test_limit = 100
+          env.NEW_AGENT_TOKEN = sealights.create_agent_token("${env.labgw}", "BTQ-Token", 'eu-west-1', ${env.username}, ${env.password}, connectivity_test_limit)
+        }
+      }
+    }
     stage('Enabling line coverage for agent'){
       steps {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage') {
             try {
-              env.email = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
-              env.password = "${params.password}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
+
               def AUTH_RESPONSE = sh(returnStdout: true, script: """
               curl -X POST \
                 -d '{"email": "${env.email}", "password": "${env.password}"}' \
                 -H "Content-Type: application/json" \
-                https://dev-integration.dev.sealights.co/api/v2/auth/token
+                ${env.fullabgw}/api/v2/auth/token
               """).trim()
               env.api_token = sh(returnStdout: true, script: "echo '${AUTH_RESPONSE}' | jq -r .token").trim()
               echo "api token : ${env.api_token}"
@@ -72,7 +100,7 @@ pipeline {
                     "key": "BuildMethodology",
                     "value": "MethodLines"
                 }' \
-                https://dev-integration.dev.sealights.co/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
+               ${env.fullabgw}/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
             """).trim()
               if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
                 return false
@@ -102,7 +130,7 @@ pipeline {
                   "lineThreshold": "${params.lineThreshold}",
                   "showLineCoverage": true
                 }' \
-                https://dev-integration.dev.sealights.co/api/v2/coverage-settings
+                ${env.fullabgw}/api/v2/coverage-settings
               """)).trim()
               if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
                 return false
@@ -121,9 +149,9 @@ pipeline {
       steps {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
-            echo "${env.token}"
-            def MapUrl = new HashMap()
+//            env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
+//            echo "${env.token}"
+//            def MapUrl = new HashMap()
             MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
             MapUrl.put('DOTNET_AGENT_URL', "${params.DOTNET_AGENT_URL}")
             MapUrl.put('NODE_AGENT_URL', "${params.NODE_AGENT_URL}")
@@ -133,8 +161,8 @@ pipeline {
 
             build_btq(
               sl_report_branch: params.BRANCH,
-              sl_token: env.token,
-              dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
+              sl_token: env.NEW_AGENT_TOKEN,
+              dev_integraion_sl_token: env.NEW_AGENT_TOKEN,
               build_name: "1-0-${BUILD_NUMBER}",
               branch: params.BRANCH,
               mapurl: MapUrl
@@ -161,7 +189,7 @@ pipeline {
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch: params.BRANCH,
               git_branch: params.BUILD_BRANCH ,
-              lab : params.lab
+              lab : "dev-${env.LAB_IDENTIFIER}.dev"
             )
           }
         }
@@ -193,8 +221,8 @@ pipeline {
                 app_name: URLEncoder.encode("${params.APP_NAME}", "UTF-8"),
                 branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
                 test_stage: "${TEST_STAGE}",
-                token: "${env.token}",
-                machine: "dev-integration.dev.sealights.co"
+                token: "${env.NEW_AGENT_TOKEN}",
+                machine: "${env.labgw}"
               )
             }
           }
@@ -238,7 +266,7 @@ pipeline {
             def RUN_DATA = "full-run-node";
             TIA_Page_Tests(
               technology : params.BTQ_RUNNING_TECHNOLOGY,
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+              SEALIGHTS_ENV_NAME: env.SEALIGHTS_ENV_NAME,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
               run_data: RUN_DATA,
               branch: params.BRANCH,
@@ -310,9 +338,9 @@ pipeline {
             MapUrl.put('PYTHON_AGENT_URL', "${params.PYTHON_AGENT_URL}")
 
             build_btq(
-              sl_token: env.token,
+              sl_token: env.NEW_AGENT_TOKEN,
               sl_report_branch: params.BRANCH,
-              dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
+              dev_integraion_sl_token: env.NEW_AGENT_TOKEN,
               build_name: "1-0-${BUILD_NUMBER}-v2",
               branch: params.CHANGED_BRANCH,
               mapurl: MapUrl
@@ -340,7 +368,7 @@ pipeline {
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch: params.BRANCH,
-              lab : params.lab
+              lab : "dev-${env.LAB_IDENTIFIER}.dev"
             )
           }
         }
