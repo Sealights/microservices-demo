@@ -531,17 +531,17 @@ def SpinUpBoutiqeEnvironment(Map params){
     cdOnly: true,
   )
   build(job: 'SpinUpBoutiqeEnvironment', parameters: [string(name: 'ENV_TYPE', value: "DEV"),
-                                                      string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
-                                                      ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
-                                                      string(name:'GIT_BRANCH' , value:"${params.git_branch}"),
-                                                      string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),
-                                                      string(name:'INSTALL_DD' , value:"${params.enable_dd}"),
-                                                      string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
-                                                      string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
-                                                      string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
-                                                      string(name:'JAVA_AGENT_URL' , value: "${params.java_agent_url}"),
-                                                      string(name:'DOTNET_AGENT_URL' , value: "${params.dotnet_agent_url}"),
-                                                      string(name:'SL_BRANCH' , value:"${params.sl_branch}")])
+        string(name:'IDENTIFIER' , value:"${params.IDENTIFIER}")
+        ,string(name:'CUSTOM_EC2_INSTANCE_TYPE' , value:"t3a.large"),
+        string(name:'GIT_BRANCH' , value:"${params.git_branch}"),
+        string(name:'BTQ_LAB_ID' , value:"${env.LAB_ID}"),
+        string(name:'INSTALL_DD' , value:"${params.enable_dd}"),
+        string(name:'BTQ_TOKEN' , value:"${env.TOKEN}"),
+        string(name:'BTQ_VERSION' , value:"${env.CURRENT_VERSION}"),
+        string(name:'BUILD_NAME' , value:"${env.BUILD_NAME}"),
+        string(name:'JAVA_AGENT_URL' , value: "${params.java_agent_url}"),
+        string(name:'DOTNET_AGENT_URL' , value: "${params.dotnet_agent_url}"),
+        string(name:'SL_BRANCH' , value:"${params.sl_branch}")])
 }
 
 def run_tests(Map params){
