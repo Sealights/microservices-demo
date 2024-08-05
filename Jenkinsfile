@@ -52,7 +52,7 @@ pipeline {
   stage('SpinUpEnvironment For Lambda layer Tests'){
         steps {
           script {
-            env.LAB_IDENTIFIER = "integ-BTQ-${BUILD_NUMBER}-api"
+            env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api"
             env.labDNS = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
             env.labgw = "dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co"
             env.fullabgw = "https://${env.labgw}"
