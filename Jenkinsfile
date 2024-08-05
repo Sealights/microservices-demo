@@ -150,7 +150,7 @@ pipeline {
       steps {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            env.token = "${params.SL_TOKEN}" == '' ? "${secrets.get_secret('mgmt/layer_token', 'us-west-2')}" : "${params.SL_TOKEN}"
+            env.token = "${params.SL_TOKEN}" == '' ? "${env.NEW_AGENT_TOKEN}" : "${params.SL_TOKEN}"
             echo "${env.token}"
             def MapUrl = new HashMap()
             MapUrl.put('JAVA_AGENT_URL', "${params.JAVA_AGENT_URL}")
