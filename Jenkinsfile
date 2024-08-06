@@ -188,7 +188,7 @@ pipeline {
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch : params.BRANCH,
               git_branch : params.BUILD_BRANCH,
-              lab : "dev-${params.IDENTIFIER}-api-gw.dev"
+              lab : "dev-${IDENTIFIER}-api-gw.dev"
             )
           }
         }
