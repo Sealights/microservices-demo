@@ -634,7 +634,6 @@ def failure_btq(Map params){
 }
 
 
-
 def run_api_tests_before_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
     build(job: "StableApiTests", parameters: [
