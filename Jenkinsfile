@@ -26,7 +26,7 @@ pipeline {
     choice(name: 'TEST_TYPE', choices: ['All Tests IN One Image', 'Tests sequential', 'Tests parallel'], description: 'Choose test type')
     string(name: 'SEALIGHTS_ENV_NAME', defaultValue: 'dev-integration',description: 'your environment name')
     string(name: 'LAB_UNDER_TEST',defaultValue: 'https://dev-integration.dev.sealights.co/api',description: 'The lab you want to test\nE.g. "https://dev-keren-gw.dev.sealights.co/api"')
-    booleanParam(name: 'Run_all_tests', defaultValue: true, description: 'Checking this box will run all tests even if individual ones are not checked')
+    booleanParam(name: 'Run_all_tests', defaultValue: false, description: 'Checking this box will run all tests even if individual ones are not checked')
     booleanParam(name: 'Cypress', defaultValue: false, description: 'Run tests using Cypress testing framework')
     booleanParam(name: 'MS', defaultValue: false, description: 'Run tests using MS testing framework')
     booleanParam(name: 'Cucumberjs', defaultValue: false, description: 'Run tests using Cucumberjs testing framework (maven)')
