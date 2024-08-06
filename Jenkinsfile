@@ -56,6 +56,7 @@ pipeline {
           env.labDNS = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
           env.labgw = "dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co"
           env.fullabgw = "https://${env.labgw}"
+          env.envgw = "dev-${env.LAB_IDENTIFIER}-gw.dev"
           env.SEALIGHTS_ENV_NAME = "dev-${env.LAB_IDENTIFIER}-gw"
           def INSTANCE_TYPE = "c5a.4xlarge"
           def INSTANCE_NAME = "EUW-ALLINONE-DEV-$env.LAB_IDENTIFIER"
@@ -177,24 +178,18 @@ pipeline {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
-            // Dynamically construct the lab identifier and machine URL
-            env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api-gw"
-            env.MACHINE_URL = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
 
-            echo "Spinning up BTQ with machine URL: ${env.MACHINE_URL}"
-
-            def IDENTIFIER = "integ-btq-${env.CURRENT_VERSION}"
+            def IDENTIFIER= "${params.BRANCH}-${env.CURRENT_VERSION}"
             SpinUpBoutiqeEnvironment(
-              enable_dd: params.enable_dd,
-              IDENTIFIER: IDENTIFIER,
+              IDENTIFIER : IDENTIFIER,
               branch: params.BRANCH,
               app_name: params.APP_NAME,
               build_branch: params.BUILD_BRANCH,
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
-              sl_branch: params.BRANCH,
-              git_branch: params.BUILD_BRANCH,
-              lab: "dev-${env.LAB_IDENTIFIER}"
+              sl_branch : params.BRANCH,
+              git_branch : params.BUILD_BRANCH,
+              lab : "${env.envgw}"
             )
           }
         }
