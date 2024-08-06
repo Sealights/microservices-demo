@@ -72,6 +72,7 @@ pipeline {
         }
       }
       stage('Sealights Preparation') {
+        when { expression { params.STAGING } }
         steps {
           script {
             env.username = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
