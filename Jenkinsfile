@@ -46,11 +46,13 @@ pipeline {
     string(name: 'lineThreshold', defaultValue: '5', description: 'lineThreshold (line coverage)')
     string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email (for api token in the lab)-(line coverage)')
     string(name: 'password', defaultValue: "", description: 'lab account password (for api token in the lab)-(line coverage)')
+    booleanParam(name: 'STAGING', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
   }
 
   stages {
   stage('SpinUpEnvironment For Lambda layer Tests'){
-        steps {
+    when { expression { params.STAGING } }
+    steps {
           script {
             env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api"
             env.labDNS = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
