@@ -179,7 +179,7 @@ pipeline {
             env.CURRENT_VERSION = "${BUILD_NUMBER}"
 
             // Dynamically construct the lab identifier and machine URL
-            env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api-gw"
+            env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api"
             env.MACHINE_URL = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
 
             echo "Spinning up BTQ with machine URL: ${env.MACHINE_URL}"
