@@ -55,6 +55,7 @@ pipeline {
             env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api"
             env.labDNS = "dev-${env.LAB_IDENTIFIER}.dev.sealights.co"
             env.labgw = "dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co"
+            env.envgw = "dev-${env.LAB_IDENTIFIER}-gw.dev"
             env.fullabgw = "https://${env.labgw}"
             env.SEALIGHTS_ENV_NAME = "dev-${env.LAB_IDENTIFIER}-gw"
             def INSTANCE_TYPE = "c5a.4xlarge"
@@ -188,7 +189,7 @@ pipeline {
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch : params.BRANCH,
               git_branch : params.BUILD_BRANCH,
-              lab : "dev-${IDENTIFIER}-api-gw.dev"
+              lab : "${env.envgw}"
             )
           }
         }
