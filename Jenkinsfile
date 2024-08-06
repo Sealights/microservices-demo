@@ -299,7 +299,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
       steps {
         script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
+          if ((params.BTQ_RUNNING_TECHNOLOGY != 'node' || params.BTQ_RUNNING_TECHNOLOGY != 'dotnet') && (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All')) {
             def RUN_DATA = "full-run-node";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
