@@ -637,7 +637,7 @@ def failure_btq(Map params){
 
 def run_api_tests_before_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "StableApiTests", parameters: [
+    build(job: "StableApiTests/${params.branch}", parameters: [
       string(name: 'TECHNOLOGY', value: "${params.technology}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
       string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
@@ -651,7 +651,7 @@ def run_api_tests_before_changes(Map params){
 
 def run_TIA_ON_testresult(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "TIA-Test-result", parameters: [
+    build(job: "TIA-Test-result/${params.branch}", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
       string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
       string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
@@ -668,7 +668,7 @@ def run_TIA_ON_testresult(Map params){
 
 def run_api_tests_after_changes(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "ApiTests", parameters: [
+    build(job: "ApiTests/${params.branch}", parameters: [
       string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
       string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
       string(name: 'RUN_DATA', value: "${params.run_data}"),
@@ -682,7 +682,7 @@ def run_api_tests_after_changes(Map params){
 
 def TIA_Page_Tests(Map params){
   catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    build(job: "TIA-Page-Tests", parameters: [
+    build(job: "TIA-Page-Tests/${params.branch}", parameters: [
       string(name: 'BRANCH', value: "BTQ-TIA"),
       string(name: 'LAB_UNDER_TEST', value: "${params.LAB_UNDER_TEST}"),
       string(name: 'SEALIGHTS_ENV_NAME', value: "${params.SEALIGHTS_ENV_NAME}"),
