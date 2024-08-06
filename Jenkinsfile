@@ -286,6 +286,7 @@ pipeline {
             run_api_tests_before_changes(
               technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+              branch: params.BRANCH,
               LAB_UNDER_TEST: params.LAB_UNDER_TEST,
               run_data: RUN_DATA,
               integration_branch: params.BRANCH,
