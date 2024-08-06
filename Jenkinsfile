@@ -176,7 +176,7 @@ pipeline {
       steps {
         script {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
+            env.CURRENT_VERSION = "${BUILD_NUMBER}"
 
             // Dynamically construct the lab identifier and machine URL
             env.LAB_IDENTIFIER = "integ-btq-${BUILD_NUMBER}-api-gw"
