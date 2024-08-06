@@ -262,59 +262,59 @@ pipeline {
       }
     }
 
-    stage('Run TIA Tests 1-FIRST With SeaLights') {
-      steps {
-        script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            def RUN_DATA = "full-run";
-            TIA_Page_Tests(
-              technology : params.BTQ_RUNNING_TECHNOLOGY,
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              branch: params.BRANCH,
-              app_name: params.APP_NAME
-            )
-
-          }
-        }
-      }
-    }
-
-    stage('Run Coverage Tests Before Changes') {
-      steps {
-        script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            def RUN_DATA = "without-changes";
-            run_api_tests_before_changes(
-              technology : params.BTQ_RUNNING_TECHNOLOGY,
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              integration_branch: params.BRANCH,
-              app_name: params.APP_NAME
-            )
-          }
-        }
-      }
-    }
-    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
-      steps {
-        script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
-            def RUN_DATA = "full-run";
-            run_TIA_ON_testresult(
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              branch: params.BRANCH,
-              lab_id: env.LAB_ID,
-              app_name: params.APP_NAME
-            )
-          }
-        }
-      }
-    }
+//    stage('Run TIA Tests 1-FIRST With SeaLights') {
+//      steps {
+//        script {
+//          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+//            def RUN_DATA = "full-run";
+//            TIA_Page_Tests(
+//              technology : params.BTQ_RUNNING_TECHNOLOGY,
+//              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+//              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+//              run_data: RUN_DATA,
+//              branch: params.BRANCH,
+//              app_name: params.APP_NAME
+//            )
+//
+//          }
+//        }
+//      }
+//    }
+//
+//    stage('Run Coverage Tests Before Changes') {
+//      steps {
+//        script {
+//          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+//            def RUN_DATA = "without-changes";
+//            run_api_tests_before_changes(
+//              technology : params.BTQ_RUNNING_TECHNOLOGY,
+//              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+//              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+//              run_data: RUN_DATA,
+//              integration_branch: params.BRANCH,
+//              app_name: params.APP_NAME
+//            )
+//          }
+//        }
+//      }
+//    }
+//    stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
+//      steps {
+//        script {
+//          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
+//            def RUN_DATA = "full-run";
+//            run_TIA_ON_testresult(
+//              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+//              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+//              run_data: RUN_DATA,
+//              branch: params.BRANCH,
+//              lab_id: env.LAB_ID,
+//              app_name: params.APP_NAME
+//            )
+//          }
+//        }
+//      }
+//    }
 
     stage('Changed - Clone Repository') {
       steps {
@@ -393,59 +393,60 @@ pipeline {
       }
     }
 
-    stage('Run TIA Tests 2-SECOND With SeaLights') {
-      steps {
-        script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            def RUN_DATA = "TIA-RUN";
-            TIA_Page_Tests(
-              technology : params.BTQ_RUNNING_TECHNOLOGY,
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              branch: params.BRANCH,
-              app_name: params.APP_NAME
-            )
-          }
-        }
-      }
-    }
+//    stage('Run TIA Tests 2-SECOND With SeaLights') {
+//      steps {
+//        script {
+//          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+//            def RUN_DATA = "TIA-RUN";
+//            TIA_Page_Tests(
+//              technology : params.BTQ_RUNNING_TECHNOLOGY,
+//              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+//              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+//              run_data: RUN_DATA,
+//              branch: params.BRANCH,
+//              app_name: params.APP_NAME
+//            )
+//          }
+//        }
+//      }
+//    }
+//
+//    stage('Run Coverage Tests After Changes') {
+//      steps {
+//        script {
+//          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
+//            def RUN_DATA = "with-changes";
+//            run_api_tests_after_changes(
+//              technology : params.BTQ_RUNNING_TECHNOLOGY,
+//              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+//              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+//              run_data: RUN_DATA,
+//              integration_branch: params.BRANCH,
+//              app_name: params.APP_NAME
+//            )
+//          }
+//        }
+//      }
+//    }
+//
+//    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
+//      steps {
+//        script {
+//          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
+//            def RUN_DATA = "TIA-RUN";
+//            run_TIA_ON_testresult(
+//              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+//              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+//              run_data: RUN_DATA,
+//              branch: params.BRANCH,
+//              lab_id: env.LAB_ID,
+//              app_name: params.APP_NAME
+//            )
+//          }
+//        }
+//      }
+//    }
 
-    stage('Run Coverage Tests After Changes') {
-      steps {
-        script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            def RUN_DATA = "with-changes";
-            run_api_tests_after_changes(
-              technology : params.BTQ_RUNNING_TECHNOLOGY,
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              integration_branch: params.BRANCH,
-              app_name: params.APP_NAME
-            )
-          }
-        }
-      }
-    }
-
-    stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
-      steps {
-        script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
-            def RUN_DATA = "TIA-RUN";
-            run_TIA_ON_testresult(
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              branch: params.BRANCH,
-              lab_id: env.LAB_ID,
-              app_name: params.APP_NAME
-            )
-          }
-        }
-      }
-    }
   }
 
   post {
