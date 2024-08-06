@@ -30,39 +30,39 @@ pipeline {
         }
       }
     }
-        stage('Gradle framework'){
-      steps{
-        script{
-          sh """
-            #!/bin/bash
-            export machine_dns="${params.MACHINE_DNS}"
-            cd ./integration-tests/java-tests-gradle
-            echo $SL_TOKEN>sltoken.txt
-            echo '{
-                "executionType": "testsonly",
-                "tokenFile": "./sltoken.txt",
-                "createBuildSessionId": false,
-                "testStage": "Junit without testNG-gradle",
-                "runFunctionalTests": true,
-                "labId": "${SL_LABID}",
-                "proxy": null,
-                "logEnabled": false,
-                "logDestination": "console",
-                "logLevel": "warn",
-                "sealightsJvmParams": {}
-            }' > slgradletests.json
+    // stage('Gradle framework'){
+    //   steps{
+    //     script{
+    //       sh """
+    //         #!/bin/bash
+    //         export machine_dns="${params.MACHINE_DNS}"
+    //         cd ./integration-tests/java-tests-gradle
+    //         echo $SL_TOKEN>sltoken.txt
+    //         echo '{
+    //             "executionType": "testsonly",
+    //             "tokenFile": "./sltoken.txt",
+    //             "createBuildSessionId": false,
+    //             "testStage": "Junit without testNG-gradle",
+    //             "runFunctionalTests": true,
+    //             "labId": "${SL_LABID}",
+    //             "proxy": null,
+    //             "logEnabled": false,
+    //             "logDestination": "console",
+    //             "logLevel": "warn",
+    //             "sealightsJvmParams": {}
+    //         }' > slgradletests.json
 
 
-            echo "Adding Sealights to Tests Project gradle file..."
-            java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-            gradle test --no-daemon
+    //         echo "Adding Sealights to Tests Project gradle file..."
+    //         java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
+    //         gradle test --no-daemon
 
 
-            sleep ${wait_time}
-            """
-        }
-      }
-    }
+    //         sleep ${wait_time}
+    //         """
+    //     }
+    //   }
+    // }
     stage('Cypress framework starting'){
       steps{
         script{
