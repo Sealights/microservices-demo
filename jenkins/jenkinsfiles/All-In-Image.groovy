@@ -256,7 +256,7 @@ pipeline {
                 }' > slgradletests.json
                 echo "Adding Sealights to Tests Project gradle file..."
                 java -jar /sealights/sl-build-scanner.jar -gradle -configfile slgradletests.json -workspacepath .
-                gradle test
+                gradle clean test
             """
           }
         }
