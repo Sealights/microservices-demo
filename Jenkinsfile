@@ -47,6 +47,10 @@ pipeline {
     string(name: 'email', defaultValue: "integration@sealights.io", description: 'lab account email (for api token in the lab)-(line coverage)')
     string(name: 'password', defaultValue: "", description: 'lab account password (for api token in the lab)-(line coverage)')
     booleanParam(name: 'STAGING', defaultValue: false, description: 'Runs a long test for showing tia (not effected by run_all_tests flag)')
+    string(name: 'envgw', defaultValue: 'dev-${env.LAB_IDENTIFIER}-gw.dev', description: 'envgw to spinup stage (line coverage)\n dev-${params.LAB_IDENTIFIER}-gw.dev')
+    string(name: 'labgw', defaultValue: 'dev-${env.LAB_IDENTIFIER}-gw.dev.sealights.co', description: 'labgw to spinup stage (line coverage)')
+    string(name: 'fullabgw', defaultValue: 'https://${params.labgw}', description: 'fullabgw to spinup stage (line coverage)')
+
   }
 
   stages {
@@ -78,7 +82,7 @@ pipeline {
             env.username = "${params.email}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Username}" : "${params.email}"
             env.password = "${params.password}" == "" ? "${secrets.get_secret_map('mgmt/integ_account', 'us-west-2').Password}" : "${params.password}"
             def connectivity_test_limit = 100
-            env.NEW_AGENT_TOKEN = sealights.create_agent_token("${env.labgw}", "BTQ-Token", 'eu-west-1', "${env.username}", "${env.password}", connectivity_test_limit)
+            env.NEW_AGENT_TOKEN = sealights.create_agent_token("${params.labgw}", "BTQ-Token", 'eu-west-1', "${env.username}", "${env.password}", connectivity_test_limit)
           }
         }
       }
@@ -93,7 +97,7 @@ pipeline {
               curl -X POST \
                 -d '{"email": "${env.email}", "password": "${env.password}"}' \
                 -H "Content-Type: application/json" \
-                "${env.fullabgw}"/api/v2/auth/token
+                "${params.fullabgw}"/api/v2/auth/token
               """).trim()
               env.api_token = sh(returnStdout: true, script: "echo '${AUTH_RESPONSE}' | jq -r .token").trim()
               echo "api token : ${env.api_token}"
@@ -105,7 +109,7 @@ pipeline {
                     "key": "BuildMethodology",
                     "value": "MethodLines"
                 }' \
-                "${env.fullabgw}"/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
+                "${params.fullabgw}"/api/v1/settings/build-preferences/apps/${params.APP_NAME}/branches/${params.BRANCH}
             """).trim()
               if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
                 return false
@@ -135,7 +139,7 @@ pipeline {
                   "lineThreshold": "${params.lineThreshold}",
                   "showLineCoverage": true
                 }' \
-                "${env.fullabgw}"/api/v2/coverage-settings
+                "${params.fullabgw}"/api/v2/coverage-settings
               """)).trim()
               if ("${RESPONSE}" != "200" && "${RESPONSE}" != "201") {
                 return false
@@ -166,7 +170,6 @@ pipeline {
             build_btq(
               sl_report_branch: params.BRANCH,
               sl_token: env.token,
-              dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
               build_name: "1-0-${BUILD_NUMBER}",
               branch: params.BRANCH,
               mapurl: MapUrl
@@ -192,7 +195,7 @@ pipeline {
               dotnet_agent_url: params.DOTNET_AGENT_URL,
               sl_branch : params.BRANCH,
               git_branch : params.BUILD_BRANCH,
-              lab : "${env.envgw}"
+              lab : "${params.envgw}"
             )
           }
         }
@@ -225,7 +228,7 @@ pipeline {
                 branch_name: URLEncoder.encode("${params.BRANCH}", "UTF-8"),
                 test_stage: "${TEST_STAGE}",
                 token: "${env.token}",
-                machine: "${env.labgw}"
+                machine: "${params.labgw}"
               )
             }
           }
@@ -343,7 +346,6 @@ pipeline {
             build_btq(
               sl_token: env.token,
               sl_report_branch: params.BRANCH,
-              dev_integraion_sl_token: env.DEV_INTEGRATION_SL_TOKEN,
               build_name: "1-0-${BUILD_NUMBER}-v2",
               branch: params.CHANGED_BRANCH,
               mapurl: MapUrl
