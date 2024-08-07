@@ -19,7 +19,7 @@ RUN ls
 
 
 # Correct the filename here
-RUN mv java-agent-bootstrapper-ftv-${VERSION}.jar sl-cd-agent.jar
+RUN mv sl-cd-agent-${VERSION}.jar sl-cd-agent.jar
 
 RUN ls
 
