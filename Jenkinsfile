@@ -185,7 +185,7 @@ pipeline {
           if (params.BTQ_RUNNING == 'line coverage' || params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
             env.CURRENT_VERSION = "1-0-${BUILD_NUMBER}"
 
-            def IDENTIFIER= "${params.BRANCH}-${env.CURRENT_VERSION}"
+            def IDENTIFIER= "btq-staging-${env.CURRENT_VERSION}"
             SpinUpBoutiqeEnvironment(
               IDENTIFIER : IDENTIFIER,
               branch: params.BRANCH,
@@ -455,10 +455,10 @@ pipeline {
     success {
       script {
         success_btq(
-          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
+          IDENTIFIER : "btq-staging-${env.CURRENT_VERSION}"
         )
         success_btq(
-          IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+          IDENTIFIER : "btq-staging-${env.CURRENT_VERSION}"
         )
       }
     }
@@ -470,10 +470,10 @@ pipeline {
           role_name : "CD-TF-Role"
         ])
         failure_btq(
-          IDENTIFIER : "${params.BRANCH}-${env.CURRENT_VERSION}"
+          IDENTIFIER : "btq-staging-${env.CURRENT_VERSION}"
         )
         failure_btq(
-          IDENTIFIER : "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
+          IDENTIFIER : "btq-staging-${env.CURRENT_VERSION}"
         )
       }
     }
