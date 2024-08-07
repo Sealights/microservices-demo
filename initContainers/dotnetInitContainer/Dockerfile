@@ -1,10 +1,8 @@
 FROM alpine:latest
 
-WORKDIR /app
-RUN mkdir -p ./sealights/logs
-RUN mkdir -p ./sealights/agent
+WORKDIR /temp
+RUN mkdir -p ./logs
+RUN mkdir -p ./agent
 RUN wget -nv -O sealights-dotnet-agent-alpine.tar.gz https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-alpine-self-contained.tar.gz
-
-RUN tar -xzf ./sealights-dotnet-agent-alpine.tar.gz --directory /app/sealights/agent
-RUN chmod -R 777 /app/sealights
-COPY start-app.sh /app/sealights
+RUN tar -xzf ./sealights-dotnet-agent-alpine.tar.gz --directory /temp/agent && rm ./sealights-dotnet-agent-alpine.tar.gz
+RUN chmod -R 777 /temp
