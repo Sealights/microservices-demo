@@ -20,4 +20,3 @@ RUN mv java-agent-bootstrapper-ftv-${VERSION}.jar sl-cd-agent.jar
 RUN ls
 
 # Copy the SL CD agent to the desired location
-Key Changes:
