@@ -17,3 +17,8 @@ RUN bash /scripts/bash.sh $VERSION -o sl-cd-agent.jar
 # Correct the filename here
 RUN mv sl-cd-agent-${VERSION}.jar sl-cd-agent.jar
 
+RUN mv sl-build-scanner-${VERSION}.jar sl-build-scanner.jar
+
+RUN mv sl-test-listener-${VERSION}.jar sl-test-listener.jar
+
+
