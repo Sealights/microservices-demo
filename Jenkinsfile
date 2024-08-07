@@ -282,7 +282,7 @@ pipeline {
       steps {
         script {
           if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ') {
-            def RUN_DATA = "without-changes";
+            def RUN_DATA = "without-changes-node";
             run_api_tests_before_changes(
               technology : params.BTQ_RUNNING_TECHNOLOGY,
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
