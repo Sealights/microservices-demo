@@ -23,6 +23,8 @@ pipeline {
     string(name: 'TAG', defaultValue: '1.2.2', description: 'Latest tag')
     string(name: 'BRANCH', defaultValue: 'dotnet-ci', description: 'Default branch')
     choice(name: 'LANG', choices: ["javainitcontainer", "dotnetinitcontainer"], description: 'Choose lang technology')
+    string(name: 'JAVA_VERSION', defaultValue: '', description: 'DOWNLOAD JAVA VERSION')
+
   }
   environment {
     ECR_FULL_NAME = "${params.LANG}"
@@ -33,13 +35,21 @@ pipeline {
     stage('Init') {
       steps {
         script {
-          git branch: params.BRANCH, url: 'https://github.com/Sealights/microservices-demo.git'
-          env.verion = sh(returnStdout: true, script: """gh api \\
+          if("${params.JAVA_VERSION}" == ""  ){
+            env.verion = sh(returnStdout: true, script: """gh api \\
                         -H "Accept: application/vnd.github+json" \\
                         -H "X-GitHub-Api-Version: 2022-11-28" \\
                         /users/Sealights/packages/maven/io.sealights.on-premise.agents.java-agent-bootstrapper-ftv/versions \\
                         | jq -r '.[0].name'""").trim()
-          echo "java version : ${env.verion}"
+            echo "java version : ${env.verion}"
+          }else{
+            env.verion = "${params.JAVA_VERSION}"
+            sh"""
+              ls -l
+              bash  jenkins/scripts/bash.sh "${env.verion}"
+              """
+          }
+
           env.dotnet_latest_version = (sh(returnStdout: true, script: "gh release view --repo sealights/SL.OnPremise.Agents.DotNet --json tagName --jq '.tagName'")).trim()
           echo "dotnet version : ${env.dotnet_latest_version}"
         }
