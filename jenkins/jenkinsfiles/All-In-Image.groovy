@@ -188,7 +188,7 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103
             mvn clean package
           """
           }
