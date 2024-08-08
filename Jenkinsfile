@@ -597,7 +597,6 @@ def run_tests(Map params){
       }
     } else {
       sleep time: 150, unit: 'SECONDS'
-      BTQ-BUILD/abed%2Fbtq-staging
       build(job: "All-In-One/abed%2Fbtq-staging", parameters: [
         string(name: 'TECHNOLOGY', value: "${params.technology}"),
         string(name: 'BRANCH', value: "${params.branch}"),
