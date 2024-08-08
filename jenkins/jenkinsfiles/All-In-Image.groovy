@@ -225,7 +225,11 @@ pipeline {
                         "logEnabled": false,
                         "logDestination": "console",
                         "logLevel": "warn",
-                        "sealightsJvmParams": {}
+                        "sealightsJvmParams": {
+                       "sl.enableUpgrade": false
+                    },
+                    "listenerJar": "/sealights/sl-test-listener.jar",
+                    "scannerJar": "/sealights/sl-build-scanner.jar"
                         }' > slmaventests.json
                 echo "Adding Sealights to Tests Project POM file..."
                 java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
