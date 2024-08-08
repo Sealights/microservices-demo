@@ -296,19 +296,18 @@ pipeline {
       }
     }
     stage('Run TIA Test VALIDATION without SeaLights BEFORE TIA') {
+      when {expression {return (params.BTQ_RUNNING_TECHNOLOGY != 'node' || params.BTQ_RUNNING_TECHNOLOGY != 'dotnet') && (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All')}}
       steps {
         script {
-          if ((params.BTQ_RUNNING_TECHNOLOGY != 'node' || params.BTQ_RUNNING_TECHNOLOGY != 'dotnet') && (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All')) {
-            def RUN_DATA = "full-run-node";
-            run_TIA_ON_testresult(
-              SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
-              LAB_UNDER_TEST: params.LAB_UNDER_TEST,
-              run_data: RUN_DATA,
-              branch: params.BRANCH,
-              lab_id: env.LAB_ID,
-              app_name: params.APP_NAME
-            )
-          }
+          def RUN_DATA = "full-run-node";
+          run_TIA_ON_testresult(
+            SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
+            LAB_UNDER_TEST: params.LAB_UNDER_TEST,
+            run_data: RUN_DATA,
+            branch: params.BRANCH,
+            lab_id: env.LAB_ID,
+            app_name: params.APP_NAME
+          )
         }
       }
     }
@@ -360,15 +359,15 @@ pipeline {
             def IDENTIFIER = "${params.CHANGED_BRANCH}-${env.CURRENT_VERSION}"
 
             SpinUpBoutiqeEnvironment(
-              IDENTIFIER: IDENTIFIER,
+              IDENTIFIER : IDENTIFIER,
               branch: params.BRANCH,
-              git_branch: params.CHANGED_BRANCH,
               app_name: params.APP_NAME,
               build_branch: params.BRANCH,
               java_agent_url: params.JAVA_AGENT_URL,
               dotnet_agent_url: params.DOTNET_AGENT_URL,
-              sl_branch: params.BRANCH,
-              lab : "dev-${env.LAB_IDENTIFIER}.dev"
+              sl_branch : params.BRANCH,
+              git_branch : params.BUILD_BRANCH,
+              lab : "${env.envgw}"
             )
           }
         }
@@ -429,7 +428,7 @@ pipeline {
     stage('Run TIA Test VALIDATION without SeaLights AFTER TIA') {
       steps {
         script {
-          if (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All') {
+          if ((params.BTQ_RUNNING_TECHNOLOGY != 'node' || params.BTQ_RUNNING_TECHNOLOGY != 'dotnet') && (params.BTQ_RUNNING == 'BTQ + line coverage' || params.BTQ_RUNNING == 'BTQ' || params.TECHNOLOGY == 'All')) {
             def RUN_DATA = "TIA-RUN";
             run_TIA_ON_testresult(
               SEALIGHTS_ENV_NAME: params.SEALIGHTS_ENV_NAME,
