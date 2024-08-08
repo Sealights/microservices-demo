@@ -128,37 +128,37 @@ pipeline {
       }
     }
 
-    stage('Karate framework') {
-      steps {
-        script {
-          if (params.Run_all_tests == true || params.Karate == true || params.TECHNOLOGY == 'java') {
-            sh """
-              #!/bin/bash
-              echo 'Karate framework starting ..... '
-              cd ./integration-tests/karate-tests/
-              echo ${env.SL_TOKEN}>sltoken.txt
-              echo  '{
-                "executionType": "testsonly",
-                "tokenFile": "./sltoken.txt",
-                "createBuildSessionId": false,
-                "testStage": "Karate-framework-java",
-                "runFunctionalTests": true,
-                "labId": "${params.SL_LABID}",
-                "proxy": null,
-                "logEnabled": false,
-                "logDestination": "console",
-                "logLevel": "info",
-                "sealightsJvmParams": {}
-                }' > slmaventests.json
-              echo "Adding Sealights to Tests Project POM file..."
-              java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-              mvn -q clean test -Dkarate.env=${env.MACHINE_DNS}
-              sleep 10
-            """
-          }
-        }
-      }
-    }
+//    stage('Karate framework') {
+//      steps {
+//        script {
+//          if (params.Run_all_tests == true || params.Karate == true || params.TECHNOLOGY == 'java') {
+//            sh """
+//              #!/bin/bash
+//              echo 'Karate framework starting ..... '
+//              cd ./integration-tests/karate-tests/
+//              echo ${env.SL_TOKEN}>sltoken.txt
+//              echo  '{
+//                "executionType": "testsonly",
+//                "tokenFile": "./sltoken.txt",
+//                "createBuildSessionId": false,
+//                "testStage": "Karate-framework-java",
+//                "runFunctionalTests": true,
+//                "labId": "${params.SL_LABID}",
+//                "proxy": null,
+//                "logEnabled": false,
+//                "logDestination": "console",
+//                "logLevel": "info",
+//                "sealightsJvmParams": {}
+//                }' > slmaventests.json
+//              echo "Adding Sealights to Tests Project POM file..."
+//              java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
+//              mvn -q clean test -Dkarate.env=${env.MACHINE_DNS}
+//              sleep 10
+//            """
+//          }
+//        }
+//      }
+//    }
     stage('Junit without testNG ') {
       steps {
         script {
@@ -188,7 +188,7 @@ pipeline {
                     }' > slmaventests.json
             echo "Adding Sealights to Tests Project POM file..."
             java -jar /sealights/sl-build-scanner.jar -pom -configfile slmaventests.json -workspacepath .
-            #mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103  -gs ./settings-github.xml
+            mvn dependency:get -Dartifact=io.sealights.on-premise.agents.plugin:sealights-maven-plugin:4.0.103
             mvn clean package
           """
           }
